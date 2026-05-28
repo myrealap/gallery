@@ -363,14 +363,14 @@
     border: none;
   }
 
-    /* FIXED HOVER PNG - WITH background-size: cover */
+      /* FIXED HOVER PNG - matches row height on desktop */
   .hover-png {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 260px;
-    height: 260px;
+    width: auto;
+    height: 240px;
     background-image: url('images/hover-bg.png');
     background-size: contain;
     background-repeat: no-repeat;
@@ -381,38 +381,35 @@
     z-index: 10000;
   }
 
-  /* Desktop hover PNG (image is 180x240) */
+  /* Desktop - height fixed at 240px (row height), width auto */
   @media (min-width: 769px) {
     .hover-png {
-      width: 200px;
-      height: 200px;
-      background-size: contain;
+      height: 240px;
+      width: auto;
     }
   }
 
-  /* Tablet - image size 140x187 */
+  /* Tablet - image size 140x187, hover proportional */
   @media (max-width: 768px) {
     .image-item img {
       width: 140px;
       height: 187px;
     }
     .hover-png {
-      width: 160px;
-      height: 160px;
-      background-size: contain;
+      height: 187px;
+      width: auto;
     }
   }
 
-  /* Mobile - image size 100x133 - YOUR XIAOMI 11T */
+  /* Mobile - image size 100x133, hover proportional */
   @media (max-width: 480px) {
     .image-item img {
       width: 100px;
       height: 133px;
     }
     .hover-png {
-      width: 120px;
-      height: 120px;
-      background-size: contain;
+      height: 133px;
+      width: auto;
     }
   }
 
