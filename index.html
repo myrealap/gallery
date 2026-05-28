@@ -327,7 +327,7 @@
   .scroll-row {
     width: 100%;
     overflow-x: hidden;
-    overflow-y: visible;
+    overflow-y: hidden;  /* FIXED: Removed vertical scroll */
     white-space: nowrap;
     margin: 0;
     padding: 0;
@@ -589,6 +589,7 @@
     flex-shrink: 0;
   }
 
+  /* FIXED CUSTOM CURSOR - works on PC */
   .custom-cursor {
     position: fixed;
     width: 40px;
@@ -624,8 +625,21 @@
     100% { opacity: 0.7; filter: drop-shadow(0 0 2px rgba(255,255,255,0.3)); }
   }
 
+  /* Hide default cursor on PC only */
   @media (hover: hover) and (pointer: fine) {
-    * { cursor: none; }
+    * {
+      cursor: none !important;
+    }
+  }
+
+  /* For touch devices, show default cursor */
+  @media (max-width: 768px) {
+    * {
+      cursor: auto !important;
+    }
+    .custom-cursor {
+      display: none !important;
+    }
   }
 
   @media (max-width: 768px) {
@@ -714,10 +728,8 @@
   // DETECT MOBILE DEVICE
   const isMobile = window.innerWidth <= 768;
   
-  // OFFSETS: different for mobile vs desktop!
-  // Mobile: smaller offset so images are visible
-  // Desktop: large offset for endless effect
-  const rightOffset = isMobile ? -3000 : -80000;
+  // OFFSETS: mobile now -8000 (so right photos don't finish), desktop -80000
+  const rightOffset = isMobile ? -8000 : -80000;
   const loveRightOffset = isMobile ? -5000 : -40000;
   
   const quotes = [
@@ -743,20 +755,20 @@
   const imageList = ["images/1.jpg", "images/3.jpg", "images/5.jpg", "images/7.jpg", "images/9.jpg", "images/11.jpg", "images/13.jpg"];
   
   const imageDescriptions = {
-    "images/1.jpg": { title: "Cherry Baby", desc: "Pink clouds cradle you like a lullaby — soft, endless, made of sugar and secrets. Your short hair curls just above your jaw, catching the light like tiny halos. And there — on your skin — a tattoo of a lip pressing into a cherry, sweet and bitten. You are so soft tonight. Softer than the clouds, softer than the word 'stay.' Magic hums around your shoulders like a blanket only you can feel. Every part of you whispers cherry baby, cherry baby — come closer, taste, linger. And the sky holds its breath, because even heaven knows it can't compete with you." },
-    "images/2.jpg": { title: "Lost But Found", desc: "You are drowning in gold — yellow and orange flowers reaching up like they're trying to hold you. Their petals brush your wrists like old lovers saying hello again. Above, the sky has written four soft words: 'in the middle of nowhere.' And you stare at them as if they might answer a question you forgot you asked. The wind moves through your hair like a gentle lie — that you are not alone, that this is enough. But your eyes keep climbing, searching for something just beyond the letters. And in that silence, between the flowers and the nowhere, you become a poem no one will ever finish reading." },
-    "images/3.jpg": { title: "Orange Horizon", desc: "The sky is a poem you cannot read aloud, but your heart understands every word. Mushrooms grow in silver spirals, glowing softly like forgotten stars on the ground. A tree of songs whispers beside you, its leaves shivering with melodies of longing. It is night pretending to be day, and you are caught between two kinds of light. There—the orange, both fruit and sun, hangs in the air, pulsing with gentle heat. You lift your finger, desperate to touch its skin, to feel the warmth of love even once. So you stretch into the impossible horizon, because reaching is the only prayer you have left." },
-    "images/4.jpg": { title: "Want 2000s", desc: "A dreamy background holds me like a lullaby — soft, blurry, the way memories look right before they disappear. My checkered ring sleeve shirt hangs on me like a ghost of every mall I ever walked through as a kid. A steel necklace sits cold on my chest — heavy, shiny, as permanent as the years I can't get back. My long hair is pushed back behind my ears because I need to see the world without hiding. And I see it. The 2000s are gone. The songs, the stars, the way we loved before the internet watched us. I want it so badly it aches behind my ribs — a decade that will never text me back. So I stand here, looking like 2003, feeling like 2026, and missing something I can never touch again." },
-    "images/5.jpg": { title: "Walk of Fame", desc: "Concrete jungle royalty — that's you, baby, standing on stars that don't deserve your shadow. Your short wolf cut is messy in all the right ways, falling like you just rolled out of someone's dreams. Classic street style: ripped denim, leather jacket, boots that were made for walking all over hearts. And that pose — head back, hip out, lips parted like you're about to say something devastating. Cameras should bow. Streetlights should flicker. Even the Hollywood sign is blushing right now. You're not famous yet? The sidewalk disagrees. Every inch of you screams icon. So go ahead — strut, smirk, destroy. The Walk of Fame just found its new queen." },
-    "images/6.jpg": { title: "Die Without You", desc: "Pink clouds fill my bathtub like a dream I never want to wake up from — but you're not here, so what's the point? I'm holding a book, but the pages are just excuses to keep my hands busy while my heart breaks. Every word I read turns into your face. Every silence screams your name. The clouds wrap around me, soft and warm, but they're not your arms and they never will be. I would die without you. Not with a bang — just a slow, quiet fade into all this pink. And I can't do anything. I can't fight. I can't beg. I can only lie here and miss you until missing becomes my whole body. So this is me: naked in clouds, reading a book I'll never finish, dying for a love that already left." },
+    "images/1.jpg": { title: "Cherry Baby", desc: "Pink clouds cradle you like a lullaby — soft, endless, made of sugar and secrets.   Your short hair curls just above your jaw, catching the light like tiny halos.   And there — on your skin — a tattoo of a lip pressing into a cherry, sweet and bitten.   You are so soft tonight. Softer than the clouds, softer than the word 'stay.'   Magic hums around your shoulders like a blanket only you can feel.   Every part of you whispers cherry baby, cherry baby — come closer, taste, linger.   And the sky holds its breath, because even heaven knows it can't compete with you." },
+    "images/2.jpg": { title: "Lost But Found", desc: "You are drowning in gold — yellow and orange flowers reaching up like they're trying to hold you.   Their petals brush your wrists like old lovers saying hello again.   Above, the sky has written four soft words: 'in the middle of nowhere.'   And you stare at them as if they might answer a question you forgot you asked.   The wind moves through your hair like a gentle lie — that you are not alone, that this is enough.   But your eyes keep climbing, searching for something just beyond the letters.   And in that silence, between the flowers and the nowhere, you become a poem no one will ever finish reading." },
+    "images/3.jpg": { title: "Orange Horizon", desc: "The sky is a poem you cannot read aloud, but your heart understands every word.   Mushrooms grow in silver spirals, glowing softly like forgotten stars on the ground.   A tree of songs whispers beside you, its leaves shivering with melodies of longing.   It is night pretending to be day, and you are caught between two kinds of light.   There—the orange, both fruit and sun, hangs in the air, pulsing with gentle heat.   You lift your finger, desperate to touch its skin, to feel the warmth of love even once.   So you stretch into the impossible horizon, because reaching is the only prayer you have left." },
+    "images/4.jpg": { title: "Want 2000s", desc: "A dreamy background holds me like a lullaby — soft, blurry, the way memories look right before they disappear.   My checkered ring sleeve shirt hangs on me like a ghost of every mall I ever walked through as a kid.   A steel necklace sits cold on my chest — heavy, shiny, as permanent as the years I can't get back.   My long hair is pushed back behind my ears because I need to see the world without hiding.   And I see it. The 2000s are gone. The songs, the stars, the way we loved before the internet watched us.   I want it so badly it aches behind my ribs — a decade that will never text me back.   So I stand here, looking like 2003, feeling like 2026, and missing something I can never touch again." },
+    "images/5.jpg": { title: "Walk of Fame", desc: "Concrete jungle royalty — that's you, baby, standing on stars that don't deserve your shadow.   Your short wolf cut is messy in all the right ways, falling like you just rolled out of someone's dreams.   Classic street style: ripped denim, leather jacket, boots that were made for walking all over hearts.   And that pose — head back, hip out, lips parted like you're about to say something devastating.   Cameras should bow. Streetlights should flicker. Even the Hollywood sign is blushing right now.   You're not famous yet? The sidewalk disagrees. Every inch of you screams icon.   So go ahead — strut, smirk, destroy. The Walk of Fame just found its new queen." },
+    "images/6.jpg": { title: "Die Without You", desc: "Pink clouds fill my bathtub like a dream I never want to wake up from — but you're not here, so what's the point?   I'm holding a book, but the pages are just excuses to keep my hands busy while my heart breaks.   Every word I read turns into your face. Every silence screams your name.   The clouds wrap around me, soft and warm, but they're not your arms and they never will be.   I would die without you. Not with a bang — just a slow, quiet fade into all this pink.   And I can't do anything. I can't fight. I can't beg. I can only lie here and miss you until missing becomes my whole body.   So this is me: naked in clouds, reading a book I'll never finish, dying for a love that already left." },
     "images/7.jpg": { title: "A Lover Mermaid", desc: "Beneath the coral glow, a lovesick mermaid stares at the turtle beside her. Her shimmering tail curls in the current, but her heart is heavier than the deepest trench. The turtle drifts close yet never returns her gaze—a silent witness to one-way love. Still, she traces his shell, whispering promises into the salt and tide. Every wave that pushes him away only makes her swim harder, fighting the pull of reason. Her love may not love her back, but she'd battle storms, sharks, and silence just to stay near him. Because even an unreturned heart beats fiercely when it has chosen its own battleground." },
-    "images/8.jpg": { title: "Red Rose Love", desc: "The sunset bleeds amber and rose as you stand in the garden, your red dress matching the flowers around you. Your heart is fuller than the vines—overflowing with a love that aches to be given. You spot the perfect rose, reach past its thorns, and hold it out like a promise. But he refuses. A soft shake of his head, a step back, and the world feels colder than twilight. The rose hangs in your hand, unwanted, as his silence becomes your answer. Tears blur the fading light, but you don't drop the flower—not yet. Because even sadness has beauty, and tonight you are both: a wilting dream and a woman still hoping." },
-    "images/9.jpg": { title: "Kisses of Busy Man", desc: "The blue page glows around you like a whisper as he walks in — already unbuttoning, already looking at your mouth. He doesn't say hello. He just pushes you back against the cool blue light and drops his lips to your neck. Wet. Open. Hungry. His tongue traces your pulse like he's learning a new language just for your skin. He moves down — collarbone, sternum, ribs — each kiss slower than the last but twice as hot. You feel his stubble scrape your chest, then his lips close around you, and your fingers tangle in his hair. 'Stay still,' he breathes against your stomach, but his hand is already sliding lower, and you're already shaking. He leaves one last kiss on your inner thigh — soft, almost cruel — then looks up and grins: 'That's all I have time for. For now.'" },
-    "images/10.jpg": { title: "Glow of Wanting", desc: "Just my face — but it's enough. Sunlight touches my skin like fingers that know exactly where I'm soft. My face is so shiny, like I've been kissed by something holy or something hungry — maybe both. And my hair — chocolate brown light — spills across the whole background, wild and warm and everywhere. I look dreamy. Soft. The kind of girl you'd write poems about at 3am. But my eyes? They're sad. Curious. Passionate. Three emotions fighting for space in one beautiful face. The spotlight found me today, and I didn't run. I just let it see every crack in my heart. This is me: shiny, sad, still wanting. And honestly? I've never looked more alive." },
-    "images/11.jpg": { title: "1000 Year Tree", desc: "In Iran, I found a tree that has lived a thousand springs — and I swear it was waiting for me. I stood beneath its branches, small but shining, like I was born to be its light. My spring outfit floated around me — soft fabrics, gentle colors, nothing loud, just right. My skin looked so soft that day, like the sun had kissed every inch of me good morning. And my long curly hair — oh, it was wild and free — tangling with the breeze like it belonged there. The tree was ancient, wise, covered in stories I'll never know. But I was the magic that afternoon, and the thousand-year tree finally had someone beautiful to pose beside." },
-    "images/12.jpg": { title: "Necklace of the Sea", desc: "The beach is hot, the boats are gorgeous — red, orange, blue — but let's be real, I'm the view. My summer outfit floats around me like the sea breeze is trying to undress me with its eyes. And my hair? Oh, it's killing today — wild, shiny, tangled in that perfect way that says 'I just came from a dream.' Around my neck, a shell necklace rests against my skin, and I swear it's hugging me tighter because it knows. It knows the sea is beautiful. But on my chest? Those shells look like royalty. The boats behind me are stunning, yes. But every sailor on them is staring at me instead of the horizon. I'm a sea fish who doesn't swim — I just stand here and let the ocean be jealous of my glow." },
-    "images/13.jpg": { title: "Theater Star", desc: "Red velvet curtains drape behind me like I'm the main event — because I am. I grab the rope with both hands, pull myself up, and feel every eye in the room on my thighs. My pretty puffy hair bounces around my shoulders — soft, messy, looking like I just rolled out of a dream. A white lily sits behind my ear, sweet and wild, like a promise I might not keep. My sexy dress hugs every curve, riding up just enough to make the silence feel loud. The spotlight finds *me* — burning gold on my skin, my lips, the way I smile down at everyone below. I'm on a rope in a bar, and somehow I've never felt more like a queen." },
-    "images/14.jpg": { title: "Overthink Diva", desc: "I'm standing on a wall, high enough to see everything — but all I see is him. Lines of poetry spin around me like a tornado of every word I never said to his face. Behind me, a big lion rests — strong, silent, like he's holding space for all my messy feelings. Two boys. One love. That's us. That's the whole story and also a thousand stories I'll never finish writing. I keep thinking about his hands, his laugh, the way he said my name like it was a secret. The poetry spins faster. The lion doesn't move. And neither do I — caught in the beautiful disaster of loving him. I'm an overthinking diva, yes. But at least I'm thinking about someone worth every single line of poetry." }
+    "images/8.jpg": { title: "Red Rose Love", desc: "The sunset bleeds amber and rose as you stand in the garden, your red dress matching the flowers around you.   Your heart is fuller than the vines—overflowing with a love that aches to be given.   You spot the perfect rose, reach past its thorns, and hold it out like a promise.   But he refuses. A soft shake of his head, a step back, and the world feels colder than twilight.   The rose hangs in your hand, unwanted, as his silence becomes your answer.   Tears blur the fading light, but you don't drop the flower—not yet.   Because even sadness has beauty, and tonight you are both: a wilting dream and a woman still hoping." },
+    "images/9.jpg": { title: "Kisses of Busy Man", desc: "The blue page glows around you like a whisper as he walks in — already unbuttoning, already looking at your mouth.   He doesn't say hello. He just pushes you back against the cool blue light and drops his lips to your neck.   Wet. Open. Hungry. His tongue traces your pulse like he's learning a new language just for your skin.   He moves down — collarbone, sternum, ribs — each kiss slower than the last but twice as hot.   You feel his stubble scrape your chest, then his lips close around you, and your fingers tangle in his hair.   'Stay still,' he breathes against your stomach, but his hand is already sliding lower, and you're already shaking.   He leaves one last kiss on your inner thigh — soft, almost cruel — then looks up and grins:       'That's all I have time for. For now.'" },
+    "images/10.jpg": { title: "Glow of Wanting", desc: "Just my face — but it's enough. Sunlight touches my skin like fingers that know exactly where I'm soft.   My face is so shiny, like I've been kissed by something holy or something hungry — maybe both.   And my hair — chocolate brown light — spills across the whole background, wild and warm and everywhere.   I look dreamy. Soft. The kind of girl you'd write poems about at 3am.   But my eyes? They're sad. Curious. Passionate. Three emotions fighting for space in one beautiful face.   The spotlight found me today, and I didn't run. I just let it see every crack in my heart.   This is me: shiny, sad, still wanting. And honestly? I've never looked more alive." },
+    "images/11.jpg": { title: "1000 Year Tree", desc: "In Iran, I found a tree that has lived a thousand springs — and I swear it was waiting for me.   I stood beneath its branches, small but shining, like I was born to be its light.   My spring outfit floated around me — soft fabrics, gentle colors, nothing loud, just right.   My skin looked so soft that day, like the sun had kissed every inch of me good morning.   And my long curly hair — oh, it was wild and free — tangling with the breeze like it belonged there.   The tree was ancient, wise, covered in stories I'll never know.   But I was the magic that afternoon, and the thousand-year tree finally had someone beautiful to pose beside." },
+    "images/12.jpg": { title: "Necklace of the Sea", desc: "The beach is hot, the boats are gorgeous — red, orange, blue — but let's be real, I'm the view.   My summer outfit floats around me like the sea breeze is trying to undress me with its eyes.   And my hair? Oh, it's killing today — wild, shiny, tangled in that perfect way that says 'I just came from a dream.'   Around my neck, a shell necklace rests against my skin, and I swear it's hugging me tighter because it knows.   It knows the sea is beautiful. But on my chest? Those shells look like royalty.   The boats behind me are stunning, yes. But every sailor on them is staring at me instead of the horizon.   I'm a sea fish who doesn't swim — I just stand here and let the ocean be jealous of my glow." },
+    "images/13.jpg": { title: "Theater Star", desc: "Red velvet curtains drape behind me like I'm the main event — because I am.   I grab the rope with both hands, pull myself up, and feel every eye in the room on my thighs.   My pretty puffy hair bounces around my shoulders — soft, messy, looking like I just rolled out of a dream.   A white lily sits behind my ear, sweet and wild, like a promise I might not keep.   My sexy dress hugs every curve, riding up just enough to make the silence feel loud.   The spotlight finds *me* — burning gold on my skin, my lips, the way I smile down at everyone below.   I'm on a rope in a bar, and somehow I've never felt more like a queen." },
+    "images/14.jpg": { title: "Overthink Diva", desc: "I'm standing on a wall, high enough to see everything — but all I see is him.   Lines of poetry spin around me like a tornado of every word I never said to his face.   Behind me, a big lion rests — strong, silent, like he's holding space for all my messy feelings.   Two boys. One love. That's us. That's the whole story and also a thousand stories I'll never finish writing.   I keep thinking about his hands, his laugh, the way he said my name like it was a secret.   The poetry spins faster. The lion doesn't move. And neither do I — caught in the beautiful disaster of loving him.   I'm an overthinking diva, yes. But at least I'm thinking about someone worth every single line of poetry." }
   };
   
   const playlist = [
@@ -1146,7 +1158,7 @@
     container.innerHTML = '';
     const scrollers = [];
     
-    // USING RESPONSIVE OFFSETS (different for mobile vs desktop)
+    // USING RESPONSIVE OFFSETS
     const customOrderRow1 = ["images/1.jpg", "images/3.jpg", "images/5.jpg", "images/7.jpg", "images/9.jpg", "images/11.jpg", "images/13.jpg"];
     const row1 = buildImageRowCustom(customOrderRow1);
     container.appendChild(row1);
@@ -1193,6 +1205,45 @@
       img.onload = () => { loaded++; if (loaded === total) callback(); };
       img.onerror = () => { loaded++; if (loaded === total) callback(); };
       img.src = src;
+    });
+  }
+  
+  // Custom cursor setup
+  let customCursor = null;
+  
+  function setupCustomCursor() {
+    if (isTouchDevice) return;
+    
+    customCursor = document.createElement('div');
+    customCursor.className = 'custom-cursor';
+    document.body.appendChild(customCursor);
+    
+    let mouseX = 0, mouseY = 0;
+    let cursorX = 0, cursorY = 0;
+    
+    document.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+    });
+    
+    function animateCursor() {
+      cursorX += (mouseX - cursorX) * 0.3;
+      cursorY += (mouseY - cursorY) * 0.3;
+      if (customCursor) {
+        customCursor.style.left = cursorX + 'px';
+        customCursor.style.top = cursorY + 'px';
+      }
+      requestAnimationFrame(animateCursor);
+    }
+    
+    animateCursor();
+    
+    document.addEventListener('mouseleave', () => {
+      if (customCursor) customCursor.style.opacity = '0';
+    });
+    
+    document.addEventListener('mouseenter', () => {
+      if (customCursor) customCursor.style.opacity = '1';
     });
   }
   
@@ -1253,6 +1304,7 @@
         loadingScreen.style.display = 'none';
         forcePlayMusic();
         createBackgroundSparkles();
+        setupCustomCursor();
         
         if (isTouchDevice) {
           startTouchSparkles();
