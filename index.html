@@ -363,6 +363,7 @@
     border: none;
   }
 
+    /* FIXED HOVER PNG - WITH background-size: cover */
   .hover-png {
     position: absolute;
     top: 50%;
@@ -371,6 +372,7 @@
     width: 260px;
     height: 260px;
     background-image: url('images/hover-bg.png');
+    background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
     opacity: 0;
@@ -379,29 +381,38 @@
     z-index: 10000;
   }
 
+  /* Desktop hover PNG (image is 180x240) */
   @media (min-width: 769px) {
     .hover-png {
-      height: 100;
+      width: 200px;
+      height: 200px;
+      background-size: contain;
     }
   }
 
+  /* Tablet - image size 140x187 */
   @media (max-width: 768px) {
     .image-item img {
       width: 140px;
       height: 187px;
     }
     .hover-png {
+      width: 160px;
       height: 160px;
+      background-size: contain;
     }
   }
 
+  /* Mobile - image size 100x133 - YOUR XIAOMI 11T */
   @media (max-width: 480px) {
     .image-item img {
       width: 100px;
       height: 133px;
     }
     .hover-png {
+      width: 120px;
       height: 120px;
+      background-size: contain;
     }
   }
 
