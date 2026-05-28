@@ -20,36 +20,8 @@
     width: 100%;
     display: flex;
     flex-direction: column;
-    touch-action: pan-y pinch-zoom; /* Allow only vertical scroll, no horizontal */
   }
 
-  /* FIX FOR MOBILE - Prevent horizontal scroll */
-  .gallery-container {
-    flex: 1;
-    overflow-y: auto;
-    overflow-x: visible; /* CHANGED from visible to hidden - FIX for mobile */
-    background: #000;
-    touch-action: pan-y; /* Vertical scroll only */
-  }
-
-  .scroll-row {
-    width: 100%;
-    overflow-x: visible; /* CHANGED from visible to hidden */
-    overflow-y: visible;
-    white-space: nowrap;
-    margin: 0;
-    padding: 0;
-    background: #000;
-    line-height: 0;
-  }
-
-  .scroll-track {
-    display: inline-block;
-    white-space: nowrap;
-    overflow: visible;
-  }
-
-  /* Rest of your CSS stays the same */
   .loading-screen {
     position: fixed;
     top: 0;
@@ -78,7 +50,7 @@
 
   .quote-bg {
     position: absolute;
-    top: 60%;
+    top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     width: 920px;
@@ -295,7 +267,6 @@
     }
   }
 
-  /* TOUCH SPARKLE CONTAINER - for mobile */
   .touch-sparkle-container {
     position: fixed;
     top: 0;
@@ -337,7 +308,6 @@
     }
   }
 
-  /* MOUSE TRAIL (only for desktop, will be disabled on touch) */
   .mouse-trail-container {
     position: fixed;
     top: 0;
@@ -379,9 +349,33 @@
     }
   }
 
+  /* FIXED GALLERY CONTAINER - images now visible! */
+  .gallery-container {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background: #000;
+  }
+
   .gallery-container::-webkit-scrollbar {
     width: 0;
     background: transparent;
+  }
+
+  .scroll-row {
+    width: 100%;
+    overflow-x: hidden;
+    overflow-y: visible;
+    white-space: nowrap;
+    margin: 0;
+    padding: 0;
+    background: #000;
+    line-height: 0;
+  }
+
+  .scroll-track {
+    display: inline-block;
+    white-space: nowrap;
   }
 
   .image-item {
@@ -391,7 +385,6 @@
     line-height: 0;
     position: relative;
     cursor: pointer;
-    overflow: visible;
   }
 
   .image-item:hover {
@@ -454,7 +447,6 @@
     visibility: visible;
   }
 
-  /* MODAL - FIXED FOR MOBILE */
   .modal {
     position: relative;
     width: 800px;
@@ -466,10 +458,9 @@
     background: transparent;
   }
 
-  /* MODAL BG - FIXED POSITION FOR MOBILE */
   .modal-bg {
     position: fixed;
-    top: 50%;
+    top: 70%;
     left: 50%;
     transform: translate(-50%, -50%);
     width: 90vw;
@@ -633,7 +624,56 @@
     flex-shrink: 0;
   }
 
-  /* MOBILE SPECIFIC FIXES */
+  .custom-cursor {
+    position: fixed;
+    width: 40px;
+    height: 40px;
+    pointer-events: none;
+    z-index: 99999999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.05s ease;
+  }
+
+  .custom-cursor::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('images/sparkle.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    animation: cursorSpin 1.5s linear infinite, cursorGlow 1.5s ease-in-out infinite;
+  }
+
+  @keyframes cursorSpin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  @keyframes cursorGlow {
+    0% { 
+      opacity: 0.7;
+      filter: drop-shadow(0 0 2px rgba(255,255,255,0.3));
+    }
+    50% { 
+      opacity: 1;
+      filter: drop-shadow(0 0 8px rgba(255,255,255,0.8)) drop-shadow(0 0 4px #ff3366);
+    }
+    100% { 
+      opacity: 0.7;
+      filter: drop-shadow(0 0 2px rgba(255,255,255,0.3));
+    }
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    * {
+      cursor: none;
+    }
+  }
+
   @media (max-width: 768px) {
     .modal-content {
       flex-direction: column;
@@ -693,65 +733,6 @@
       font-size: 18px;
     }
   }
-
-  /* ANIMATED CURSOR - only visible on desktop (mouse) */
-  .custom-cursor {
-    position: fixed;
-    width: 40px;
-    height: 40px;
-    pointer-events: none;
-    z-index: 99999999;
-    transform: translate(-50%, -50%);
-    transition: transform 0.05s ease;
-  }
-
-  .custom-cursor::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-image: url('images/sparkle.png');
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-    animation: cursorSpin 1.5s linear infinite, cursorGlow 1.5s ease-in-out infinite;
-  }
-
-  @keyframes cursorSpin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-  }
-
-  @keyframes cursorGlow {
-    0% { 
-      opacity: 0.7;
-      filter: drop-shadow(0 0 2px rgba(255,255,255,0.3));
-    }
-    50% { 
-      opacity: 1;
-      filter: drop-shadow(0 0 8px rgba(255,255,255,0.8)) drop-shadow(0 0 4px #ff3366);
-    }
-    100% { 
-      opacity: 0.7;
-      filter: drop-shadow(0 0 2px rgba(255,255,255,0.3));
-    }
-  }
-
-  /* Hide default cursor only on devices that support hover (desktop) */
-  @media (hover: hover) and (pointer: fine) {
-    * {
-      cursor: none;
-    }
-  }
-
-  /* Keep your sparkle-c cursor as fallback */
-  @media (hover: hover) and (pointer: fine) {
-    * {
-      cursor: url('images/sparkle-c.png') 0 0, url('images/sparkle-c.cur'), none;
-    }
-  }
 </style>
 </head>
 <body>
@@ -805,7 +786,7 @@
 
 <script>
   // ============================================
-  // SPARKLE CONTROLS - YOUR NUMBERS (UNCHANGED)
+  // SPARKLE CONTROLS - YOUR NUMBERS
   // ============================================
   
   const BG_SPARKLE_COUNT = 2500;
@@ -844,20 +825,20 @@
   const imageList = ["images/1.jpg", "images/3.jpg", "images/5.jpg", "images/7.jpg", "images/9.jpg", "images/11.jpg", "images/13.jpg"];
   
   const imageDescriptions = {
-    "images/1.jpg": { title: "Cherry Baby", desc: "Pink clouds cradle you like a lullaby — soft, endless, made of sugar and secrets.   Your short hair curls just above your jaw, catching the light like tiny halos.   And there — on your skin — a tattoo of a lip pressing into a cherry, sweet and bitten.   You are so soft tonight. Softer than the clouds, softer than the word 'stay.'   Magic hums around your shoulders like a blanket only you can feel.   Every part of you whispers cherry baby, cherry baby — come closer, taste, linger.   And the sky holds its breath, because even heaven knows it can't compete with you." },
-    "images/2.jpg": { title: "Lost But Found", desc: "You are drowning in gold — yellow and orange flowers reaching up like they're trying to hold you.   Their petals brush your wrists like old lovers saying hello again.   Above, the sky has written four soft words: 'in the middle of nowhere.'   And you stare at them as if they might answer a question you forgot you asked.   The wind moves through your hair like a gentle lie — that you are not alone, that this is enough.   But your eyes keep climbing, searching for something just beyond the letters.   And in that silence, between the flowers and the nowhere, you become a poem no one will ever finish reading." },
-    "images/3.jpg": { title: "Orange Horizon", desc: "The sky is a poem you cannot read aloud, but your heart understands every word.   Mushrooms grow in silver spirals, glowing softly like forgotten stars on the ground.   A tree of songs whispers beside you, its leaves shivering with melodies of longing.   It is night pretending to be day, and you are caught between two kinds of light.   There—the orange, both fruit and sun, hangs in the air, pulsing with gentle heat.   You lift your finger, desperate to touch its skin, to feel the warmth of love even once.   So you stretch into the impossible horizon, because reaching is the only prayer you have left." },
-    "images/4.jpg": { title: "Want 2000s", desc: "A dreamy background holds me like a lullaby — soft, blurry, the way memories look right before they disappear.   My checkered ring sleeve shirt hangs on me like a ghost of every mall I ever walked through as a kid.   A steel necklace sits cold on my chest — heavy, shiny, as permanent as the years I can't get back.   My long hair is pushed back behind my ears because I need to see the world without hiding.   And I see it. The 2000s are gone. The songs, the stars, the way we loved before the internet watched us.   I want it so badly it aches behind my ribs — a decade that will never text me back.   So I stand here, looking like 2003, feeling like 2026, and missing something I can never touch again." },
-    "images/5.jpg": { title: "Walk of Fame", desc: "Concrete jungle royalty — that's you, baby, standing on stars that don't deserve your shadow.   Your short wolf cut is messy in all the right ways, falling like you just rolled out of someone's dreams.   Classic street style: ripped denim, leather jacket, boots that were made for walking all over hearts.   And that pose — head back, hip out, lips parted like you're about to say something devastating.   Cameras should bow. Streetlights should flicker. Even the Hollywood sign is blushing right now.   You're not famous yet? The sidewalk disagrees. Every inch of you screams icon.   So go ahead — strut, smirk, destroy. The Walk of Fame just found its new queen." },
-    "images/6.jpg": { title: "Die Without You", desc: "Pink clouds fill my bathtub like a dream I never want to wake up from — but you're not here, so what's the point?   I'm holding a book, but the pages are just excuses to keep my hands busy while my heart breaks.   Every word I read turns into your face. Every silence screams your name.   The clouds wrap around me, soft and warm, but they're not your arms and they never will be.   I would die without you. Not with a bang — just a slow, quiet fade into all this pink.   And I can't do anything. I can't fight. I can't beg. I can only lie here and miss you until missing becomes my whole body.   So this is me: naked in clouds, reading a book I'll never finish, dying for a love that already left." },
-    "images/7.jpg": { title: "A Lover Mermaid", desc: "Beneath the coral glow, a lovesick mermaid stares at the turtle beside her. Her shimmering tail curls in the current, but her heart is heavier than the deepest trench. The turtle drifts close yet never returns her gaze—a silent witness to one-way love. Still, she traces his shell, whispering promises into the salt and tide. Every wave that pushes him away only makes her swim harder, fighting the pull of reason. Her love may not love her back, but she'd battle storms, sharks, and silence just to stay near him. Because even an unreturned heart beats fiercely when it has chosen its own battleground." },
-    "images/8.jpg": { title: "Red Rose Love", desc: "The sunset bleeds amber and rose as you stand in the garden, your red dress matching the flowers around you.   Your heart is fuller than the vines—overflowing with a love that aches to be given.   You spot the perfect rose, reach past its thorns, and hold it out like a promise.   But he refuses. A soft shake of his head, a step back, and the world feels colder than twilight.   The rose hangs in your hand, unwanted, as his silence becomes your answer.   Tears blur the fading light, but you don't drop the flower—not yet.   Because even sadness has beauty, and tonight you are both: a wilting dream and a woman still hoping." },
-    "images/9.jpg": { title: "Kisses of Busy Man", desc: "The blue page glows around you like a whisper as he walks in — already unbuttoning, already looking at your mouth.   He doesn't say hello. He just pushes you back against the cool blue light and drops his lips to your neck.   Wet. Open. Hungry. His tongue traces your pulse like he's learning a new language just for your skin.   He moves down — collarbone, sternum, ribs — each kiss slower than the last but twice as hot.   You feel his stubble scrape your chest, then his lips close around you, and your fingers tangle in his hair.   'Stay still,' he breathes against your stomach, but his hand is already sliding lower, and you're already shaking.   He leaves one last kiss on your inner thigh — soft, almost cruel — then looks up and grins:       'That's all I have time for. For now.'" },
-    "images/10.jpg": { title: "Glow of Wanting", desc: "Just my face — but it's enough. Sunlight touches my skin like fingers that know exactly where I'm soft.   My face is so shiny, like I've been kissed by something holy or something hungry — maybe both.   And my hair — chocolate brown light — spills across the whole background, wild and warm and everywhere.   I look dreamy. Soft. The kind of girl you'd write poems about at 3am.   But my eyes? They're sad. Curious. Passionate. Three emotions fighting for space in one beautiful face.   The spotlight found me today, and I didn't run. I just let it see every crack in my heart.   This is me: shiny, sad, still wanting. And honestly? I've never looked more alive." },
-    "images/11.jpg": { title: "1000 Year Tree", desc: "In Iran, I found a tree that has lived a thousand springs — and I swear it was waiting for me.   I stood beneath its branches, small but shining, like I was born to be its light.   My spring outfit floated around me — soft fabrics, gentle colors, nothing loud, just right.   My skin looked so soft that day, like the sun had kissed every inch of me good morning.   And my long curly hair — oh, it was wild and free — tangling with the breeze like it belonged there.   The tree was ancient, wise, covered in stories I'll never know.   But I was the magic that afternoon, and the thousand-year tree finally had someone beautiful to pose beside." },
-    "images/12.jpg": { title: "Necklace of the Sea", desc: "The beach is hot, the boats are gorgeous — red, orange, blue — but let's be real, I'm the view.   My summer outfit floats around me like the sea breeze is trying to undress me with its eyes.   And my hair? Oh, it's killing today — wild, shiny, tangled in that perfect way that says 'I just came from a dream.'   Around my neck, a shell necklace rests against my skin, and I swear it's hugging me tighter because it knows.   It knows the sea is beautiful. But on my chest? Those shells look like royalty.   The boats behind me are stunning, yes. But every sailor on them is staring at me instead of the horizon.   I'm a sea fish who doesn't swim — I just stand here and let the ocean be jealous of my glow." },
-    "images/13.jpg": { title: "Theater Star", desc: "Red velvet curtains drape behind me like I'm the main event — because I am.   I grab the rope with both hands, pull myself up, and feel every eye in the room on my thighs.   My pretty puffy hair bounces around my shoulders — soft, messy, looking like I just rolled out of a dream.   A white lily sits behind my ear, sweet and wild, like a promise I might not keep.   My sexy dress hugs every curve, riding up just enough to make the silence feel loud.   The spotlight finds *me* — burning gold on my skin, my lips, the way I smile down at everyone below.   I'm on a rope in a bar, and somehow I've never felt more like a queen." },
-    "images/14.jpg": { title: "Overthink Diva", desc: "I'm standing on a wall, high enough to see everything — but all I see is him.   Lines of poetry spin around me like a tornado of every word I never said to his face.   Behind me, a big lion rests — strong, silent, like he's holding space for all my messy feelings.   Two boys. One love. That's us. That's the whole story and also a thousand stories I'll never finish writing.   I keep thinking about his hands, his laugh, the way he said my name like it was a secret.   The poetry spins faster. The lion doesn't move. And neither do I — caught in the beautiful disaster of loving him.   I'm an overthinking diva, yes. But at least I'm thinking about someone worth every single line of poetry." }
+    "images/1.jpg": { title: "Cherry Baby", desc: "Pink clouds cradle you like a lullaby — soft, endless, made of sugar and secrets..." },
+    "images/2.jpg": { title: "Lost But Found", desc: "You are drowning in gold — yellow and orange flowers..." },
+    "images/3.jpg": { title: "Orange Horizon", desc: "The sky is a poem you cannot read aloud..." },
+    "images/4.jpg": { title: "Want 2000s", desc: "A dreamy background holds me like a lullaby..." },
+    "images/5.jpg": { title: "Walk of Fame", desc: "Concrete jungle royalty — that's you, baby..." },
+    "images/6.jpg": { title: "Die Without You", desc: "Pink clouds fill my bathtub like a dream..." },
+    "images/7.jpg": { title: "A Lover Mermaid", desc: "Beneath the coral glow, a lovesick mermaid..." },
+    "images/8.jpg": { title: "Red Rose Love", desc: "The sunset bleeds amber and rose..." },
+    "images/9.jpg": { title: "Kisses of Busy Man", desc: "The blue page glows around you like a whisper..." },
+    "images/10.jpg": { title: "Glow of Wanting", desc: "Just my face — but it's enough..." },
+    "images/11.jpg": { title: "1000 Year Tree", desc: "In Iran, I found a tree that has lived a thousand springs..." },
+    "images/12.jpg": { title: "Necklace of the Sea", desc: "The beach is hot, the boats are gorgeous..." },
+    "images/13.jpg": { title: "Theater Star", desc: "Red velvet curtains drape behind me..." },
+    "images/14.jpg": { title: "Overthink Diva", desc: "I'm standing on a wall, high enough to see everything..." }
   };
   
   const playlist = [
@@ -883,14 +864,8 @@
   const clickSound = new Audio("sounds/click.mp3");
   clickSound.volume = 0.5;
   
-  // ============================================
-  // DETECT TOUCH DEVICE
-  // ============================================
   const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
   
-  // ============================================
-  // INFINITE SCROLLER CLASS (unchanged)
-  // ============================================
   class InfiniteScroller {
     constructor(container, track, direction, speed = 0.7, startOffset = 0) {
       this.container = container;
@@ -1103,9 +1078,6 @@
     document.getElementById('musicSparkleContainer').innerHTML = '';
   }
   
-  // ============================================
-  // MOUSE TRAIL (desktop only)
-  // ============================================
   let lastMouseX = window.innerWidth / 2;
   let lastMouseY = window.innerHeight / 2;
   let continuousSparkleInterval = null;
@@ -1141,9 +1113,6 @@
     continuousSparkleInterval = setInterval(() => addMouseSparkle(lastMouseX, lastMouseY), MOUSE_SPARKLE_INTERVAL);
   }
   
-  // ============================================
-  // TOUCH SPARKLES (for mobile)
-  // ============================================
   function addTouchSparkle(x, y) {
     const container = document.getElementById('touchSparkleContainer');
     const sparkle = document.createElement('div');
@@ -1342,7 +1311,6 @@
         forcePlayMusic();
         createBackgroundSparkles();
         
-        // Start appropriate sparkle effect based on device
         if (isTouchDevice) {
           startTouchSparkles();
         } else {
