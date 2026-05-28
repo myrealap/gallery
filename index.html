@@ -363,7 +363,6 @@
     border: none;
   }
 
-  /* FIXED HOVER PNG - PERFECTLY MATCHES IMAGE SIZE ON EACH DEVICE */
   .hover-png {
     position: absolute;
     top: 50%;
@@ -381,7 +380,6 @@
     z-index: 10000;
   }
 
-  /* Desktop hover PNG (image is 180x240, so hover matches) */
   @media (min-width: 769px) {
     .hover-png {
       width: 200px;
@@ -389,7 +387,6 @@
     }
   }
 
-  /* Tablet - image size 140x187, hover matches */
   @media (max-width: 768px) {
     .image-item img {
       width: 140px;
@@ -401,7 +398,6 @@
     }
   }
 
-  /* Mobile - image size 100x133, hover matches perfectly */
   @media (max-width: 480px) {
     .image-item img {
       width: 100px;
@@ -735,7 +731,7 @@
   
   const isMobile = window.innerWidth <= 768;
   const rightOffset = isMobile ? -8000 : -80000;
-  const loveRightOffset = isMobile ? -5000 : -40000;
+  const loveRightOffset = isMobile ? -8000 : -50000;  // INCREASED for mobile!
   
   const quotes = [
     { text: "Love & Imagination can change the world!", author: "Myrealap" },
@@ -940,13 +936,14 @@
     return rowDiv;
   }
   
-  function buildLoveRow(direction) {
+  function buildLoveRow(direction, extraRepeats = 0) {
     const rowDiv = document.createElement('div');
     rowDiv.className = 'love-row';
     const trackDiv = document.createElement('div');
     trackDiv.className = 'love-track';
     
-    const TOTAL_LOVE = 50000;
+    // MORE LOVE for RIGHT direction!
+    const TOTAL_LOVE = direction === 'right' ? 80000 : 50000;
     for (let i = 0; i < TOTAL_LOVE; i++) {
       const span = document.createElement('span');
       span.textContent = 'Love';
@@ -1184,12 +1181,14 @@
     s3.init();
     scrollers.push(s3);
     
+    // LOVE ROW 1: RIGHT - MORE LOVE (80,000 repeats!)
     const love1 = buildLoveRow('right');
     container.appendChild(love1);
     const l1 = new InfiniteScroller(love1, love1.querySelector('.love-track'), 'right', 0.7, loveRightOffset);
     l1.init();
     scrollers.push(l1);
     
+    // LOVE ROW 2: LEFT - normal (50,000 repeats)
     const love2 = buildLoveRow('left');
     container.appendChild(love2);
     const l2 = new InfiniteScroller(love2, love2.querySelector('.love-track'), 'left', 0.7, 0);
