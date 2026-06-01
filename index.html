@@ -4,7 +4,10 @@
 <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
 <meta charset="utf-8">
 <title>Myrealap - Official Gallery</title>
+<meta name="description" content="">
+<meta name="keywords" content="myrealap, sexy gallery, hot images, magical, vintage vibes">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+<script src="jquery.min.js"></script>
 <style>
   * {
     margin: 0;
@@ -317,6 +320,7 @@
     overflow-y: auto;
     overflow-x: hidden;
     background: #000;
+    padding-bottom: 0;
   }
 
   .gallery-container::-webkit-scrollbar {
@@ -333,6 +337,7 @@
     padding: 0;
     background: #000;
     line-height: 0;
+    height: auto;
   }
 
   .scroll-track {
@@ -340,13 +345,15 @@
     white-space: nowrap;
   }
 
-  .image-item {
+    .image-item {
     display: inline-block;
     margin: 0;
     padding: 0;
     line-height: 0;
     position: relative;
     cursor: pointer;
+    height: 240px;
+    z-index: 1;
   }
 
   .image-item:hover {
@@ -363,54 +370,22 @@
     border: none;
   }
 
-      /* FIXED HOVER PNG - matches row height on desktop */
+  /* HOVER PNG - matches exact image height, width free */
   .hover-png {
     position: absolute;
-    top: 50%;
+    top: 0;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translateX(-50%);
     width: auto;
     height: 240px;
     background-image: url('images/hover-bg.png');
     background-repeat: no-repeat;
     background-position: center;
+    background-size: auto 100%;
     opacity: 0;
     transition: opacity 0.2s ease;
     pointer-events: none;
     z-index: 10000;
-  }
-
-  /* Desktop - height fixed at 240px (row height), width auto */
-  @media (min-width: 769px) {
-    .hover-png {
-      height: 240px;
-      width: auto;
-    }
-  }
-
-  /* Tablet - image size 140x187, hover proportional */
-  @media (max-width: 768px) {
-    .image-item img {
-      width: 140px;
-      height: 187px;
-    }
-    .hover-png {
-      height: 187px;
-      width: auto;
-    }
-  }
-
-  /* Mobile - image size 100x133, hover proportional */
-  @media (max-width: 480px) {
-    .image-item img {
-      width: 100px;
-      height: 133px;
-      background-size: contain;
-    }
-    .hover-png {
-      height: 133px;
-      width: auto;
-    }
   }
 
   .image-item:hover .hover-png {
@@ -419,6 +394,34 @@
 
   .image-item.active .hover-png {
     opacity: 1;
+  }
+
+  /* Tablet */
+  @media (max-width: 768px) {
+    .image-item {
+      height: 187px;
+    }
+    .image-item img {
+      width: 140px;
+      height: 187px;
+    }
+    .hover-png {
+      height: 187px;
+    }
+  }
+
+  /* Mobile */
+  @media (max-width: 480px) {
+    .image-item {
+      height: 133px;
+    }
+    .image-item img {
+      width: 100px;
+      height: 133px;
+    }
+    .hover-png {
+      height: 133px;
+    }
   }
 
   .modal-overlay {
@@ -472,9 +475,9 @@
 
   @media (max-width: 768px) {
     .modal-bg {
-      top: 25%;
+      top: 35%;
       width: 95vw;
-      height: 75vh;
+      height: 70vh;
     }
   }
 
@@ -601,11 +604,18 @@
 
   .footer {
     text-align: center;
-    padding: 8px;
+    padding: 6px;
     color: #666;
-    font-size: 11px;
+    font-size: 10px;
     background: #000;
     flex-shrink: 0;
+  }
+
+  @media (max-width: 768px) {
+    .footer {
+      padding: 5px;
+      font-size: 9px;
+    }
   }
 
   .custom-cursor {
@@ -735,7 +745,7 @@
   
   const isMobile = window.innerWidth <= 768;
   const rightOffset = isMobile ? -8000 : -80000;
-  const loveRightOffset = isMobile ? -8000 : -50000;  // INCREASED for mobile!
+  const loveRightOffset = isMobile ? -8000 : -50000;
   
   const quotes = [
     { text: "Love & Imagination can change the world!", author: "Myrealap" },
@@ -819,7 +829,7 @@
       this.calcWidth();
       this.applyTransform();
       this.start();
-      window.addEventListener('resize', () => this.resize());
+      $(window).on('resize', () => this.resize());
     }
     
     calcWidth() {
@@ -894,9 +904,7 @@
     img.alt = '';
     img.loading = 'lazy';
     img.onerror = function() {
-      this.style.backgroundColor = '#222';
-      this.style.width = '180px';
-      this.style.height = '240px';
+      $(this).css({ backgroundColor: '#222', width: '180px', height: '240px' });
     };
     
     const hoverDiv = document.createElement('div');
@@ -905,12 +913,10 @@
     imgItem.appendChild(img);
     imgItem.appendChild(hoverDiv);
     
-    imgItem.addEventListener('click', (function(src, element) {
+    $(imgItem).on('click', (function(src, element) {
       return function() {
-        document.querySelectorAll('.image-item.active').forEach(item => {
-          item.classList.remove('active');
-        });
-        element.classList.add('active');
+        $('.image-item.active').removeClass('active');
+        $(element).addClass('active');
         
         clickSound.currentTime = 0;
         clickSound.play().catch(() => {});
@@ -940,13 +946,12 @@
     return rowDiv;
   }
   
-  function buildLoveRow(direction, extraRepeats = 0) {
+  function buildLoveRow(direction) {
     const rowDiv = document.createElement('div');
     rowDiv.className = 'love-row';
     const trackDiv = document.createElement('div');
     trackDiv.className = 'love-track';
     
-    // MORE LOVE for RIGHT direction!
     const TOTAL_LOVE = direction === 'right' ? 80000 : 50000;
     for (let i = 0; i < TOTAL_LOVE; i++) {
       const span = document.createElement('span');
@@ -1037,7 +1042,7 @@
   function startMouseTrail() {
     if (isTouchDevice) return;
     let lastTime = 0;
-    document.addEventListener('mousemove', (e) => {
+    $(document).on('mousemove', (e) => {
       const now = Date.now();
       if (now - lastTime > MOUSE_SPARKLE_INTERVAL) {
         lastTime = now;
@@ -1067,13 +1072,13 @@
   function startTouchSparkles() {
     if (!isTouchDevice) return;
     
-    document.addEventListener('touchmove', (e) => {
-      const touch = e.touches[0];
+    $(document).on('touchmove', (e) => {
+      const touch = e.originalEvent.touches[0];
       addTouchSparkle(touch.clientX, touch.clientY);
     });
     
-    document.addEventListener('touchstart', (e) => {
-      const touch = e.touches[0];
+    $(document).on('touchstart', (e) => {
+      const touch = e.originalEvent.touches[0];
       for (let i = 0; i < 3; i++) {
         setTimeout(() => addTouchSparkle(touch.clientX, touch.clientY), i * 50);
       }
@@ -1085,23 +1090,19 @@
     const hoverNextText = document.getElementById('hoverNextText');
     
     if (prevBtn) {
-      prevBtn.addEventListener('touchstart', () => {
-        hoverPrevText.style.opacity = '1';
-        hoverPrevText.style.visibility = 'visible';
+      $(prevBtn).on('touchstart', () => {
+        $(hoverPrevText).css({ opacity: '1', visibility: 'visible' });
         setTimeout(() => {
-          hoverPrevText.style.opacity = '0';
-          hoverPrevText.style.visibility = 'hidden';
+          $(hoverPrevText).css({ opacity: '0', visibility: 'hidden' });
         }, 1500);
       });
     }
     
     if (nextBtn) {
-      nextBtn.addEventListener('touchstart', () => {
-        hoverNextText.style.opacity = '1';
-        hoverNextText.style.visibility = 'visible';
+      $(nextBtn).on('touchstart', () => {
+        $(hoverNextText).css({ opacity: '1', visibility: 'visible' });
         setTimeout(() => {
-          hoverNextText.style.opacity = '0';
-          hoverNextText.style.visibility = 'hidden';
+          $(hoverNextText).css({ opacity: '0', visibility: 'hidden' });
         }, 1500);
       });
     }
@@ -1147,16 +1148,16 @@
     modalText.textContent = desc.desc;
     
     isModalOpen = true;
-    modalOverlay.classList.add('active');
+    $(modalOverlay).addClass('active');
     createSparkles();
   }
   
   function closeModal() {
     const modalOverlay = document.getElementById('modalOverlay');
-    modalOverlay.classList.remove('active');
+    $(modalOverlay).removeClass('active');
     isModalOpen = false;
     stopSparkles();
-    document.querySelectorAll('.image-item.active').forEach(item => item.classList.remove('active'));
+    $('.image-item.active').removeClass('active');
   }
   
   function createGallery() {
@@ -1185,14 +1186,12 @@
     s3.init();
     scrollers.push(s3);
     
-    // LOVE ROW 1: RIGHT - MORE LOVE (80,000 repeats!)
     const love1 = buildLoveRow('right');
     container.appendChild(love1);
     const l1 = new InfiniteScroller(love1, love1.querySelector('.love-track'), 'right', 0.7, loveRightOffset);
     l1.init();
     scrollers.push(l1);
     
-    // LOVE ROW 2: LEFT - normal (50,000 repeats)
     const love2 = buildLoveRow('left');
     container.appendChild(love2);
     const l2 = new InfiniteScroller(love2, love2.querySelector('.love-track'), 'left', 0.7, 0);
@@ -1227,7 +1226,7 @@
     let mouseX = 0, mouseY = 0;
     let cursorX = 0, cursorY = 0;
     
-    document.addEventListener('mousemove', (e) => {
+    $(document).on('mousemove', (e) => {
       mouseX = e.clientX;
       mouseY = e.clientY;
     });
@@ -1244,11 +1243,11 @@
     
     animateCursor();
     
-    document.addEventListener('mouseleave', () => {
+    $(document).on('mouseleave', () => {
       if (customCursor) customCursor.style.opacity = '0';
     });
     
-    document.addEventListener('mouseenter', () => {
+    $(document).on('mouseenter', () => {
       if (customCursor) customCursor.style.opacity = '1';
     });
   }
@@ -1269,15 +1268,7 @@
     if (audio.src) {
       const playPromise = audio.play();
       if (playPromise !== undefined) {
-        playPromise.catch(() => {
-          const tryPlay = () => {
-            audio.play();
-            document.removeEventListener('click', tryPlay);
-            document.removeEventListener('touchstart', tryPlay);
-          };
-          document.addEventListener('click', tryPlay);
-          document.addEventListener('touchstart', tryPlay);
-        });
+        playPromise.catch(() => {});
       }
     }
   }
@@ -1298,69 +1289,75 @@
   
   let allScrollers = [];
   
-  window.addEventListener('DOMContentLoaded', () => {
+  $(document).ready(() => {
     preloadAllAssets(imageList, () => {
       allScrollers = createGallery();
       loadTrack(0);
       
       const loadingScreen = document.getElementById('loadingScreen');
-      loadingScreen.classList.add('hide');
+      $(loadingScreen).addClass('hide');
       
       setTimeout(() => {
-        loadingScreen.style.display = 'none';
+        $(loadingScreen).hide();
         forcePlayMusic();
         createBackgroundSparkles();
         setupCustomCursor();
         
         if (isTouchDevice) {
           startTouchSparkles();
+          // UNLOCK AUDIO ON ANY TOUCH FOR MOBILE
+          const unlockOnTouch = () => {
+            if (audio.paused) {
+              forcePlayMusic();
+            }
+            $(document).off('touchstart', unlockOnTouch);
+            $(document).off('click', unlockOnTouch);
+          };
+          $(document).on('touchstart', unlockOnTouch);
+          $(document).on('click', unlockOnTouch);
         } else {
           startMouseTrail();
         }
       }, 1000);
     });
     
-    document.getElementById('prevBtn').onclick = prevTrack;
-    document.getElementById('nextBtn').onclick = nextTrack;
-    document.getElementById('modalClose').onclick = closeModal;
-    document.getElementById('modalOverlay').onclick = (e) => { if (e.target === document.getElementById('modalOverlay')) closeModal(); };
+    $('#prevBtn').on('click', prevTrack);
+    $('#nextBtn').on('click', nextTrack);
+    $('#modalClose').on('click', closeModal);
+    $('#modalOverlay').on('click', (e) => { if (e.target === $('#modalOverlay')[0]) closeModal(); });
     
-    const prevBtn = document.getElementById('prevBtn');
-    const nextBtn = document.getElementById('nextBtn');
-    const hoverPrevText = document.getElementById('hoverPrevText');
-    const hoverNextText = document.getElementById('hoverNextText');
+    const prevBtn = $('#prevBtn')[0];
+    const nextBtn = $('#nextBtn')[0];
+    const hoverPrevText = $('#hoverPrevText')[0];
+    const hoverNextText = $('#hoverNextText')[0];
     
     if (!isTouchDevice) {
-      prevBtn.addEventListener('mouseenter', () => {
+      $(prevBtn).on('mouseenter', () => {
         isHoveringButton = true;
-        hoverPrevText.style.opacity = '1';
-        hoverPrevText.style.visibility = 'visible';
+        $(hoverPrevText).css({ opacity: '1', visibility: 'visible' });
         createMusicSparkles(prevBtn);
       });
       
-      prevBtn.addEventListener('mouseleave', () => {
+      $(prevBtn).on('mouseleave', () => {
         isHoveringButton = false;
-        hoverPrevText.style.opacity = '0';
-        hoverPrevText.style.visibility = 'hidden';
+        $(hoverPrevText).css({ opacity: '0', visibility: 'hidden' });
         stopMusicSparkles();
       });
       
-      nextBtn.addEventListener('mouseenter', () => {
+      $(nextBtn).on('mouseenter', () => {
         isHoveringButton = true;
-        hoverNextText.style.opacity = '1';
-        hoverNextText.style.visibility = 'visible';
+        $(hoverNextText).css({ opacity: '1', visibility: 'visible' });
         createMusicSparkles(nextBtn);
       });
       
-      nextBtn.addEventListener('mouseleave', () => {
+      $(nextBtn).on('mouseleave', () => {
         isHoveringButton = false;
-        hoverNextText.style.opacity = '0';
-        hoverNextText.style.visibility = 'hidden';
+        $(hoverNextText).css({ opacity: '0', visibility: 'hidden' });
         stopMusicSparkles();
       });
     }
     
-    document.addEventListener('visibilitychange', () => {
+    $(document).on('visibilitychange', () => {
       if (document.hidden) {
         allScrollers.forEach(s => s.stop());
       } else {
