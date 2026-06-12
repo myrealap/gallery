@@ -430,6 +430,7 @@
 
   .modal {
     position: relative;
+    top: -8%;
     width: 800px;
     max-width: 85vw;
     display: flex;
@@ -441,7 +442,7 @@
 
   .modal-bg {
     position: fixed;
-    top: 50%;
+    top: 40%;
     left: 50%;
     transform: translate(-50%, -50%);
     width: 90vw;
@@ -657,6 +658,102 @@
   @media (max-width: 480px) and (max-height: 900px) {
     .love-track { font-size: 18px; }
   }
+
+  /* GUIDE SCREEN */
+  .guide-screen {
+    position: fixed;
+    top: -90px;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    z-index: 10001;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  .guide-screen.active {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .guide-screen.fade-out {
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  .guide-container {
+    position: relative;
+    width: 90vw;
+    max-width: 800px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .guide-img {
+    height: auto;
+    display: block;
+    border-radius: 0;
+    pointer-events: none;
+  }
+
+  /* GO BUTTON - positioned exactly on the guide image where "lets go" text is */
+  .go-button {
+    position: absolute;
+    width: 110.5px;
+    height: 42px;
+    top: 70%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-image: url('images/go.png');
+    background-repeat: no-repeat;
+    background-position: 0 0;
+    background-size: 221px 42px;
+    cursor: pointer;
+    border: none;
+    background-color: transparent;
+    transition: none;
+    z-index: 10002;
+  }
+
+  .go-button:hover {
+    background-position: -110.5px 0;
+  }
+
+  .go-button:focus {
+    outline: none;
+  }
+
+  /* Adjust button position based on your guide.png - EDIT THESE VALUES */
+  .go-button {
+    bottom: 15%;
+    right: 12%;
+  }
+
+  @media (max-width: 768px) {
+    .go-button {
+      width: 83px;
+      height: 31.5px;
+      background-size: 166px 31.5px;
+      bottom: 12%;
+      right: 10%;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .go-button {
+      width: 69px;
+      height: 26px;
+      background-size: 138px 26px;
+      bottom: 10%;
+      right: 8%;
+    }
+  }
 </style>
 </head>
 <body>
@@ -666,6 +763,14 @@
     <div class="quote-bg"></div>
     <div class="quote-text" id="quoteText">" loading... "</div>
     <div class="quote-author" id="quoteAuthor">— myrealap</div>
+  </div>
+</div>
+
+<!-- GUIDE SCREEN -->
+<div class="guide-screen" id="guideScreen">
+  <div class="guide-container">
+    <img class="guide-img" src="images/guide.png" alt="guide">
+    <button class="go-button" id="goButton"></button>
   </div>
 </div>
 
@@ -1066,29 +1171,6 @@
         setTimeout(() => addTouchSparkle(touch.clientX, touch.clientY), i * 50);
       }
     });
-    
-    const prevBtn = document.getElementById('prevBtn');
-    const nextBtn = document.getElementById('nextBtn');
-    const hoverPrevText = document.getElementById('hoverPrevText');
-    const hoverNextText = document.getElementById('hoverNextText');
-    
-    if (prevBtn) {
-      $(prevBtn).on('touchstart', () => {
-        $(hoverPrevText).css({ opacity: '1', visibility: 'visible' });
-        setTimeout(() => {
-          $(hoverPrevText).css({ opacity: '0', visibility: 'hidden' });
-        }, 1500);
-      });
-    }
-    
-    if (nextBtn) {
-      $(nextBtn).on('touchstart', () => {
-        $(hoverNextText).css({ opacity: '1', visibility: 'visible' });
-        setTimeout(() => {
-          $(hoverNextText).css({ opacity: '0', visibility: 'hidden' });
-        }, 1500);
-      });
-    }
   }
   
   function createSparkles() {
@@ -1110,7 +1192,7 @@
       setTimeout(() => sparkle.remove(), 2000);
     }
     
-    for (let i = 0; i < MODAL_INITIAL_SPARKLES; i++) setTimeout(() => addSparkle(), i * 50);
+    for (let i = 0; i < MODAL_INITIAL_SPARKLES; i++) setTimeout(() => addSparkle(), i * 500);
     sparkleInterval = setInterval(() => { if (isModalOpen) addSparkle(); }, MODAL_CONTINUOUS_INTERVAL);
   }
   
@@ -1245,8 +1327,6 @@
     document.getElementById('singerNameDisplay').textContent = playlist[index].singer;
   }
   
-  function playMusic() { if (audio.src) audio.play().catch(() => {}); }
-  
   function forcePlayMusic() {
     if (audio.src) {
       const playPromise = audio.play();
@@ -1272,6 +1352,46 @@
   
   let allScrollers = [];
   
+  // GUIDE SCREEN LOGIC
+  let musicStartedByGuide = false;
+  
+  function showGuideScreen() {
+    const guideScreen = document.getElementById('guideScreen');
+    if (guideScreen) {
+      guideScreen.classList.add('active');
+    }
+  }
+  
+  function hideGuideScreen() {
+    const guideScreen = document.getElementById('guideScreen');
+    if (guideScreen) {
+      guideScreen.classList.add('fade-out');
+      guideScreen.classList.remove('active');
+      setTimeout(() => {
+        guideScreen.style.display = 'none';
+      }, 500);
+    }
+  }
+  
+  function setupGoButton() {
+    const goBtn = document.getElementById('goButton');
+    if (goBtn) {
+      goBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        // PLAY CLICK SOUND when GO button is clicked
+        clickSound.currentTime = 0;
+        clickSound.play().catch(() => {});
+        
+        if (!musicStartedByGuide) {
+          forcePlayMusic();
+          musicStartedByGuide = true;
+        }
+        hideGuideScreen();
+      });
+    }
+  }
+  
   $(document).ready(() => {
     preloadAllAssets(imageList, () => {
       allScrollers = createGallery();
@@ -1282,21 +1402,16 @@
       
       setTimeout(() => {
         $(loadingScreen).hide();
-        forcePlayMusic();
+        // Show GUIDE SCREEN instead of starting music automatically
+        showGuideScreen();
+        setupGoButton();
+        
         createBackgroundSparkles();
         setupCustomCursor();
         
         if (isTouchDevice) {
           startTouchSparkles();
-          const unlockOnTouch = () => {
-            if (audio.paused) {
-              forcePlayMusic();
-            }
-            $(document).off('touchstart', unlockOnTouch);
-            $(document).off('click', unlockOnTouch);
-          };
-          $(document).on('touchstart', unlockOnTouch);
-          $(document).on('click', unlockOnTouch);
+          // REMOVED auto music unlock - now music starts ONLY on GO button click
         } else {
           startMouseTrail();
         }
