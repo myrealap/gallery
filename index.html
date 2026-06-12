@@ -331,13 +331,11 @@
   .scroll-row {
     width: 100%;
     overflow-x: hidden;
-    overflow-y: hidden;
     white-space: nowrap;
     margin: 0;
     padding: 0;
     background: #000;
     line-height: 0;
-    height: auto;
   }
 
   .scroll-track {
@@ -345,14 +343,13 @@
     white-space: nowrap;
   }
 
-    .image-item {
+  .image-item {
     display: inline-block;
     margin: 0;
     padding: 0;
     line-height: 0;
     position: relative;
     cursor: pointer;
-    height: 240px;
     z-index: 1;
   }
 
@@ -370,18 +367,18 @@
     border: none;
   }
 
-  /* HOVER PNG - matches exact image height, width free */
+  /* HOVER PNG - WIDER THAN IMAGE! */
   .hover-png {
     position: absolute;
-    top: 0;
+    top: 50%;
     left: 50%;
-    transform: translateX(-50%);
-    width: auto;
-    height: 240px;
+    transform: translate(-50%, -50%);
+    width: 150%;
+    height: 100%;
     background-image: url('images/hover-bg.png');
     background-repeat: no-repeat;
     background-position: center;
-    background-size: auto 100%;
+    background-size: contain;
     opacity: 0;
     transition: opacity 0.2s ease;
     pointer-events: none;
@@ -396,30 +393,16 @@
     opacity: 1;
   }
 
-  /* Tablet */
   @media (max-width: 768px) {
-    .image-item {
-      height: 187px;
-    }
     .image-item img {
       width: 140px;
       height: 187px;
     }
-    .hover-png {
-      height: 187px;
-    }
   }
 
-  /* Mobile */
   @media (max-width: 480px) {
-    .image-item {
-      height: 133px;
-    }
     .image-item img {
       width: 100px;
-      height: 133px;
-    }
-    .hover-png {
       height: 133px;
     }
   }
@@ -1305,7 +1288,6 @@
         
         if (isTouchDevice) {
           startTouchSparkles();
-          // UNLOCK AUDIO ON ANY TOUCH FOR MOBILE
           const unlockOnTouch = () => {
             if (audio.paused) {
               forcePlayMusic();
