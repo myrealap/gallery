@@ -1472,6 +1472,41 @@ function stopMusicSparkles() {
     $('#nextBtn').on('click', nextTrack);
     $('#modalClose').on('click', closeModal);
     $('#modalOverlay').on('click', (e) => { if (e.target === $('#modalOverlay')[0]) closeModal(); });
+    
+    // ↓↓↓ ADD THE TOUCH HANDLERS HERE ↓↓↓
+    if (isTouchDevice) {
+        const prevBtnTouch = document.getElementById('prevBtn');
+        const nextBtnTouch = document.getElementById('nextBtn');
+        const hoverPrevTextTouch = document.getElementById('hoverPrevText');
+        const hoverNextTextTouch = document.getElementById('hoverNextText');
+        
+        if (prevBtnTouch && hoverPrevTextTouch) {
+            prevBtnTouch.addEventListener('touchstart', function(e) {
+                e.preventDefault();
+                hoverPrevTextTouch.style.opacity = '1';
+                hoverPrevTextTouch.style.visibility = 'visible';
+                setTimeout(() => {
+                    hoverPrevTextTouch.style.opacity = '0';
+                    hoverPrevTextTouch.style.visibility = 'hidden';
+                }, 1500);
+            });
+        }
+        
+        if (nextBtnTouch && hoverNextTextTouch) {
+            nextBtnTouch.addEventListener('touchstart', function(e) {
+                e.preventDefault();
+                hoverNextTextTouch.style.opacity = '1';
+                hoverNextTextTouch.style.visibility = 'visible';
+                setTimeout(() => {
+                    hoverNextTextTouch.style.opacity = '0';
+                    hoverNextTextTouch.style.visibility = 'hidden';
+                }, 1500);
+            });
+        }
+    }
+    // ↑↑↑ END OF ADDED CODE ↑↑↑
+    
+    
   
   const prevBtn = $('#prevBtn')[0];
   const nextBtn = $('#nextBtn')[0];
