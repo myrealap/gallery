@@ -1457,9 +1457,40 @@
     $('#nextBtn').on('click', nextTrack);
     $('#modalClose').on('click', closeModal);
     $('#modalOverlay').on('click', (e) => { if (e.target === $('#modalOverlay')[0]) closeModal(); });
+  
+  // ADD THIS RIGHT HERE ↓↓↓
+  if (isTouchDevice) {
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const hoverPrevText = document.getElementById('hoverPrevText');
+    const hoverNextText = document.getElementById('hoverNextText');
     
-    const prevBtn = $('#prevBtn')[0];
-    const nextBtn = $('#nextBtn')[0];
+    if (prevBtn && hoverPrevText) {
+      prevBtn.addEventListener('touchstart', function() {
+        hoverPrevText.style.opacity = '1';
+        hoverPrevText.style.visibility = 'visible';
+        setTimeout(() => {
+          hoverPrevText.style.opacity = '0';
+          hoverPrevText.style.visibility = 'hidden';
+        }, 1500);
+      });
+    }
+    
+    if (nextBtn && hoverNextText) {
+      nextBtn.addEventListener('touchstart', function() {
+        hoverNextText.style.opacity = '1';
+        hoverNextText.style.visibility = 'visible';
+        setTimeout(() => {
+          hoverNextText.style.opacity = '0';
+          hoverNextText.style.visibility = 'hidden';
+        }, 1500);
+      });
+    }
+  }
+  // END OF ADDED CODE ↑↑↑
+  
+  const prevBtn = $('#prevBtn')[0];
+  const nextBtn = $('#nextBtn')[0];
     const hoverPrevText = $('#hoverPrevText')[0];
     const hoverNextText = $('#hoverNextText')[0];
     
