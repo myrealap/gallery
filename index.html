@@ -1118,45 +1118,45 @@
   
   function createMusicSparkles(targetElement) {
     if (musicSparkleInterval) clearInterval(musicSparkleInterval);
-    musicSparkleInterval = null;
     
     const container = document.getElementById('musicSparkleContainer');
     
     function addMusicSparkle() {
-      if (!isHoveringButton) return;
-      
-      const rect = targetElement.getBoundingClientRect();
-      const sparkle = document.createElement('div');
-      sparkle.className = 'music-sparkle';
-      
-      let offsetX = (Math.random() - 0.5) * HOVER_SPARKLE_RADIUS;
-      let offsetY = (Math.random() - 0.5) * 90;
-      
-      sparkle.style.left = (rect.left + rect.width / 2 + offsetX) + 'px';
-      sparkle.style.top = (rect.top + rect.height / 2 + offsetY) + 'px';
-      const sparkleSize = Math.random() * 20 + 10;
-      sparkle.style.width = sparkleSize + 'px';
-      sparkle.style.height = sparkleSize + 'px';
-      
-      container.appendChild(sparkle);
-      
-      setTimeout(() => {
-        if (sparkle.parentNode) {
-          sparkle.remove();
-        }
-      }, 1000);
+        if (!isHoveringButton) return;
+        
+        const rect = targetElement.getBoundingClientRect();
+        const sparkle = document.createElement('div');
+        sparkle.className = 'music-sparkle';
+        
+        let offsetX = (Math.random() - 0.5) * HOVER_SPARKLE_RADIUS;
+        let offsetY = (Math.random() - 0.5) * 90;
+        
+        sparkle.style.left = (rect.left + rect.width / 2 + offsetX) + 'px';
+        sparkle.style.top = (rect.top + rect.height / 2 + offsetY) + 'px';
+        const sparkleSize = Math.random() * 20 + 10;
+        sparkle.style.width = sparkleSize + 'px';
+        sparkle.style.height = sparkleSize + 'px';
+        
+        container.appendChild(sparkle);
+        
+        setTimeout(() => {
+            if (sparkle.parentNode) {
+                sparkle.remove();
+            }
+        }, 1000);
     }
     
     musicSparkleInterval = setInterval(() => {
-      if (isHoveringButton) {
-        addMusicSparkle();
-  }
-}, HOVER_SPARKLE_SPEED);
-  
-  function stopMusicSparkles() {
+        if (isHoveringButton) {
+            addMusicSparkle();
+        }
+    }, HOVER_SPARKLE_SPEED);
+}  // ← THIS CLOSING BRACE WAS MISSING!
+
+function stopMusicSparkles() {
     if (musicSparkleInterval) clearInterval(musicSparkleInterval);
     document.getElementById('musicSparkleContainer').innerHTML = '';
-  }
+}
   
   let lastMouseX = window.innerWidth / 2;
   let lastMouseY = window.innerHeight / 2;
