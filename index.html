@@ -4,10 +4,7 @@
 <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
 <meta charset="utf-8">
 <title>Myrealap - Official Gallery</title>
-<meta name="description" content="">
-<meta name="keywords" content="myrealap, sexy gallery, hot images, magical, vintage vibes">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-<script src="jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <style>
   * {
     margin: 0;
@@ -176,7 +173,7 @@
     top: 50%;
     transform: translateY(-50%);
     color: #ffffff;
-    font-size: 10px;
+    font-size: 11px;
     letter-spacing: 1px;
     white-space: nowrap;
     opacity: 0;
@@ -184,30 +181,31 @@
     transition: opacity 0.2s ease;
     pointer-events: none;
     z-index: 20;
-    background: rgba(0,0,0,0.5);
-    padding: 4px 8px;
-    border-radius: 4px;
   }
 
-  @media (max-width: 768px) {
-    .hover-prev-text, .hover-next-text {
-      font-size: 8px;
-      padding: 3px 6px;
-    }
-    .hover-prev-text { left: 35px; }
-    .hover-next-text { right: 35px; }
+  .hover-prev-text {
+    left: 40px;
   }
 
-  .hover-prev-text { left: 40px; }
-  .hover-next-text { right: 40px; }
+  .hover-next-text {
+    right: 40px;
+  }
 
   .prev-btn:hover ~ .hover-prev-text,
-  .prev-btn:hover + .hover-prev-text { opacity: 1; visibility: visible; }
+  .prev-btn:hover + .hover-prev-text {
+    opacity: 1;
+    visibility: visible;
+  }
 
   .next-btn:hover ~ .hover-next-text,
-  .next-btn:hover + .hover-next-text { opacity: 1; visibility: visible; }
+  .next-btn:hover + .hover-next-text {
+    opacity: 1;
+    visibility: visible;
+  }
 
-  .music-bar { position: relative; }
+  .music-bar {
+    position: relative;
+  }
 
   .song-info {
     text-align: center;
@@ -251,41 +249,25 @@
   }
 
   @keyframes musicSparkleFade {
-    0% { opacity: 0; transform: scale(0.3) rotate(0deg); }
-    20% { opacity: 1; transform: scale(1) rotate(180deg); }
-    80% { opacity: 0.8; transform: scale(0.8) rotate(360deg); }
-    100% { opacity: 0; transform: scale(0.2) rotate(540deg); }
+    0% {
+      opacity: 0;
+      transform: scale(0.3) rotate(0deg);
+    }
+    20% {
+      opacity: 1;
+      transform: scale(1) rotate(180deg);
+    }
+    80% {
+      opacity: 0.8;
+      transform: scale(0.8) rotate(360deg);
+    }
+    100% {
+      opacity: 0;
+      transform: scale(0.2) rotate(540deg);
+    }
   }
 
-  .touch-sparkle-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: 99999998;
-    overflow: hidden;
-  }
-
-  .touch-sparkle {
-    position: absolute;
-    background-image: url('images/sparkle.png');
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-    opacity: 0;
-    animation: touchSparkleFade 0.6s ease-out forwards;
-    pointer-events: none;
-  }
-
-  @keyframes touchSparkleFade {
-    0% { opacity: 0; transform: scale(0.2) rotate(0deg); }
-    30% { opacity: 1; transform: scale(1) rotate(180deg); }
-    70% { opacity: 0.6; transform: scale(0.7) rotate(360deg); }
-    100% { opacity: 0; transform: scale(0.1) rotate(540deg); }
-  }
-
+  /* MOUSE TRAIL SPARKLE CONTAINER - HIGHEST Z-INDEX EVER! */
   .mouse-trail-container {
     position: fixed;
     top: 0;
@@ -293,7 +275,7 @@
     width: 100%;
     height: 100%;
     pointer-events: none;
-    z-index: 99999997;
+    z-index: 99999999;
     overflow: hidden;
   }
 
@@ -309,18 +291,29 @@
   }
 
   @keyframes mouseSparkleFade {
-    0% { opacity: 0; transform: scale(0.2) rotate(0deg); }
-    30% { opacity: 1; transform: scale(1) rotate(180deg); }
-    70% { opacity: 0.6; transform: scale(0.7) rotate(360deg); }
-    100% { opacity: 0; transform: scale(0.1) rotate(540deg); }
+    0% {
+      opacity: 0;
+      transform: scale(0.2) rotate(0deg);
+    }
+    30% {
+      opacity: 1;
+      transform: scale(1) rotate(180deg);
+    }
+    70% {
+      opacity: 0.6;
+      transform: scale(0.7) rotate(360deg);
+    }
+    100% {
+      opacity: 0;
+      transform: scale(0.1) rotate(540deg);
+    }
   }
 
   .gallery-container {
     flex: 1;
     overflow-y: auto;
-    overflow-x: hidden;
+    overflow-x: visible;
     background: #000;
-    padding-bottom: 0;
   }
 
   .gallery-container::-webkit-scrollbar {
@@ -330,7 +323,8 @@
 
   .scroll-row {
     width: 100%;
-    overflow-x: hidden;
+    overflow-x: visible;
+    overflow-y: visible;
     white-space: nowrap;
     margin: 0;
     padding: 0;
@@ -341,6 +335,7 @@
   .scroll-track {
     display: inline-block;
     white-space: nowrap;
+    overflow: visible;
   }
 
   .image-item {
@@ -350,7 +345,7 @@
     line-height: 0;
     position: relative;
     cursor: pointer;
-    z-index: 1;
+    overflow: visible;
   }
 
   .image-item:hover {
@@ -367,18 +362,17 @@
     border: none;
   }
 
-  /* HOVER PNG - WIDER THAN IMAGE! */
   .hover-png {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 150%;
-    height: 100%;
+    width: 260px;
+    height: 260px;
     background-image: url('images/hover-bg.png');
+    background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
-    background-size: contain;
     opacity: 0;
     transition: opacity 0.2s ease;
     pointer-events: none;
@@ -391,20 +385,6 @@
 
   .image-item.active .hover-png {
     opacity: 1;
-  }
-
-  @media (max-width: 768px) {
-    .image-item img {
-      width: 140px;
-      height: 187px;
-    }
-  }
-
-  @media (max-width: 480px) {
-    .image-item img {
-      width: 100px;
-      height: 133px;
-    }
   }
 
   .modal-overlay {
@@ -430,14 +410,13 @@
 
   .modal {
     position: relative;
-    top: -8%;
     width: 800px;
+    top: -8%;
     max-width: 85vw;
     display: flex;
     transform: scale(0.9);
     transition: transform 0.3s ease;
     overflow: visible;
-    background: transparent;
   }
 
   .modal-bg {
@@ -455,14 +434,6 @@
     pointer-events: none;
     opacity: 0;
     transition: opacity 0.3s ease;
-  }
-
-  @media (max-width: 768px) {
-    .modal-bg {
-      top: 27%;
-      width: 95vw;
-      height: 70vh;
-    }
   }
 
   .modal-overlay.active .modal-bg {
@@ -494,7 +465,9 @@
     z-index: 10003;
   }
 
-  .modal-close:focus { outline: none; }
+  .modal-close:focus {
+    outline: none;
+  }
 
   .modal-image {
     width: 40%;
@@ -553,14 +526,31 @@
   }
 
   @keyframes sparkleFade {
-    0% { opacity: 0; transform: scale(0.3) rotate(0deg); }
-    15% { opacity: 1; transform: scale(1.2) rotate(180deg); }
-    85% { opacity: 0.8; transform: scale(1) rotate(360deg); }
-    100% { opacity: 0; transform: scale(0.2) rotate(540deg); }
+    0% {
+      opacity: 0;
+      transform: scale(0.3) rotate(0deg);
+    }
+    15% {
+      opacity: 1;
+      transform: scale(1.2) rotate(180deg);
+    }
+    85% {
+      opacity: 0.8;
+      transform: scale(1) rotate(360deg);
+    }
+    100% {
+      opacity: 0;
+      transform: scale(0.2) rotate(540deg);
+    }
   }
 
-  .modal-overlay { pointer-events: none; }
-  .modal-overlay.active { pointer-events: auto; }
+  .modal-overlay {
+    pointer-events: none;
+  }
+
+  .modal-overlay.active {
+    pointer-events: auto;
+  }
 
   .love-row {
     width: 100%;
@@ -588,21 +578,154 @@
 
   .footer {
     text-align: center;
-    padding: 6px;
+    padding: 8px;
     color: #666;
-    font-size: 10px;
+    font-size: 11px;
     background: #000;
     flex-shrink: 0;
   }
 
   @media (max-width: 768px) {
-    .footer {
-      padding: 5px;
-      font-size: 9px;
+    .modal-content {
+      flex-direction: column;
+    }
+    .modal-image {
+      width: 60%;
+      margin: 30px auto 0 auto;
+    }
+    .modal-description {
+      padding: 20px;
+    }
+    .modal-title {
+      font-size: 18px;
+    }
+    .modal-text {
+      font-size: 12px;
+    }
+    .modal-bg {
+      width: 95vw;
+      height: 95vh;
+    }
+    .hover-prev-text, .hover-next-text {
+      font-size: 8px;
+    }
+    .hover-prev-text {
+      left: 35px;
+    }
+    .hover-next-text {
+      right: 35px;
+    }
+    .hover-png {
+      width: 200px;
+      height: 200px;
     }
   }
 
-  .custom-cursor {
+  @media (max-width: 480px) and (max-height: 900px) {
+    .hover-png {
+      width: 160px;
+      height: 160px;
+    }
+  }
+
+  @media (max-width: 1200px) and (max-height: 900px) {
+    .image-item img { width: 160px; height: 213px; }
+    .love-track { font-size: 26px; letter-spacing: 5px; }
+    .love-track span { padding: 0 8px; }
+  }
+
+  @media (max-width: 1024px) and (max-height: 1366px) {
+    .image-item img { width: 140px; height: 187px; }
+    .love-track { font-size: 24px; letter-spacing: 4px; }
+    .love-track span { padding: 0 8px; }
+    .quote-text { font-size: 18px; }
+    .quote-bg { width: 90px; height: 90px; }
+  }
+
+  @media (max-width: 768px) and (max-height: 1024px) {
+    .image-item img { width: 120px; height: 160px; }
+    .love-track { font-size: 22px; letter-spacing: 4px; }
+    .love-track span { padding: 0 6px; }
+    .quote-text { font-size: 16px; }
+    .quote-bg { width: 80px; height: 80px; }
+    .music-bar { height: 32px; }
+    .song-name-middle { font-size: 12px; }
+    .singer-name { font-size: 8px; }
+  }
+
+  @media (max-width: 480px) and (max-height: 900px) {
+    .image-item img { width: 100px; height: 133px; }
+    .love-track { font-size: 18px; letter-spacing: 3px; }
+    .love-track span { padding: 0 5px; }
+    .quote-text { font-size: 14px; }
+    .quote-author { font-size: 10px; }
+    .quote-bg { width: 65px; height: 65px; }
+    .music-bar { height: 30px; }
+    .prev-btn, .next-btn { font-size: 14px; padding: 5px 8px; }
+    .song-name-middle { font-size: 11px; }
+    .singer-name { font-size: 7px; }
+    .footer { font-size: 9px; padding: 6px; }
+    .hover-prev-text, .hover-next-text {
+      font-size: 7px;
+    }
+  }
+
+  @media (max-width: 380px) and (max-height: 700px) {
+    .image-item img { width: 85px; height: 113px; }
+    .love-track { font-size: 16px; letter-spacing: 2px; }
+    .love-track span { padding: 0 4px; }
+    .quote-text { font-size: 12px; }
+    .quote-bg { width: 55px; height: 55px; }
+    .hover-png {
+      width: 130px;
+      height: 130px;
+    }
+  }
+
+  @media (max-height: 700px) and (min-width: 800px) {
+    .image-item img { width: 130px; height: 173px; }
+    .love-track { font-size: 22px; letter-spacing: 4px; }
+    .love-track span { padding: 0 6px; }
+  }
+
+  @media (max-height: 600px) {
+    .image-item img { width: 110px; height: 147px; }
+    .love-track { font-size: 20px; letter-spacing: 3px; }
+    .love-track span { padding: 0 5px; }
+    .quote-text { font-size: 14px; }
+    .quote-bg { width: 60px; height: 60px; }
+  }
+
+  @media (max-height: 500px) {
+    .image-item img { width: 95px; height: 127px; }
+    .love-track { font-size: 18px; letter-spacing: 3px; }
+    .love-track span { padding: 0 4px; }
+    .footer { padding: 4px; font-size: 8px; }
+    .hover-png {
+      width: 140px;
+      height: 140px;
+    }
+  }
+
+    @media (orientation: landscape) and (max-height: 500px) {
+    .image-item img { width: 100px; height: 133px; }
+    .love-track { font-size: 18px; letter-spacing: 3px; }
+    .love-track span { padding: 0 5px; }
+    .quote-text { font-size: 13px; }
+    .quote-bg { width: 55px; height: 55px; }
+    .music-bar { height: 30px; }
+  }
+
+/* TRY DIFFERENT HOTSPOT - maybe 0 0 */
+* {
+    cursor: url('images/sparkle-c.png') 0 0, url('images/sparkle-c.cur'), auto;
+}
+
+button, .prev-btn, .next-btn, .image-item, a, [role="button"], .modal-close {
+    cursor: url('images/sparkle-c.png') 0 0, url('images/sparkle-c.cur'), pointer;
+}
+/* ANIMATED CURSOR - Spinning & Glowing (Cursor remains visible) */
+.custom-cursor {
     position: fixed;
     width: 40px;
     height: 40px;
@@ -610,9 +733,9 @@
     z-index: 99999999;
     transform: translate(-50%, -50%);
     transition: transform 0.05s ease;
-  }
+}
 
-  .custom-cursor::before {
+.custom-cursor::before {
     content: '';
     position: absolute;
     top: 0;
@@ -624,144 +747,30 @@
     background-repeat: no-repeat;
     background-position: center;
     animation: cursorSpin 1.5s linear infinite, cursorGlow 1.5s ease-in-out infinite;
-  }
+}
 
-  @keyframes cursorSpin {
+@keyframes cursorSpin {
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
-  }
+}
 
-  @keyframes cursorGlow {
-    0% { opacity: 0.7; filter: drop-shadow(0 0 2px rgba(255,255,255,0.3)); }
-    50% { opacity: 1; filter: drop-shadow(0 0 8px rgba(255,255,255,0.8)) drop-shadow(0 0 4px #ff3366); }
-    100% { opacity: 0.7; filter: drop-shadow(0 0 2px rgba(255,255,255,0.3)); }
-  }
-
-  /* GUIDE SCREEN - custom cursor & responsive support */
-  .guide-screen {
-    position: fixed;
-    top: -90px;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.85);
-    z-index: 10001;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: opacity 0.5s ease, visibility 0.5s ease;
-    opacity: 0;
-    visibility: hidden;
-  }
-
-  .guide-screen.active {
-    opacity: 1;
-    visibility: visible;
-  }
-
-  .guide-screen.fade-out {
-    opacity: 0;
-    visibility: hidden;
-  }
-
-  .guide-container {
-    position: relative;
-    width: 90vw;
-    max-width: 800px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .guide-img {
-    height: auto;
-    display: block;
-    border-radius: 0;
-    pointer-events: none;
-  }
-
-  @media (max-width: 768px) {
-    .guide-img {
-      width: 100%;
-    height: auto;
+@keyframes cursorGlow {
+    0% { 
+        opacity: 0.7;
+        filter: drop-shadow(0 0 2px rgba(255,255,255,0.3));
     }
-  }
-
-  /* GO BUTTON - positioned exactly on the guide image where "lets go" text is */
-  .go-button {
-    position: absolute;
-    width: 110.5px;
-    height: 42px;
-    top: 70%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-image: url('images/go.png');
-    background-repeat: no-repeat;
-    background-position: 0 0;
-    background-size: 221px 42px;
-    cursor: pointer;
-    border: none;
-    background-color: transparent;
-    transition: none;
-    z-index: 10009;
-  }
-
-  .go-button:hover {
-    background-position: -110.5px 0;
-  }
-
-  .go-button:focus {
-    outline: none;
-  }
-
-  /* Adjust button position based on your guide.png - EDIT THESE VALUES */
-  .go-button {
-    bottom: 15%;
-    right: 12%;
-  }
-
-  @media (max-width: 768px) {
-    .go-button {
-      width: 83px;
-      height: 31.5px;
-      background-size: 166px 31.5px;
-      background-repeat: no-repeat;
-      background-position: 0 0;
-      opacity: 1;
+    50% { 
+        opacity: 1;
+        filter: drop-shadow(0 0 8px rgba(255,255,255,0.8)) drop-shadow(0 0 4px #ff3366);
     }
-    .modal-content { flex-direction: column; }
-    .modal-image { width: 60%; margin: 30px auto 0 auto; }
-    .modal-description { padding: 20px; }
-    .modal-title { font-size: 18px; }
-    .modal-text { font-size: 12px; }
-    .love-track { font-size: 22px; letter-spacing: 4px; }
-  }
-
-  @media (max-width: 480px) {
-    .go-button {
-      width: 69px;
-      height: 26px;
-      background-size: 138px 26px;
-      bottom: 10%;
-      right: 8%;
-      opacity: 1;
+    100% { 
+        opacity: 0.7;
+        filter: drop-shadow(0 0 2px rgba(255,255,255,0.3));
     }
-  }
+}
 
-  @media (max-width: 480px) and (max-height: 900px) {
-    .love-track { font-size: 18px; }
-  }
-
-  /* Hide default cursor on desktop (hover devices with fine pointer) for entire page including guide */
-  @media (hover: hover) and (pointer: fine) {
-    * { cursor: none !important; }
-  }
-
-  /* On touch devices, show default cursor and hide custom cursor */
-  @media (max-width: 768px) {
-    * { cursor: auto !important; }
-    .custom-cursor { display: none !important; }
-  }
+/* DON'T hide default cursor - just make it invisible */
+/* Remove or comment out the "cursor: none" line */
 </style>
 </head>
 <body>
@@ -771,14 +780,6 @@
     <div class="quote-bg"></div>
     <div class="quote-text" id="quoteText">" loading... "</div>
     <div class="quote-author" id="quoteAuthor">— myrealap</div>
-  </div>
-</div>
-
-<!-- GUIDE SCREEN -->
-<div class="guide-screen" id="guideScreen">
-  <div class="guide-container">
-    <img class="guide-img" src="images/guide.png" alt="guide">
-    <button class="go-button" id="goButton"></button>
   </div>
 </div>
 
@@ -797,7 +798,6 @@
 <div class="music-bg-sparkle-container" id="musicBgSparkleContainer"></div>
 <div class="music-sparkle-container" id="musicSparkleContainer"></div>
 <div class="mouse-trail-container" id="mouseTrailContainer"></div>
-<div class="touch-sparkle-container" id="touchSparkleContainer"></div>
 
 <div class="gallery-container" id="galleryContainer"></div>
 
@@ -823,7 +823,7 @@
 
 <script>
   // ============================================
-  // SPARKLE CONTROLS - YOUR NUMBERS
+  // SPARKLE CONTROLS - YOUR NUMBERS (UNCHANGED)
   // ============================================
   
   const BG_SPARKLE_COUNT = 2500;
@@ -833,15 +833,12 @@
   const MODAL_INITIAL_SPARKLES = 8000;
   const MODAL_CONTINUOUS_INTERVAL = 20;
   
-  const MOUSE_SPARKLE_INTERVAL = 15;
-  const MOUSE_SPARKLE_SIZE_MIN = 8;
-  const MOUSE_SPARKLE_SIZE_MAX = 25;
+  // MOUSE TRAIL SPARKLE CONTROLS (NEW - YOU CAN ADJUST THESE)
+  const MOUSE_SPARKLE_INTERVAL = 15;      // Milliseconds between sparkles (lower = more sparkles)
+  const MOUSE_SPARKLE_SIZE_MIN = 8;       // Minimum sparkle size (pixels)
+  const MOUSE_SPARKLE_SIZE_MAX = 25;      // Maximum sparkle size (pixels)
   
   // ============================================
-  
-  const isMobile = window.innerWidth <= 768;
-  const rightOffset = isMobile ? -8000 : -80000;
-  const loveRightOffset = isMobile ? -8000 : -50000;
   
   const quotes = [
     { text: "Love & Imagination can change the world!", author: "Myrealap" },
@@ -866,46 +863,32 @@
   const imageList = ["images/1.jpg", "images/3.jpg", "images/5.jpg", "images/7.jpg", "images/9.jpg", "images/11.jpg", "images/13.jpg"];
   
   const imageDescriptions = {
-    "images/1.jpg": { title: "Cherry Baby", desc: "Pink clouds cradle you like a lullaby — soft, endless, made of sugar and secrets. Your short hair curls just above your jaw, catching the light like tiny halos. And there — on your skin — a tattoo of a lip pressing into a cherry, sweet and bitten. You are so soft tonight. Softer than the clouds, softer than the word 'stay.' Magic hums around your shoulders like a blanket only you can feel. Every part of you whispers cherry baby, cherry baby — come closer, taste, linger. And the sky holds its breath, because even heaven knows it can't compete with you." },
-    "images/2.jpg": { title: "Lost But Found", desc: "You are drowning in gold — yellow and orange flowers reaching up like they're trying to hold you. Their petals brush your wrists like old lovers saying hello again. Above, the sky has written four soft words: 'in the middle of nowhere.' And you stare at them as if they might answer a question you forgot you asked. The wind moves through your hair like a gentle lie — that you are not alone, that this is enough. But your eyes keep climbing, searching for something just beyond the letters. And in that silence, between the flowers and the nowhere, you become a poem no one will ever finish reading." },
-    "images/3.jpg": { title: "Orange Horizon", desc: "The sky is a poem you cannot read aloud, but your heart understands every word. Mushrooms grow in silver spirals, glowing softly like forgotten stars on the ground. A tree of songs whispers beside you, its leaves shivering with melodies of longing. It is night pretending to be day, and you are caught between two kinds of light. There—the orange, both fruit and sun, hangs in the air, pulsing with gentle heat. You lift your finger, desperate to touch its skin, to feel the warmth of love even once. So you stretch into the impossible horizon, because reaching is the only prayer you have left." },
-    "images/4.jpg": { title: "Want 2000s", desc: "A dreamy background holds me like a lullaby — soft, blurry, the way memories look right before they disappear. My checkered ring sleeve shirt hangs on me like a ghost of every mall I ever walked through as a kid. A steel necklace sits cold on my chest — heavy, shiny, as permanent as the years I can't get back. My long hair is pushed back behind my ears because I need to see the world without hiding. And I see it. The 2000s are gone. The songs, the stars, the way we loved before the internet watched us. I want it so badly it aches behind my ribs — a decade that will never text me back. So I stand here, looking like 2003, feeling like 2026, and missing something I can never touch again." },
-    "images/5.jpg": { title: "Walk of Fame", desc: "Concrete jungle royalty — that's you, baby, standing on stars that don't deserve your shadow. Your short wolf cut is messy in all the right ways, falling like you just rolled out of someone's dreams. Classic street style: ripped denim, leather jacket, boots that were made for walking all over hearts. And that pose — head back, hip out, lips parted like you're about to say something devastating. Cameras should bow. Streetlights should flicker. Even the Hollywood sign is blushing right now. You're not famous yet? The sidewalk disagrees. Every inch of you screams icon. So go ahead — strut, smirk, destroy. The Walk of Fame just found its new queen." },
-    "images/6.jpg": { title: "Die Without You", desc: "Pink clouds fill my bathtub like a dream I never want to wake up from — but you're not here, so what's the point? I'm holding a book, but the pages are just excuses to keep my hands busy while my heart breaks. Every word I read turns into your face. Every silence screams your name. The clouds wrap around me, soft and warm, but they're not your arms and they never will be. I would die without you. Not with a bang — just a slow, quiet fade into all this pink. And I can't do anything. I can't fight. I can't beg. I can only lie here and miss you until missing becomes my whole body. So this is me: naked in clouds, reading a book I'll never finish, dying for a love that already left." },
+    "images/1.jpg": { title: "Cherry Baby", desc: "Pink clouds cradle you like a lullaby — soft, endless, made of sugar and secrets.   Your short hair curls just above your jaw, catching the light like tiny halos.   And there — on your skin — a tattoo of a lip pressing into a cherry, sweet and bitten.   You are so soft tonight. Softer than the clouds, softer than the word 'stay.'   Magic hums around your shoulders like a blanket only you can feel.   Every part of you whispers cherry baby, cherry baby — come closer, taste, linger.   And the sky holds its breath, because even heaven knows it can't compete with you." },
+    "images/2.jpg": { title: "Lost But Found", desc: "You are drowning in gold — yellow and orange flowers reaching up like they're trying to hold you.   Their petals brush your wrists like old lovers saying hello again.   Above, the sky has written four soft words: 'in the middle of nowhere.'   And you stare at them as if they might answer a question you forgot you asked.   The wind moves through your hair like a gentle lie — that you are not alone, that this is enough.   But your eyes keep climbing, searching for something just beyond the letters.   And in that silence, between the flowers and the nowhere, you become a poem no one will ever finish reading." },
+    "images/3.jpg": { title: "Orange Horizon", desc: "The sky is a poem you cannot read aloud, but your heart understands every word.   Mushrooms grow in silver spirals, glowing softly like forgotten stars on the ground.   A tree of songs whispers beside you, its leaves shivering with melodies of longing.   It is night pretending to be day, and you are caught between two kinds of light.   There—the orange, both fruit and sun, hangs in the air, pulsing with gentle heat.   You lift your finger, desperate to touch its skin, to feel the warmth of love even once.   So you stretch into the impossible horizon, because reaching is the only prayer you have left." },
+    "images/4.jpg": { title: "Want 2000s", desc: "A dreamy background holds me like a lullaby — soft, blurry, the way memories look right before they disappear.   My checkered ring sleeve shirt hangs on me like a ghost of every mall I ever walked through as a kid.   A steel necklace sits cold on my chest — heavy, shiny, as permanent as the years I can't get back.   My long hair is pushed back behind my ears because I need to see the world without hiding.   And I see it. The 2000s are gone. The songs, the stars, the way we loved before the internet watched us.   I want it so badly it aches behind my ribs — a decade that will never text me back.   So I stand here, looking like 2003, feeling like 2026, and missing something I can never touch again." },
+    "images/5.jpg": { title: "Walk of Fame", desc: "Concrete jungle royalty — that's you, baby, standing on stars that don't deserve your shadow.   Your short wolf cut is messy in all the right ways, falling like you just rolled out of someone's dreams.   Classic street style: ripped denim, leather jacket, boots that were made for walking all over hearts.   And that pose — head back, hip out, lips parted like you're about to say something devastating.   Cameras should bow. Streetlights should flicker. Even the Hollywood sign is blushing right now.   You're not famous yet? The sidewalk disagrees. Every inch of you screams icon.   So go ahead — strut, smirk, destroy. The Walk of Fame just found its new queen." },
+    "images/6.jpg": { title: "Die Without You", desc: "Pink clouds fill my bathtub like a dream I never want to wake up from — but you're not here, so what's the point?   I'm holding a book, but the pages are just excuses to keep my hands busy while my heart breaks.   Every word I read turns into your face. Every silence screams your name.   The clouds wrap around me, soft and warm, but they're not your arms and they never will be.   I would die without you. Not with a bang — just a slow, quiet fade into all this pink.   And I can't do anything. I can't fight. I can't beg. I can only lie here and miss you until missing becomes my whole body.   So this is me: naked in clouds, reading a book I'll never finish, dying for a love that already left." },
     "images/7.jpg": { title: "A Lover Mermaid", desc: "Beneath the coral glow, a lovesick mermaid stares at the turtle beside her. Her shimmering tail curls in the current, but her heart is heavier than the deepest trench. The turtle drifts close yet never returns her gaze—a silent witness to one-way love. Still, she traces his shell, whispering promises into the salt and tide. Every wave that pushes him away only makes her swim harder, fighting the pull of reason. Her love may not love her back, but she'd battle storms, sharks, and silence just to stay near him. Because even an unreturned heart beats fiercely when it has chosen its own battleground." },
-    "images/8.jpg": { title: "Red Rose Love", desc: "The sunset bleeds amber and rose as you stand in the garden, your red dress matching the flowers around you. Your heart is fuller than the vines—overflowing with a love that aches to be given. You spot the perfect rose, reach past its thorns, and hold it out like a promise. But he refuses. A soft shake of his head, a step back, and the world feels colder than twilight. The rose hangs in your hand, unwanted, as his silence becomes your answer. Tears blur the fading light, but you don't drop the flower—not yet. Because even sadness has beauty, and tonight you are both: a wilting dream and a woman still hoping." },
-    "images/9.jpg": { title: "Kisses of Busy Man", desc: "The blue page glows around you like a whisper as he walks in — already unbuttoning, already looking at your mouth. He doesn't say hello. He just pushes you back against the cool blue light and drops his lips to your neck. Wet. Open. Hungry. His tongue traces your pulse like he's learning a new language just for your skin. He moves down — collarbone, sternum, ribs — each kiss slower than the last but twice as hot. You feel his stubble scrape your chest, then his lips close around you, and your fingers tangle in his hair. 'Stay still,' he breathes against your stomach, but his hand is already sliding lower, and you're already shaking. He leaves one last kiss on your inner thigh — soft, almost cruel — then looks up and grins: 'That's all I have time for. For now.'" },
-    "images/10.jpg": { title: "Glow of Wanting", desc: "Just my face — but it's enough. Sunlight touches my skin like fingers that know exactly where I'm soft. My face is so shiny, like I've been kissed by something holy or something hungry — maybe both. And my hair — chocolate brown light — spills across the whole background, wild and warm and everywhere. I look dreamy. Soft. The kind of girl you'd write poems about at 3am. But my eyes? They're sad. Curious. Passionate. Three emotions fighting for space in one beautiful face. The spotlight found me today, and I didn't run. I just let it see every crack in my heart. This is me: shiny, sad, still wanting. And honestly? I've never looked more alive." },
-    "images/11.jpg": { title: "1000 Year Tree", desc: "In Iran, I found a tree that has lived a thousand springs — and I swear it was waiting for me. I stood beneath its branches, small but shining, like I was born to be its light. My spring outfit floated around me — soft fabrics, gentle colors, nothing loud, just right. My skin looked so soft that day, like the sun had kissed every inch of me good morning. And my long curly hair — oh, it was wild and free — tangling with the breeze like it belonged there. The tree was ancient, wise, covered in stories I'll never know. But I was the magic that afternoon, and the thousand-year tree finally had someone beautiful to pose beside." },
-    "images/12.jpg": { title: "Necklace of the Sea", desc: "The beach is hot, the boats are gorgeous — red, orange, blue — but let's be real, I'm the view. My summer outfit floats around me like the sea breeze is trying to undress me with its eyes. And my hair? Oh, it's killing today — wild, shiny, tangled in that perfect way that says 'I just came from a dream.' Around my neck, a shell necklace rests against my skin, and I swear it's hugging me tighter because it knows. It knows the sea is beautiful. But on my chest? Those shells look like royalty. The boats behind me are stunning, yes. But every sailor on them is staring at me instead of the horizon. I'm a sea fish who doesn't swim — I just stand here and let the ocean be jealous of my glow." },
-    "images/13.jpg": { title: "Theater Star", desc: "Red velvet curtains drape behind me like I'm the main event — because I am. I grab the rope with both hands, pull myself up, and feel every eye in the room on my thighs. My pretty puffy hair bounces around my shoulders — soft, messy, looking like I just rolled out of a dream. A white lily sits behind my ear, sweet and wild, like a promise I might not keep. My sexy dress hugs every curve, riding up just enough to make the silence feel loud. The spotlight finds *me* — burning gold on my skin, my lips, the way I smile down at everyone below. I'm on a rope in a bar, and somehow I've never felt more like a queen." },
-    "images/14.jpg": { title: "Overthink Diva", desc: "I'm standing on a wall, high enough to see everything — but all I see is him. Lines of poetry spin around me like a tornado of every word I never said to his face. Behind me, a big lion rests — strong, silent, like he's holding space for all my messy feelings. Two boys. One love. That's us. That's the whole story and also a thousand stories I'll never finish writing. I keep thinking about his hands, his laugh, the way he said my name like it was a secret. The poetry spins faster. The lion doesn't move. And neither do I — caught in the beautiful disaster of loving him. I'm an overthinking diva, yes. But at least I'm thinking about someone worth every single line of poetry." }
+    "images/8.jpg": { title: "Red Rose Love", desc: "The sunset bleeds amber and rose as you stand in the garden, your red dress matching the flowers around you.   Your heart is fuller than the vines—overflowing with a love that aches to be given.   You spot the perfect rose, reach past its thorns, and hold it out like a promise.   But he refuses. A soft shake of his head, a step back, and the world feels colder than twilight.   The rose hangs in your hand, unwanted, as his silence becomes your answer.   Tears blur the fading light, but you don't drop the flower—not yet.   Because even sadness has beauty, and tonight you are both: a wilting dream and a woman still hoping." },
+    "images/9.jpg": { title: "Kisses of Busy Man", desc: "The blue page glows around you like a whisper as he walks in — already unbuttoning, already looking at your mouth.   He doesn't say hello. He just pushes you back against the cool blue light and drops his lips to your neck.   Wet. Open. Hungry. His tongue traces your pulse like he's learning a new language just for your skin.   He moves down — collarbone, sternum, ribs — each kiss slower than the last but twice as hot.   You feel his stubble scrape your chest, then his lips close around you, and your fingers tangle in his hair.   'Stay still,' he breathes against your stomach, but his hand is already sliding lower, and you're already shaking.   He leaves one last kiss on your inner thigh — soft, almost cruel — then looks up and grins:       'That's all I have time for. For now.'" },
+    "images/10.jpg": { title: "Glow of Wanting", desc: "Just my face — but it's enough. Sunlight touches my skin like fingers that know exactly where I'm soft.   My face is so shiny, like I've been kissed by something holy or something hungry — maybe both.   And my hair — chocolate brown light — spills across the whole background, wild and warm and everywhere.   I look dreamy. Soft. The kind of girl you'd write poems about at 3am.   But my eyes? They're sad. Curious. Passionate. Three emotions fighting for space in one beautiful face.   The spotlight found me today, and I didn't run. I just let it see every crack in my heart.   This is me: shiny, sad, still wanting. And honestly? I've never looked more alive." },
+    "images/11.jpg": { title: "1000 Year Tree", desc: "In Iran, I found a tree that has lived a thousand springs — and I swear it was waiting for me.   I stood beneath its branches, small but shining, like I was born to be its light.   My spring outfit floated around me — soft fabrics, gentle colors, nothing loud, just right.   My skin looked so soft that day, like the sun had kissed every inch of me good morning.   And my long curly hair — oh, it was wild and free — tangling with the breeze like it belonged there.   The tree was ancient, wise, covered in stories I'll never know.   But I was the magic that afternoon, and the thousand-year tree finally had someone beautiful to pose beside." },
+    "images/12.jpg": { title: "Necklace of the Sea", desc: "The beach is hot, the boats are gorgeous — red, orange, blue — but let's be real, I'm the view.   My summer outfit floats around me like the sea breeze is trying to undress me with its eyes.   And my hair? Oh, it's killing today — wild, shiny, tangled in that perfect way that says 'I just came from a dream.'   Around my neck, a shell necklace rests against my skin, and I swear it's hugging me tighter because it knows.   It knows the sea is beautiful. But on my chest? Those shells look like royalty.   The boats behind me are stunning, yes. But every sailor on them is staring at me instead of the horizon.   I'm a sea fish who doesn't swim — I just stand here and let the ocean be jealous of my glow." },
+    "images/13.jpg": { title: "Theater Star", desc: "Red velvet curtains drape behind me like I'm the main event — because I am.   I grab the rope with both hands, pull myself up, and feel every eye in the room on my thighs.   My pretty puffy hair bounces around my shoulders — soft, messy, looking like I just rolled out of a dream.   A white lily sits behind my ear, sweet and wild, like a promise I might not keep.   My sexy dress hugs every curve, riding up just enough to make the silence feel loud.   The spotlight finds *me* — burning gold on my skin, my lips, the way I smile down at everyone below.   I'm on a rope in a bar, and somehow I've never felt more like a queen." },
+    "images/14.jpg": { title: "Overthink Diva", desc: "I'm standing on a wall, high enough to see everything — but all I see is him.   Lines of poetry spin around me like a tornado of every word I never said to his face.   Behind me, a big lion rests — strong, silent, like he's holding space for all my messy feelings.   Two boys. One love. That's us. That's the whole story and also a thousand stories I'll never finish writing.   I keep thinking about his hands, his laugh, the way he said my name like it was a secret.   The poetry spins faster. The lion doesn't move. And neither do I — caught in the beautiful disaster of loving him.   I'm an overthinking diva, yes. But at least I'm thinking about someone worth every single line of poetry." }
   };
   
   const playlist = [
-    { name: "Dooset Daram", singer: "shohreh" },
-    { name: "Havas", singer: "shohreh" },
-    { name: "Kafi Nbood Barat", singer: "shohreh" },
-    { name: "Bargard", singer: "shohreh" },
-    { name: "Esrar", singer: "shohreh" },
-    { name: "Fereshteha", singer: "shohreh" },
-    { name: "Pashimoonam", singer: "shohreh" }
+    { name: "Love", singer: "Myrealap" }
   ];
   
   const songFiles = [
-    "songs/song1.mp3",
-    "songs/song2.mp3",
-    "songs/song3.mp3",
-    "songs/song4.mp3",
-    "songs/song5.mp3",
-    "songs/song6.mp3",
-    "songs/song7.mp3"
+    "songs/song1.flac"
   ];
   
   const clickSound = new Audio("sounds/click.mp3");
   clickSound.volume = 0.5;
-  
-  const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
   
   class InfiniteScroller {
     constructor(container, track, direction, speed = 0.7, startOffset = 0) {
@@ -925,7 +908,7 @@
       this.calcWidth();
       this.applyTransform();
       this.start();
-      $(window).on('resize', () => this.resize());
+      window.addEventListener('resize', () => this.resize());
     }
     
     calcWidth() {
@@ -1000,7 +983,9 @@
     img.alt = '';
     img.loading = 'lazy';
     img.onerror = function() {
-      $(this).css({ backgroundColor: '#222', width: '180px', height: '240px' });
+      this.style.backgroundColor = '#222';
+      this.style.width = '180px';
+      this.style.height = '240px';
     };
     
     const hoverDiv = document.createElement('div');
@@ -1009,10 +994,12 @@
     imgItem.appendChild(img);
     imgItem.appendChild(hoverDiv);
     
-    $(imgItem).on('click', (function(src, element) {
+    imgItem.addEventListener('click', (function(src, element) {
       return function() {
-        $('.image-item.active').removeClass('active');
-        $(element).addClass('active');
+        document.querySelectorAll('.image-item.active').forEach(item => {
+          item.classList.remove('active');
+        });
+        element.classList.add('active');
         
         clickSound.currentTime = 0;
         clickSound.play().catch(() => {});
@@ -1048,7 +1035,7 @@
     const trackDiv = document.createElement('div');
     trackDiv.className = 'love-track';
     
-    const TOTAL_LOVE = direction === 'right' ? 80000 : 50000;
+    const TOTAL_LOVE = 50000;
     for (let i = 0; i < TOTAL_LOVE; i++) {
       const span = document.createElement('span');
       span.textContent = 'Love';
@@ -1061,60 +1048,111 @@
   
   let sparkleInterval = null;
   let isModalOpen = false;
+  
   let bgSparkleInterval = null;
   
   function createBackgroundSparkles() {
-    if (bgSparkleInterval) clearInterval(bgSparkleInterval);
+    if (bgSparkleInterval) {
+      clearInterval(bgSparkleInterval);
+    }
+    
     const container = document.getElementById('musicBgSparkleContainer');
     
     function addBgSparkle() {
       const sparkle = document.createElement('div');
       sparkle.className = 'music-bg-sparkle';
-      sparkle.style.left = Math.random() * 100 + '%';
-      sparkle.style.top = Math.random() * 100 + '%';
-      sparkle.style.animationDelay = Math.random() * 2 + 's';
-      const size = Math.random() * 19 + 13;
-      sparkle.style.width = size + 'px';
-      sparkle.style.height = size + 'px';
+      
+      const randomX = Math.random() * 100;
+      const randomY = Math.random() * 100;
+      const randomDelay = Math.random() * 2;
+      
+      sparkle.style.left = randomX + '%';
+      sparkle.style.top = randomY + '%';
+      sparkle.style.animationDelay = randomDelay + 's';
+      const sparkleSize = Math.random() * 19 + 13;
+      sparkle.style.width = sparkleSize + 'px';
+      sparkle.style.height = sparkleSize + 'px';
+      
       container.appendChild(sparkle);
-      setTimeout(() => sparkle.remove(), 3000);
+      
+      setTimeout(() => {
+        if (sparkle.parentNode) {
+          sparkle.remove();
+        }
+      }, 3000);
     }
     
-    for (let i = 0; i < BG_SPARKLE_COUNT; i++) setTimeout(() => addBgSparkle(), i * 100);
-    bgSparkleInterval = setInterval(addBgSparkle, BG_SPARKLE_INTERVAL);
+    for (let i = 0; i < BG_SPARKLE_COUNT; i++) {
+      setTimeout(() => addBgSparkle(), i * 100);
+    }
+    
+    bgSparkleInterval = setInterval(() => {
+      addBgSparkle();
+    }, BG_SPARKLE_INTERVAL);
+  }
+  
+  function stopBackgroundSparkles() {
+    if (bgSparkleInterval) {
+      clearInterval(bgSparkleInterval);
+      bgSparkleInterval = null;
+    }
   }
   
   let musicSparkleInterval = null;
   let isHoveringButton = false;
   
   function createMusicSparkles(targetElement) {
-    if (musicSparkleInterval) clearInterval(musicSparkleInterval);
+    if (musicSparkleInterval) {
+      clearInterval(musicSparkleInterval);
+      musicSparkleInterval = null;
+    }
+    
     const container = document.getElementById('musicSparkleContainer');
     
     function addMusicSparkle() {
       if (!isHoveringButton) return;
+      
       const rect = targetElement.getBoundingClientRect();
       const sparkle = document.createElement('div');
       sparkle.className = 'music-sparkle';
-      const offsetX = (Math.random() - 0.5) * HOVER_SPARKLE_RADIUS;
-      const offsetY = (Math.random() - 0.5) * 90;
+      
+      let offsetX = (Math.random() - 0.5) * HOVER_SPARKLE_RADIUS;
+      let offsetY = (Math.random() - 0.5) * 90;
+      
       sparkle.style.left = (rect.left + rect.width / 2 + offsetX) + 'px';
       sparkle.style.top = (rect.top + rect.height / 2 + offsetY) + 'px';
-      const size = Math.random() * 20 + 10;
-      sparkle.style.width = size + 'px';
-      sparkle.style.height = size + 'px';
+      const sparkleSize = Math.random() * 20 + 10;
+      sparkle.style.width = sparkleSize + 'px';
+      sparkle.style.height = sparkleSize + 'px';
+      
       container.appendChild(sparkle);
-      setTimeout(() => sparkle.remove(), 1000);
+      
+      setTimeout(() => {
+        if (sparkle.parentNode) {
+          sparkle.remove();
+        }
+      }, 1000);
     }
     
-    musicSparkleInterval = setInterval(() => { if (isHoveringButton) addMusicSparkle(); }, HOVER_SPARKLE_SPEED);
+    musicSparkleInterval = setInterval(() => {
+      if (isHoveringButton) {
+        addMusicSparkle();
+      }
+    }, HOVER_SPARKLE_SPEED);
   }
   
   function stopMusicSparkles() {
-    if (musicSparkleInterval) clearInterval(musicSparkleInterval);
-    document.getElementById('musicSparkleContainer').innerHTML = '';
+    if (musicSparkleInterval) {
+      clearInterval(musicSparkleInterval);
+      musicSparkleInterval = null;
+    }
+    const container = document.getElementById('musicSparkleContainer');
+    container.innerHTML = '';
   }
   
+  // ============================================
+  // MOUSE TRAIL SPARKLES (MAGIC WAND EFFECT)
+  // ============================================
   let lastMouseX = window.innerWidth / 2;
   let lastMouseY = window.innerHeight / 2;
   let continuousSparkleInterval = null;
@@ -1123,22 +1161,32 @@
     const container = document.getElementById('mouseTrailContainer');
     const sparkle = document.createElement('div');
     sparkle.className = 'mouse-sparkle';
-    const offsetX = (Math.random() - 0.5) * 20;
-    const offsetY = (Math.random() - 0.5) * 20;
-    sparkle.style.left = (x + offsetX) + 'px';
-    sparkle.style.top = (y + offsetY) + 'px';
-    sparkle.style.animationDelay = Math.random() * 0.1 + 's';
-    const size = Math.random() * (MOUSE_SPARKLE_SIZE_MAX - MOUSE_SPARKLE_SIZE_MIN) + MOUSE_SPARKLE_SIZE_MIN;
-    sparkle.style.width = size + 'px';
-    sparkle.style.height = size + 'px';
+    
+    const randomOffsetX = (Math.random() - 0.5) * 20;
+    const randomOffsetY = (Math.random() - 0.5) * 20;
+    const randomDelay = Math.random() * 0.1;
+    
+    sparkle.style.left = (x + randomOffsetX) + 'px';
+    sparkle.style.top = (y + randomOffsetY) + 'px';
+    sparkle.style.animationDelay = randomDelay + 's';
+    
+    const sparkleSize = Math.random() * (MOUSE_SPARKLE_SIZE_MAX - MOUSE_SPARKLE_SIZE_MIN) + MOUSE_SPARKLE_SIZE_MIN;
+    sparkle.style.width = sparkleSize + 'px';
+    sparkle.style.height = sparkleSize + 'px';
+    
     container.appendChild(sparkle);
-    setTimeout(() => sparkle.remove(), 800);
+    
+    setTimeout(() => {
+      if (sparkle.parentNode) {
+        sparkle.remove();
+      }
+    }, 800);
   }
   
   function startMouseTrail() {
-    if (isTouchDevice) return;
     let lastTime = 0;
-    $(document).on('mousemove', (e) => {
+    
+    document.addEventListener('mousemove', (e) => {
       const now = Date.now();
       if (now - lastTime > MOUSE_SPARKLE_INTERVAL) {
         lastTime = now;
@@ -1147,66 +1195,73 @@
       lastMouseX = e.clientX;
       lastMouseY = e.clientY;
     });
-    continuousSparkleInterval = setInterval(() => addMouseSparkle(lastMouseX, lastMouseY), MOUSE_SPARKLE_INTERVAL);
+    
+    // CONTINUOUS SPARKLES - even when mouse is still!
+    continuousSparkleInterval = setInterval(() => {
+      addMouseSparkle(lastMouseX, lastMouseY);
+    }, MOUSE_SPARKLE_INTERVAL);
   }
   
-  function addTouchSparkle(x, y) {
-    const container = document.getElementById('touchSparkleContainer');
-    const sparkle = document.createElement('div');
-    sparkle.className = 'touch-sparkle';
-    const offsetX = (Math.random() - 0.5) * 30;
-    const offsetY = (Math.random() - 0.5) * 30;
-    sparkle.style.left = (x + offsetX) + 'px';
-    sparkle.style.top = (y + offsetY) + 'px';
-    const size = Math.random() * 25 + 15;
-    sparkle.style.width = size + 'px';
-    sparkle.style.height = size + 'px';
-    container.appendChild(sparkle);
-    setTimeout(() => sparkle.remove(), 600);
-  }
-  
-  function startTouchSparkles() {
-    if (!isTouchDevice) return;
-    
-    $(document).on('touchmove', (e) => {
-      const touch = e.originalEvent.touches[0];
-      addTouchSparkle(touch.clientX, touch.clientY);
-    });
-    
-    $(document).on('touchstart', (e) => {
-      const touch = e.originalEvent.touches[0];
-      for (let i = 0; i < 3; i++) {
-        setTimeout(() => addTouchSparkle(touch.clientX, touch.clientY), i * 50);
-      }
-    });
+  function stopMouseTrail() {
+    if (continuousSparkleInterval) {
+      clearInterval(continuousSparkleInterval);
+      continuousSparkleInterval = null;
+    }
   }
   
   function createSparkles() {
-    if (sparkleInterval) clearInterval(sparkleInterval);
+    if (sparkleInterval) {
+      clearInterval(sparkleInterval);
+      sparkleInterval = null;
+    }
+    
     const container = document.getElementById('sparkleContainer');
     container.innerHTML = '';
     
     function addSparkle() {
       if (!isModalOpen) return;
+      
       const sparkle = document.createElement('div');
       sparkle.className = 'sparkle';
-      sparkle.style.left = Math.random() * window.innerWidth + 'px';
-      sparkle.style.top = Math.random() * window.innerHeight + 'px';
-      sparkle.style.animationDelay = Math.random() * 0.5 + 's';
-      const size = Math.random() * 50 + 20;
-      sparkle.style.width = size + 'px';
-      sparkle.style.height = size + 'px';
+      
+      const randomX = Math.random() * window.innerWidth;
+      const randomY = Math.random() * window.innerHeight;
+      const randomDelay = Math.random() * 0.5;
+      
+      sparkle.style.left = randomX + 'px';
+      sparkle.style.top = randomY + 'px';
+      sparkle.style.animationDelay = randomDelay + 's';
+      const sparkleSize = Math.random() * 50 + 20;
+      sparkle.style.width = sparkleSize + 'px';
+      sparkle.style.height = sparkleSize + 'px';
+      
       container.appendChild(sparkle);
-      setTimeout(() => sparkle.remove(), 2000);
+      
+      setTimeout(() => {
+        if (sparkle.parentNode) {
+          sparkle.remove();
+        }
+      }, 2000);
     }
     
-    for (let i = 0; i < MODAL_INITIAL_SPARKLES; i++) setTimeout(() => addSparkle(), i * 50);
-    sparkleInterval = setInterval(() => { if (isModalOpen) addSparkle(); }, MODAL_CONTINUOUS_INTERVAL);
+    for (let i = 0; i < MODAL_INITIAL_SPARKLES; i++) {
+      setTimeout(() => addSparkle(), i * 50);
+    }
+    
+    sparkleInterval = setInterval(() => {
+      if (isModalOpen) {
+        addSparkle();
+      }
+    }, MODAL_CONTINUOUS_INTERVAL);
   }
   
   function stopSparkles() {
-    if (sparkleInterval) clearInterval(sparkleInterval);
-    document.getElementById('sparkleContainer').innerHTML = '';
+    if (sparkleInterval) {
+      clearInterval(sparkleInterval);
+      sparkleInterval = null;
+    }
+    const container = document.getElementById('sparkleContainer');
+    container.innerHTML = '';
   }
   
   function openModal(imageSrc) {
@@ -1216,21 +1271,28 @@
     const modalText = document.getElementById('modalText');
     
     modalImage.src = imageSrc;
-    const desc = imageDescriptions[imageSrc] || { title: "Beautiful Moment", desc: "A special memory captured in time." };
+    
+    const desc = imageDescriptions[imageSrc] || { 
+      title: "Beautiful Moment", 
+      desc: "A special memory captured in time." 
+    };
+    
     modalTitle.textContent = desc.title;
     modalText.textContent = desc.desc;
     
     isModalOpen = true;
-    $(modalOverlay).addClass('active');
+    modalOverlay.classList.add('active');
     createSparkles();
   }
   
   function closeModal() {
     const modalOverlay = document.getElementById('modalOverlay');
-    $(modalOverlay).removeClass('active');
+    modalOverlay.classList.remove('active');
     isModalOpen = false;
     stopSparkles();
-    $('.image-item.active').removeClass('active');
+    document.querySelectorAll('.image-item.active').forEach(item => {
+      item.classList.remove('active');
+    });
   }
   
   function createGallery() {
@@ -1238,6 +1300,10 @@
     container.innerHTML = '';
     const scrollers = [];
     
+    const rightOffset = -80000;
+    const loveRightOffset = -40000;
+    
+    // Row 1: RIGHT IMAGES
     const customOrderRow1 = ["images/1.jpg", "images/3.jpg", "images/5.jpg", "images/7.jpg", "images/9.jpg", "images/11.jpg", "images/13.jpg"];
     const row1 = buildImageRowCustom(customOrderRow1);
     container.appendChild(row1);
@@ -1245,6 +1311,7 @@
     s1.init();
     scrollers.push(s1);
     
+    // Row 2: LEFT IMAGES
     const customOrderRow2 = ["images/14.jpg", "images/13.jpg", "images/12.jpg", "images/11.jpg", "images/10.jpg", "images/9.jpg", "images/8.jpg", "images/7.jpg", "images/6.jpg", "images/5.jpg", "images/4.jpg", "images/3.jpg", "images/2.jpg", "images/1.jpg"];
     const row2 = buildImageRowCustom(customOrderRow2);
     container.appendChild(row2);
@@ -1252,6 +1319,7 @@
     s2.init();
     scrollers.push(s2);
     
+    // Row 3: RIGHT IMAGES
     const customOrderRow3 = ["images/2.jpg", "images/4.jpg", "images/6.jpg", "images/8.jpg", "images/10.jpg", "images/12.jpg", "images/14.jpg"];
     const row3 = buildImageRowCustom(customOrderRow3);
     container.appendChild(row3);
@@ -1259,6 +1327,7 @@
     s3.init();
     scrollers.push(s3);
     
+    // Love rows
     const love1 = buildLoveRow('right');
     container.appendChild(love1);
     const l1 = new InfiniteScroller(love1, love1.querySelector('.love-track'), 'right', 0.7, loveRightOffset);
@@ -1274,54 +1343,38 @@
     return scrollers;
   }
   
+  // PRELOAD EVERYTHING including sparkle PNGs
   function preloadAllAssets(images, callback) {
     let loaded = 0;
-    const assetsToLoad = [...images, "images/sparkle.png", "images/hover-bg.png", "images/quote-bg.png", "images/song-bg.png", "images/modal-bg.png"];
+    
+    // Add all sparkle PNGs and background PNGs to preload
+    const assetsToLoad = [
+        ...images,
+        "images/sparkle.png",
+        "images/hover-bg.png",
+        "images/quote-bg.png",
+        "images/song-bg.png",
+        "images/modal-bg.png"
+    ];
+    
     const total = assetsToLoad.length;
-    if (total === 0) { callback(); return; }
-    assetsToLoad.forEach((src) => {
-      const img = new Image();
-      img.onload = () => { loaded++; if (loaded === total) callback(); };
-      img.onerror = () => { loaded++; if (loaded === total) callback(); };
-      img.src = src;
-    });
-  }
-  
-  let customCursor = null;
-  
-  function setupCustomCursor() {
-    if (isTouchDevice) return;
     
-    customCursor = document.createElement('div');
-    customCursor.className = 'custom-cursor';
-    document.body.appendChild(customCursor);
-    
-    let mouseX = 0, mouseY = 0;
-    let cursorX = 0, cursorY = 0;
-    
-    $(document).on('mousemove', (e) => {
-      mouseX = e.clientX;
-      mouseY = e.clientY;
-    });
-    
-    function animateCursor() {
-      cursorX += (mouseX - cursorX) * 0.3;
-      cursorY += (mouseY - cursorY) * 0.3;
-      if (customCursor) {
-        customCursor.style.left = cursorX + 'px';
-        customCursor.style.top = cursorY + 'px';
-      }
-      requestAnimationFrame(animateCursor);
+    if (total === 0) {
+        callback();
+        return;
     }
     
-    animateCursor();
-    
-    $(document).on('mouseleave', () => {
-      if (customCursor) customCursor.style.opacity = '0';
-    });
-    
-    $(document).on('mouseenter', () => {
-      if (customCursor) customCursor.style.opacity = '1';
+    assetsToLoad.forEach((src) => {
+        const img = new Image();
+        img.onload = () => {
+            loaded++;
+            if (loaded === total) callback();
+        };
+        img.onerror = () => {
+            loaded++;
+            if (loaded === total) callback();
+        };
+        img.src = src;
     });
   }
   
@@ -1330,16 +1383,32 @@
   audio.volume = 0.7;
   
   function loadTrack(index) {
-    if (songFiles[index]) audio.src = songFiles[index];
+    if (songFiles[index]) {
+      audio.src = songFiles[index];
+    }
     document.getElementById('songNameDisplay').textContent = playlist[index].name;
     document.getElementById('singerNameDisplay').textContent = playlist[index].singer;
+  }
+  
+  function playMusic() {
+    if (audio.src) {
+      audio.play().catch(() => {});
+    }
   }
   
   function forcePlayMusic() {
     if (audio.src) {
       const playPromise = audio.play();
       if (playPromise !== undefined) {
-        playPromise.catch(() => {});
+        playPromise.catch(() => {
+          const tryPlay = () => {
+            audio.play();
+            document.removeEventListener('click', tryPlay);
+            document.removeEventListener('touchstart', tryPlay);
+          };
+          document.addEventListener('click', tryPlay);
+          document.addEventListener('touchstart', tryPlay);
+        });
       }
     }
   }
@@ -1356,112 +1425,71 @@
     forcePlayMusic();
   }
   
-  audio.addEventListener('ended', () => nextTrack());
+  audio.addEventListener('ended', () => {
+    nextTrack();
+  });
   
   let allScrollers = [];
   
-  // GUIDE SCREEN LOGIC
-  let musicStartedByGuide = false;
-  
-  function showGuideScreen() {
-    const guideScreen = document.getElementById('guideScreen');
-    if (guideScreen) {
-      guideScreen.classList.add('active');
-    }
-  }
-  
-  function hideGuideScreen() {
-    const guideScreen = document.getElementById('guideScreen');
-    if (guideScreen) {
-      guideScreen.classList.add('fade-out');
-      guideScreen.classList.remove('active');
-      setTimeout(() => {
-        guideScreen.style.display = 'none';
-      }, 500);
-    }
-  }
-  
-  function setupGoButton() {
-    const goBtn = document.getElementById('goButton');
-    if (goBtn) {
-      goBtn.addEventListener('click', function(e) {
-        e.preventDefault();
-        
-        // PLAY CLICK SOUND when GO button is clicked
-        clickSound.currentTime = 0;
-        clickSound.play().catch(() => {});
-        
-        if (!musicStartedByGuide) {
-          forcePlayMusic();
-          musicStartedByGuide = true;
-        }
-        hideGuideScreen();
-      });
-    }
-  }
-  
-  $(document).ready(() => {
+  window.addEventListener('DOMContentLoaded', () => {
     preloadAllAssets(imageList, () => {
       allScrollers = createGallery();
       loadTrack(0);
       
       const loadingScreen = document.getElementById('loadingScreen');
-      $(loadingScreen).addClass('hide');
+      loadingScreen.classList.add('hide');
       
       setTimeout(() => {
-        $(loadingScreen).hide();
-        // Show GUIDE SCREEN instead of starting music automatically
-        showGuideScreen();
-        setupGoButton();
-        
+        loadingScreen.style.display = 'none';
+        forcePlayMusic();
         createBackgroundSparkles();
-        setupCustomCursor();
-        
-        if (isTouchDevice) {
-          startTouchSparkles();
-        } else {
-          startMouseTrail();
-        }
+        startMouseTrail(); // Now all PNGs including sparkle.png are loaded!
       }, 1000);
     });
     
-    $('#prevBtn').on('click', prevTrack);
-    $('#nextBtn').on('click', nextTrack);
-    $('#modalClose').on('click', closeModal);
-    $('#modalOverlay').on('click', (e) => { if (e.target === $('#modalOverlay')[0]) closeModal(); });
+    document.getElementById('prevBtn').onclick = prevTrack;
+    document.getElementById('nextBtn').onclick = nextTrack;
+    document.getElementById('modalClose').onclick = closeModal;
+    document.getElementById('modalOverlay').onclick = (e) => {
+      if (e.target === document.getElementById('modalOverlay')) {
+        closeModal();
+      }
+    };
     
-    const prevBtn = $('#prevBtn')[0];
-    const nextBtn = $('#nextBtn')[0];
-    const hoverPrevText = $('#hoverPrevText')[0];
-    const hoverNextText = $('#hoverNextText')[0];
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const hoverPrevText = document.getElementById('hoverPrevText');
+    const hoverNextText = document.getElementById('hoverNextText');
     
-    if (!isTouchDevice) {
-      $(prevBtn).on('mouseenter', () => {
-        isHoveringButton = true;
-        $(hoverPrevText).css({ opacity: '1', visibility: 'visible' });
-        createMusicSparkles(prevBtn);
-      });
-      
-      $(prevBtn).on('mouseleave', () => {
-        isHoveringButton = false;
-        $(hoverPrevText).css({ opacity: '0', visibility: 'hidden' });
-        stopMusicSparkles();
-      });
-      
-      $(nextBtn).on('mouseenter', () => {
-        isHoveringButton = true;
-        $(hoverNextText).css({ opacity: '1', visibility: 'visible' });
-        createMusicSparkles(nextBtn);
-      });
-      
-      $(nextBtn).on('mouseleave', () => {
-        isHoveringButton = false;
-        $(hoverNextText).css({ opacity: '0', visibility: 'hidden' });
-        stopMusicSparkles();
-      });
-    }
+    prevBtn.addEventListener('mouseenter', () => {
+      isHoveringButton = true;
+      hoverPrevText.style.opacity = '1';
+      hoverPrevText.style.visibility = 'visible';
+      createMusicSparkles(prevBtn);
+    });
     
-    $(document).on('visibilitychange', () => {
+    prevBtn.addEventListener('mouseleave', () => {
+      isHoveringButton = false;
+      hoverPrevText.style.opacity = '0';
+      hoverPrevText.style.visibility = 'hidden';
+      stopMusicSparkles();
+    });
+    
+    nextBtn.addEventListener('mouseenter', () => {
+      isHoveringButton = true;
+      hoverNextText.style.opacity = '1';
+      hoverNextText.style.visibility = 'visible';
+      createMusicSparkles(nextBtn);
+    });
+    
+    nextBtn.addEventListener('mouseleave', () => {
+      isHoveringButton = false;
+      hoverNextText.style.opacity = '0';
+      hoverNextText.style.visibility = 'hidden';
+      stopMusicSparkles();
+    });
+    
+    document.addEventListener('visibilitychange', () => {
       if (document.hidden) {
         allScrollers.forEach(s => s.stop());
       } else {
