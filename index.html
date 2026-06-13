@@ -1118,25 +1118,39 @@
   
   function createMusicSparkles(targetElement) {
     if (musicSparkleInterval) clearInterval(musicSparkleInterval);
+    musicSparkleInterval = null;
+    }
+    
     const container = document.getElementById('musicSparkleContainer');
     
     function addMusicSparkle() {
       if (!isHoveringButton) return;
+      
       const rect = targetElement.getBoundingClientRect();
       const sparkle = document.createElement('div');
       sparkle.className = 'music-sparkle';
-      const offsetX = (Math.random() - 0.5) * HOVER_SPARKLE_RADIUS;
-      const offsetY = (Math.random() - 0.5) * 90;
+      
+      let offsetX = (Math.random() - 0.5) * HOVER_SPARKLE_RADIUS;
+      let offsetY = (Math.random() - 0.5) * 90;
+      
       sparkle.style.left = (rect.left + rect.width / 2 + offsetX) + 'px';
       sparkle.style.top = (rect.top + rect.height / 2 + offsetY) + 'px';
-      const size = Math.random() * 20 + 10;
-      sparkle.style.width = size + 'px';
-      sparkle.style.height = size + 'px';
+      const sparkleSize = Math.random() * 20 + 10;
+      sparkle.style.width = sparkleSize + 'px';
+      sparkle.style.height = sparkleSize + 'px';
+      
       container.appendChild(sparkle);
-      setTimeout(() => sparkle.remove(), 1000);
+      
+      setTimeout(() => {
+        if (sparkle.parentNode) {
+          sparkle.remove();
+        }
+      }, 1000);
     }
     
-    musicSparkleInterval = setInterval(() => { if (isHoveringButton) addMusicSparkle(); }, HOVER_SPARKLE_SPEED);
+    musicSparkleInterval = setInterval(() => {
+      if (isHoveringButton) {
+        addMusicSparkle();
   }
   
   function stopMusicSparkles() {
