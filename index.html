@@ -723,13 +723,17 @@
   @media (max-width: 768px) {
   .go-button {
     width: 83px;
-    height: 31.5px;  /* Proper proportional height */
-    background-size: 166px 31.5px;  /* Scaled sprite size */
+    height: 31.5px;
+    background-size: 166px 31.5px;
     bottom: 12%;
-    right: 10%;
-    top: auto;  /* Remove the fixed top: 200px */
+    right: 30%;
+    top: 200px;
     left: auto;
     transform: none;
+  }
+  
+  .go-button:hover {
+    background-position: -83px 0;  /* Scaled: 166/2 = 83px */
   }
   
   .modal-content { flex-direction: column; }
@@ -740,7 +744,8 @@
   .love-track { font-size: 22px; letter-spacing: 4px; }
 }
 
-  @media (max-width: 480px) {
+/* Mobile styles (480px and below) */
+@media (max-width: 480px) {
     .go-button {
       width: 69px;
       height: 50px;
