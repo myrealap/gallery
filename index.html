@@ -723,16 +723,20 @@
   @media (max-width: 768px) {
   .go-button {
     width: 83px;
-    height: 31.5px;
+    height: 35.5px;
     background-size: unset;
-    bottom: 12%;
-    right: 70%;
+    bottom: 32%;
+    right: 130%;
     top: 150px;
     transform: none;
   }
   
   .go-button:hover {
     background-position: -83px 0;  /* Scaled: 166/2 = 83px */
+  }
+
+  .go-button:focus {
+    outline: none;
   }
   
   .modal-content { flex-direction: column; }
