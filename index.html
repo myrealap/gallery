@@ -193,6 +193,24 @@
   .hover-next-text {
     right: 40px;
   }
+ /* Make hover text background more visible on touch devices */
+@media (max-width: 768px) {
+  .hover-prev-text, .hover-next-text {
+    background: rgba(0, 0, 0, 0.8);
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    white-space: nowrap;
+  }
+  
+  .hover-prev-text {
+    left: 50px;
+  }
+  
+  .hover-next-text {
+    right: 50px;
+  }
+}
 
   .prev-btn:hover ~ .hover-prev-text,
   .prev-btn:hover + .hover-prev-text {
@@ -723,7 +741,7 @@
   @media (max-width: 768px) {
   .go-button {
     width: 83px;
-    height: auto;
+    height: 100%;
     bottom: 32%;
     right: 160%;
     top: 180px;
