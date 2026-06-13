@@ -1119,7 +1119,6 @@
   function createMusicSparkles(targetElement) {
     if (musicSparkleInterval) clearInterval(musicSparkleInterval);
     musicSparkleInterval = null;
-    }
     
     const container = document.getElementById('musicSparkleContainer');
     
@@ -1152,6 +1151,7 @@
       if (isHoveringButton) {
         addMusicSparkle();
   }
+}, HOVER_SPARKLE_SPEED);
   
   function stopMusicSparkles() {
     if (musicSparkleInterval) clearInterval(musicSparkleInterval);
