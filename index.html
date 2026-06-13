@@ -695,14 +695,14 @@
     height: 90px;
     left: 50%;
     transform: translate(-50%, -50%);
-    background-image: url('images/Go.png');
+    background-image: url('images/go.png');
     background-repeat: no-repeat;
     background-position: 0 0;
     background-size: unset;
     cursor: pointer;
     border: none;
     background-color: transparent;
-    transition: none;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
     z-index: 10009;
   }
 
@@ -721,28 +721,29 @@
   }
 
   @media (max-width: 768px) {
-    .go-button {
-      width: 83px;
-      height: 25px;
-      top: 200px;
-      background-size: unset;
-      background-repeat: no-repeat;
-      background-position: 0 0;
-      opacity: 1;
-    }
-    .modal-content { flex-direction: column; }
-    .modal-image { width: 60%; margin: 30px auto 0 auto; }
-    .modal-description { padding: 20px; }
-    .modal-title { font-size: 18px; }
-    .modal-text { font-size: 12px; }
-    .love-track { font-size: 22px; letter-spacing: 4px; }
+  .go-button {
+    width: 83px;
+    height: 31.5px;  /* Proper proportional height */
+    background-size: 166px 31.5px;  /* Scaled sprite size */
+    bottom: 12%;
+    right: 10%;
+    top: auto;  /* Remove the fixed top: 200px */
+    left: auto;
+    transform: none;
   }
-  }
+  
+  .modal-content { flex-direction: column; }
+  .modal-image { width: 60%; margin: 30px auto 0 auto; }
+  .modal-description { padding: 20px; }
+  .modal-title { font-size: 18px; }
+  .modal-text { font-size: 12px; }
+  .love-track { font-size: 22px; letter-spacing: 4px; }
+}
 
   @media (max-width: 480px) {
     .go-button {
       width: 69px;
-      height: 69px;
+      height: 50px;
       background-size: 138px 26px;
       bottom: 10%;
       right: 8%;
