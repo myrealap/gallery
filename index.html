@@ -713,7 +713,7 @@
     background-image: url('images/Go.png');
     background-repeat: no-repeat;
     background-position: 0 0;
-    background-size: unset;
+    background-size: 221px 66px;
     cursor: pointer;
     border: none;
     background-color: transparent;
@@ -736,42 +736,39 @@
   }
 
   @media (max-width: 768px) {
-  .go-button {
-    width: 83px;
-    height: auto;
-    bottom: 32%;
-    right: 160%;
-    top: 180px;
-    transform: translate(-50%, -50%);
-  }
-  
-  .go-button:hover {
-    background-position: -68px 0;  /* Scaled: 166/2 = 83px */
-  }
+    .go-button {
+        width: 83px; /* Scaled proportionally */
+        height: 50px; /* Scaled proportionally: 66 * (83/110.5) ≈ 50 */
+        background-size: 166px 50px; /* Full sprite scaled: 221 * (83/110.5) ≈ 166 */
+        bottom: 32%;
+        right: 160%;
+        top: 180px;
+        transform: translate(-50%, -50%);
+    }
+    
+    .go-button:hover {
+        background-position: -83px 0; /* Half of scaled width */
+    }
 
-  .go-button:focus {
-    outline: none;
-  }
-  
-  .modal-content { flex-direction: column; }
-  .modal-image { width: 60%; margin: 30px auto 0 auto; }
-  .modal-description { padding: 20px; }
-  .modal-title { font-size: 18px; }
-  .modal-text { font-size: 12px; }
-  .love-track { font-size: 22px; letter-spacing: 4px; }
+    .go-button:focus {
+        outline: none;
+    }
 }
 
-/* Mobile styles (480px and below) */
 @media (max-width: 480px) {
     .go-button {
-      width: 69px;
-      height: 50px;
-      background-size: 138px 26px;
-      bottom: 10%;
-      right: 8%;
-      opacity: 1;
+        width: 69px;
+        height: 41px; /* Proportional: 66 * (69/110.5) ≈ 41 */
+        background-size: 138px 41px; /* Full sprite scaled */
+        bottom: 10%;
+        right: 8%;
+        transform: translate(-50%, -50%);
     }
-  }
+    
+    .go-button:hover {
+        background-position: -69px 0; /* Half of scaled width */
+    }
+}
 
   @media (max-width: 480px) and (max-height: 900px) {
     .love-track { font-size: 18px; }
