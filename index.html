@@ -25,6 +25,14 @@
     flex-direction: column;
   }
 
+@font-face {
+    font-family: 'ALGER';
+    src: url('fonts/alger.ttf');
+         url('fonts/alger.ttf') format('truetype'),
+    font-weight: normal;
+    font-style: normal;
+}
+
   .loading-screen {
     position: fixed;
     top: 0;
@@ -193,21 +201,6 @@
   .hover-next-text {
     right: 40px;
   }
- /* Make hover text background more visible on touch devices */
-@media (max-width: 768px) {
-  .hover-prev-text, .hover-next-text {
-    font-size: 8px;
-    white-space: nowrap;
-  }
-  
-  .hover-prev-text {
-    left: 35px;
-  }
-  
-  .hover-next-text {
-    right: 35px;
-  }
-}
 
   .prev-btn:hover ~ .hover-prev-text,
   .prev-btn:hover + .hover-prev-text {
@@ -367,10 +360,16 @@
     position: relative;
     cursor: pointer;
     z-index: 1;
+    transition: z-index 0s;
   }
 
   .image-item:hover {
-    z-index: 9999;
+    z-index: 9999 !important;
+}
+
+/* Add this new rule for active state */
+.image-item.active {
+    z-index: 9999 !important;
   }
 
   .image-item img {
@@ -600,6 +599,7 @@
   .love-track span {
     display: inline-block;
     padding: 0 10px;
+    font-family: 'alger'
   }
 
   .footer {
@@ -738,14 +738,10 @@
   @media (max-width: 768px) {
   .go-button {
     width: 83px;
-    height: 35px;
+    height: auto;
     bottom: 32%;
     right: 160%;
     top: 180px;
-    background-image: url('images/Go.png');
-    background-repeat: no-repeat;
-    background-position: 0 0;
-    background-size: unset;
     transform: translate(-50%, -50%);
   }
   
@@ -1118,45 +1114,31 @@
   
   function createMusicSparkles(targetElement) {
     if (musicSparkleInterval) clearInterval(musicSparkleInterval);
-    
     const container = document.getElementById('musicSparkleContainer');
     
     function addMusicSparkle() {
-        if (!isHoveringButton) return;
-        
-        const rect = targetElement.getBoundingClientRect();
-        const sparkle = document.createElement('div');
-        sparkle.className = 'music-sparkle';
-        
-        let offsetX = (Math.random() - 0.5) * HOVER_SPARKLE_RADIUS;
-        let offsetY = (Math.random() - 0.5) * 90;
-        
-        sparkle.style.left = (rect.left + rect.width / 2 + offsetX) + 'px';
-        sparkle.style.top = (rect.top + rect.height / 2 + offsetY) + 'px';
-        const sparkleSize = Math.random() * 20 + 10;
-        sparkle.style.width = sparkleSize + 'px';
-        sparkle.style.height = sparkleSize + 'px';
-        
-        container.appendChild(sparkle);
-        
-        setTimeout(() => {
-            if (sparkle.parentNode) {
-                sparkle.remove();
-            }
-        }, 1000);
+      if (!isHoveringButton) return;
+      const rect = targetElement.getBoundingClientRect();
+      const sparkle = document.createElement('div');
+      sparkle.className = 'music-sparkle';
+      const offsetX = (Math.random() - 0.5) * HOVER_SPARKLE_RADIUS;
+      const offsetY = (Math.random() - 0.5) * 90;
+      sparkle.style.left = (rect.left + rect.width / 2 + offsetX) + 'px';
+      sparkle.style.top = (rect.top + rect.height / 2 + offsetY) + 'px';
+      const size = Math.random() * 20 + 10;
+      sparkle.style.width = size + 'px';
+      sparkle.style.height = size + 'px';
+      container.appendChild(sparkle);
+      setTimeout(() => sparkle.remove(), 1000);
     }
     
-    musicSparkleInterval = setInterval(() => {
-        if (isHoveringButton) {
-            addMusicSparkle();
-        }
-    }, HOVER_SPARKLE_SPEED);
-}  // ← THIS CLOSING BRACE WAS MISSING!
-
-function stopMusicSparkles() {
+    musicSparkleInterval = setInterval(() => { if (isHoveringButton) addMusicSparkle(); }, HOVER_SPARKLE_SPEED);
+  }
+  
+  function stopMusicSparkles() {
     if (musicSparkleInterval) clearInterval(musicSparkleInterval);
     document.getElementById('musicSparkleContainer').innerHTML = '';
-}
+  }
   
   let lastMouseX = window.innerWidth / 2;
   let lastMouseY = window.innerHeight / 2;
@@ -1473,43 +1455,8 @@ function stopMusicSparkles() {
     $('#modalClose').on('click', closeModal);
     $('#modalOverlay').on('click', (e) => { if (e.target === $('#modalOverlay')[0]) closeModal(); });
     
-    // ↓↓↓ ADD THE TOUCH HANDLERS HERE ↓↓↓
-    if (isTouchDevice) {
-        const prevBtnTouch = document.getElementById('prevBtn');
-        const nextBtnTouch = document.getElementById('nextBtn');
-        const hoverPrevTextTouch = document.getElementById('hoverPrevText');
-        const hoverNextTextTouch = document.getElementById('hoverNextText');
-        
-        if (prevBtnTouch && hoverPrevTextTouch) {
-            prevBtnTouch.addEventListener('touchstart', function(e) {
-                e.preventDefault();
-                hoverPrevTextTouch.style.opacity = '1';
-                hoverPrevTextTouch.style.visibility = 'visible';
-                setTimeout(() => {
-                    hoverPrevTextTouch.style.opacity = '0';
-                    hoverPrevTextTouch.style.visibility = 'hidden';
-                }, 1500);
-            });
-        }
-        
-        if (nextBtnTouch && hoverNextTextTouch) {
-            nextBtnTouch.addEventListener('touchstart', function(e) {
-                e.preventDefault();
-                hoverNextTextTouch.style.opacity = '1';
-                hoverNextTextTouch.style.visibility = 'visible';
-                setTimeout(() => {
-                    hoverNextTextTouch.style.opacity = '0';
-                    hoverNextTextTouch.style.visibility = 'hidden';
-                }, 1500);
-            });
-        }
-    }
-    // ↑↑↑ END OF ADDED CODE ↑↑↑
-    
-    
-  
-  const prevBtn = $('#prevBtn')[0];
-  const nextBtn = $('#nextBtn')[0];
+    const prevBtn = $('#prevBtn')[0];
+    const nextBtn = $('#nextBtn')[0];
     const hoverPrevText = $('#hoverPrevText')[0];
     const hoverNextText = $('#hoverNextText')[0];
     
