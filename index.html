@@ -736,7 +736,11 @@
   }
 
   @media (max-width: 768px) {
-    .go-button {
+    .guide-screen {
+        top: -120px; /* Changed from -90px to move everything up */
+    }
+    
+    .go-button{
         width: 83px; /* Scaled proportionally */
         height: 50px; /* Scaled proportionally: 66 * (83/110.5) ≈ 50 */
         background-size: 166px 50px; /* Full sprite scaled: 221 * (83/110.5) ≈ 166 */
