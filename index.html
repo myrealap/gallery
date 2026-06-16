@@ -764,7 +764,7 @@
   .modal-text { font-size: 12px; }
   .love-track { font-size: 22px; letter-spacing: 4px; }
 }
-
+ }
 @media (max-width: 480px) {
     .go-button {
         width: 69px;
@@ -790,6 +790,7 @@
   .modal-text { font-size: 12px; }
   .love-track { font-size: 22px; letter-spacing: 4px; }
 }
+ }
 /* Mobile styles (480px and below) */
 @media (max-width: 480px) {
     .go-button {
@@ -1489,7 +1490,33 @@
     const hoverPrevText = $('#hoverPrevText')[0];
     const hoverNextText = $('#hoverNextText')[0];
     
-         // Mobile: touchstart/touchend for press-and-hold sparkles + text (WITHOUT blocking click)
+         if (!isTouchDevice) {
+      $(prevBtn).on('mouseenter', () => {
+        isHoveringButton = true;
+        $(hoverPrevText).css({ opacity: '1', visibility: 'visible' });
+        createMusicSparkles(prevBtn);
+      });
+      
+      $(prevBtn).on('mouseleave', () => {
+        isHoveringButton = false;
+        $(hoverPrevText).css({ opacity: '0', visibility: 'hidden' });
+        stopMusicSparkles();
+      });
+      
+      $(nextBtn).on('mouseenter', () => {
+        isHoveringButton = true;
+        $(hoverNextText).css({ opacity: '1', visibility: 'visible' });
+        createMusicSparkles(nextBtn);
+      });
+      
+      $(nextBtn).on('mouseleave', () => {
+        isHoveringButton = false;
+        $(hoverNextText).css({ opacity: '0', visibility: 'hidden' });
+        stopMusicSparkles();
+      });
+    }
+    
+    // Mobile: touchstart/touchend for press-and-hold sparkles + text
     if (isTouchDevice) {
       $(prevBtn).on('touchstart', () => {
         isHoveringButton = true;
