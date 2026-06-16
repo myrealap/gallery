@@ -1517,6 +1517,109 @@
       });
     }
   }
+   // ============================================
+  // PROTECTION: Block right-click, long-press, inspector
+  // ============================================
+  
+  // Block right-click context menu (desktop)
+  document.addEventListener('contextmenu', function(e) {
+    e.preventDefault();
+    return false;
+  });
+  
+  // Block long-press on mobile (touch devices)
+  document.addEventListener('touchstart', function(e) {
+    if (e.target.tagName === 'IMG') {
+      e.preventDefault();
+    }
+  }, { passive: false });
+  
+  // Block specific keyboard shortcuts
+  document.addEventListener('keydown', function(e) {
+    // F12 - DevTools
+    if (e.key === 'F12' || e.keyCode === 123) {
+      e.preventDefault();
+      return false;
+    }
+    // Ctrl+Shift+I (Chrome/Firefox DevTools)
+    if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.keyCode === 73)) {
+      e.preventDefault();
+      return false;
+    }
+    // Ctrl+Shift+J (Chrome Console)
+    if (e.ctrlKey && e.shiftKey && (e.key === 'J' || e.key === 'j' || e.keyCode === 74)) {
+      e.preventDefault();
+      return false;
+    }
+    // Ctrl+Shift+C (Chrome Element Inspector)
+    if (e.ctrlKey && e.shiftKey && (e.key === 'C' || e.key === 'c' || e.keyCode === 67)) {
+      e.preventDefault();
+      return false;
+    }
+    // Ctrl+U (View Source)
+    if (e.ctrlKey && (e.key === 'U' || e.key === 'u' || e.keyCode === 85)) {
+      e.preventDefault();
+      return false;
+    }
+    // Ctrl+S (Save Page)
+    if (e.ctrlKey && (e.key === 'S' || e.key === 's' || e.keyCode === 83)) {
+      e.preventDefault();
+      return false;
+    }
+  });
+  
+  // Inspector detection - redirect to loading page if DevTools open
+  let devToolsOpen = false;
+  const threshold = 160;
+  
+  function detectDevTools() {
+    const widthThreshold = window.outerWidth - window.innerWidth > threshold;
+    const heightThreshold = window.outerHeight - window.innerHeight > threshold;
+    
+    if (widthThreshold || heightThreshold) {
+      if (!devToolsOpen) {
+        devToolsOpen = true;
+        // Redirect to loading page
+        document.body.innerHTML = '';
+        const loadingDiv = document.createElement('div');
+        loadingDiv.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:99999999;display:flex;align-items:center;justify-content:center;color:white;font-size:24px;';
+        loadingDiv.innerHTML = '⚠️ Inspector detected. Please close DevTools.';
+        document.body.appendChild(loadingDiv);
+        // Stop music
+        if (audio) audio.pause();
+        // Reload after 3 seconds if DevTools stays open
+        setTimeout(() => {
+          if (devToolsOpen) {
+            window.location.reload();
+          }
+        }, 3000);
+      }
+    } else {
+      devToolsOpen = false;
+    }
+  }
+  
+  setInterval(detectDevTools, 1000);
+  
+  // Console clear and warning
+  console.clear();
+  console.log('%c⚠️ STOP!', 'color:red;font-size:40px;');
+  console.log('%cThis is a protected area. Close the inspector immediately.', 'color:white;font-size:16px;');
+  
+  // Drag protection on images
+  document.addEventListener('dragstart', function(e) {
+    if (e.target.tagName === 'IMG') {
+      e.preventDefault();
+      return false;
+    }
+  });
+  
+  // Prevent save image dialog on iOS
+  document.addEventListener('touchmove', function(e) {
+    if (e.target.tagName === 'IMG' && e.touches && e.touches.length > 1) {
+      e.preventDefault();
+    }
+  }, { passive: false });
   
   $(document).ready(() => {
     preloadAllAssets(imageList, () => {
