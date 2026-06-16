@@ -756,6 +756,14 @@
     .go-button:focus {
         outline: none;
     }
+  
+  .modal-content { flex-direction: column; }
+  .modal-image { width: 60%; margin: 30px auto 0 auto; }
+  .modal-description { padding: 20px; }
+  .modal-title { font-size: 18px; }
+  .modal-text { font-size: 12px; }
+  .love-track { font-size: 22px; letter-spacing: 4px; }
+}
 }
 
 @media (max-width: 480px) {
@@ -771,7 +779,6 @@
     .go-button:hover {
         background-position: -69px 0; /* Half of scaled width */
     }
-}
 
   .go-button:focus {
     outline: none;
@@ -784,7 +791,7 @@
   .modal-text { font-size: 12px; }
   .love-track { font-size: 22px; letter-spacing: 4px; }
 }
-
+}
 /* Mobile styles (480px and below) */
 @media (max-width: 480px) {
     .go-button {
@@ -1484,7 +1491,6 @@
     const hoverPrevText = $('#hoverPrevText')[0];
     const hoverNextText = $('#hoverNextText')[0];
     
-        // Desktop hover events
     if (!isTouchDevice) {
       $(prevBtn).on('mouseenter', () => {
         isHoveringButton = true;
@@ -1505,49 +1511,6 @@
       });
       
       $(nextBtn).on('mouseleave', () => {
-        isHoveringButton = false;
-        $(hoverNextText).css({ opacity: '0', visibility: 'hidden' });
-        stopMusicSparkles();
-      });
-    }
-    
-    // Touch device events - sparkles stay as long as finger is held
-    if (isTouchDevice) {
-      $(prevBtn).on('touchstart', (e) => {
-        e.preventDefault();
-        isHoveringButton = true;
-        $(hoverPrevText).css({ opacity: '1', visibility: 'visible' });
-        createMusicSparkles(prevBtn);
-      });
-      
-      $(prevBtn).on('touchend', (e) => {
-        e.preventDefault();
-        isHoveringButton = false;
-        $(hoverPrevText).css({ opacity: '0', visibility: 'hidden' });
-        stopMusicSparkles();
-      });
-      
-      $(prevBtn).on('touchcancel', (e) => {
-        isHoveringButton = false;
-        $(hoverPrevText).css({ opacity: '0', visibility: 'hidden' });
-        stopMusicSparkles();
-      });
-      
-      $(nextBtn).on('touchstart', (e) => {
-        e.preventDefault();
-        isHoveringButton = true;
-        $(hoverNextText).css({ opacity: '1', visibility: 'visible' });
-        createMusicSparkles(nextBtn);
-      });
-      
-      $(nextBtn).on('touchend', (e) => {
-        e.preventDefault();
-        isHoveringButton = false;
-        $(hoverNextText).css({ opacity: '0', visibility: 'hidden' });
-        stopMusicSparkles();
-      });
-      
-      $(nextBtn).on('touchcancel', (e) => {
         isHoveringButton = false;
         $(hoverNextText).css({ opacity: '0', visibility: 'hidden' });
         stopMusicSparkles();
