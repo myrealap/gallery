@@ -1527,13 +1527,6 @@
     return false;
   });
   
-  // Block long-press on mobile (touch devices)
-  document.addEventListener('touchstart', function(e) {
-    if (e.target.tagName === 'IMG') {
-      e.preventDefault();
-    }
-  }, { passive: false });
-  
   // Block specific keyboard shortcuts
   document.addEventListener('keydown', function(e) {
     // F12 - DevTools
