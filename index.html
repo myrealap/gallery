@@ -1516,42 +1516,69 @@
       });
     }
     
-    // Mobile: touchstart/touchend for press-and-hold sparkles + text
+        // Mobile: touchstart/touchend for press-and-hold sparkles + text
     if (isTouchDevice) {
+      let prevTimer = null;
+      let nextTimer = null;
+      
       $(prevBtn).on('touchstart', () => {
         isHoveringButton = true;
         $(hoverPrevText).css({ opacity: '1', visibility: 'visible' });
         createMusicSparkles(prevBtn);
+        // Clear any existing timer
+        if (prevTimer) clearTimeout(prevTimer);
       });
       
       $(prevBtn).on('touchend', () => {
-        isHoveringButton = false;
-        $(hoverPrevText).css({ opacity: '0', visibility: 'hidden' });
-        stopMusicSparkles();
+        // Keep text for 3 seconds
+        prevTimer = setTimeout(() => {
+          $(hoverPrevText).css({ opacity: '0', visibility: 'hidden' });
+        }, 3000);
+        // Keep sparkles for 5 seconds
+        setTimeout(() => {
+          isHoveringButton = false;
+          stopMusicSparkles();
+        }, 5000);
       });
       
       $(prevBtn).on('touchcancel', () => {
-        isHoveringButton = false;
-        $(hoverPrevText).css({ opacity: '0', visibility: 'hidden' });
-        stopMusicSparkles();
+        prevTimer = setTimeout(() => {
+          $(hoverPrevText).css({ opacity: '0', visibility: 'hidden' });
+        }, 3000);
+        setTimeout(() => {
+          isHoveringButton = false;
+          stopMusicSparkles();
+        }, 5000);
       });
       
       $(nextBtn).on('touchstart', () => {
         isHoveringButton = true;
         $(hoverNextText).css({ opacity: '1', visibility: 'visible' });
         createMusicSparkles(nextBtn);
+        // Clear any existing timer
+        if (nextTimer) clearTimeout(nextTimer);
       });
       
       $(nextBtn).on('touchend', () => {
-        isHoveringButton = false;
-        $(hoverNextText).css({ opacity: '0', visibility: 'hidden' });
-        stopMusicSparkles();
+        // Keep text for 3 seconds
+        nextTimer = setTimeout(() => {
+          $(hoverNextText).css({ opacity: '0', visibility: 'hidden' });
+        }, 3000);
+        // Keep sparkles for 5 seconds
+        setTimeout(() => {
+          isHoveringButton = false;
+          stopMusicSparkles();
+        }, 5000);
       });
       
       $(nextBtn).on('touchcancel', () => {
-        isHoveringButton = false;
-        $(hoverNextText).css({ opacity: '0', visibility: 'hidden' });
-        stopMusicSparkles();
+        nextTimer = setTimeout(() => {
+          $(hoverNextText).css({ opacity: '0', visibility: 'hidden' });
+        }, 3000);
+        setTimeout(() => {
+          isHoveringButton = false;
+          stopMusicSparkles();
+        }, 5000);
       });
     }
   });
