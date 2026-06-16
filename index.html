@@ -155,6 +155,34 @@
     50% { opacity: 0.3; transform: scale(0.8) rotate(180deg); }
     75% { opacity: 0.5; transform: scale(1) rotate(270deg); }
     100% { opacity: 0; transform: scale(0.5) rotate(360deg); }
+  } 
+  .guide-sparkle-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 10002;
+    overflow: hidden;
+  }
+
+  .guide-sparkle {
+    position: absolute;
+    background-image: url('images/sparkle.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    opacity: 0;
+    animation: guideSparkleFade 2s ease-out forwards;
+    pointer-events: none;
+  }
+
+  @keyframes guideSparkleFade {
+    0% { opacity: 0; transform: scale(0.3) rotate(0deg); }
+    15% { opacity: 1; transform: scale(1) rotate(180deg); }
+    85% { opacity: 0.8; transform: scale(0.8) rotate(360deg); }
+    100% { opacity: 0; transform: scale(0.2) rotate(540deg); }
   }
 
   .prev-btn, .next-btn {
@@ -764,7 +792,8 @@
   .modal-text { font-size: 12px; }
   .love-track { font-size: 22px; letter-spacing: 4px; }
 }
- }
+}
+
 @media (max-width: 480px) {
     .go-button {
         width: 69px;
@@ -790,7 +819,7 @@
   .modal-text { font-size: 12px; }
   .love-track { font-size: 22px; letter-spacing: 4px; }
 }
- }
+}
 /* Mobile styles (480px and below) */
 @media (max-width: 480px) {
     .go-button {
@@ -831,6 +860,7 @@
 
 <!-- GUIDE SCREEN -->
 <div class="guide-screen" id="guideScreen">
+ <div class="guide-sparkle-container" id="guideSparkleContainer"></div>
   <div class="guide-container">
     <img class="guide-img" src="images/guide.png" alt="guide">
     <button class="go-button" id="goButton"></button>
@@ -1188,6 +1218,42 @@
     sparkle.style.height = size + 'px';
     container.appendChild(sparkle);
     setTimeout(() => sparkle.remove(), 800);
+  }  
+  
+  let guideSparkleInterval = null;
+  let isGuideScreenOpen = false;
+
+  function createGuideSparkles() {
+    if (guideSparkleInterval) clearInterval(guideSparkleInterval);
+    const container = document.getElementById('guideSparkleContainer');
+    container.innerHTML = '';
+    
+    function addGuideSparkle() {
+      if (!isGuideScreenOpen) return;
+      const sparkle = document.createElement('div');
+      sparkle.className = 'guide-sparkle';
+      sparkle.style.left = Math.random() * window.innerWidth + 'px';
+      sparkle.style.top = Math.random() * window.innerHeight + 'px';
+      sparkle.style.animationDelay = Math.random() * 0.5 + 's';
+      const size = Math.random() * (MOUSE_SPARKLE_SIZE_MAX - MOUSE_SPARKLE_SIZE_MIN) + MOUSE_SPARKLE_SIZE_MIN;
+      sparkle.style.width = size + 'px';
+      sparkle.style.height = size + 'px';
+      container.appendChild(sparkle);
+      setTimeout(() => sparkle.remove(), 2000);
+    }
+    
+    // Initial burst
+    for (let i = 0; i < 50; i++) {
+      setTimeout(() => addGuideSparkle(), i * 40);
+    }
+    // Continuous sparkles
+    guideSparkleInterval = setInterval(() => { if (isGuideScreenOpen) addGuideSparkle(); }, 150);
+  }
+
+  function stopGuideSparkles() {
+    if (guideSparkleInterval) clearInterval(guideSparkleInterval);
+    const container = document.getElementById('guideSparkleContainer');
+    if (container) container.innerHTML = '';
   }
   
   function startMouseTrail() {
@@ -1418,18 +1484,22 @@
   // GUIDE SCREEN LOGIC
   let musicStartedByGuide = false;
   
-  function showGuideScreen() {
+    function showGuideScreen() {
     const guideScreen = document.getElementById('guideScreen');
     if (guideScreen) {
       guideScreen.classList.add('active');
+      isGuideScreenOpen = true;
+      createGuideSparkles();
     }
   }
   
-  function hideGuideScreen() {
+    function hideGuideScreen() {
     const guideScreen = document.getElementById('guideScreen');
     if (guideScreen) {
       guideScreen.classList.add('fade-out');
       guideScreen.classList.remove('active');
+      isGuideScreenOpen = false;
+      stopGuideSparkles();
       setTimeout(() => {
         guideScreen.style.display = 'none';
       }, 500);
@@ -1490,7 +1560,7 @@
     const hoverPrevText = $('#hoverPrevText')[0];
     const hoverNextText = $('#hoverNextText')[0];
     
-         if (!isTouchDevice) {
+    if (!isTouchDevice) {
       $(prevBtn).on('mouseenter', () => {
         isHoveringButton = true;
         $(hoverPrevText).css({ opacity: '1', visibility: 'visible' });
@@ -1516,105 +1586,13 @@
       });
     }
     
-            // Mobile: touchstart/touchend for press-and-hold sparkles + text
-    if (isTouchDevice) {
-      let prevTimer = null;
-      let nextTimer = null;
-      
-      $(prevBtn).on('touchstart', () => {
-        isHoveringButton = true;
-        $(hoverPrevText).css({ 
-          opacity: '1', 
-          visibility: 'visible',
-          transition: 'none' // Instant appear
-        });
-        createMusicSparkles(prevBtn);
-        if (prevTimer) clearTimeout(prevTimer);
-      });
-      
-      $(prevBtn).on('touchend', () => {
-        // Fade out text after 3 seconds
-        prevTimer = setTimeout(() => {
-          $(hoverPrevText).css({ 
-            opacity: '0',
-            transition: 'opacity 0.8s ease' // Smooth fade out
-          });
-          // Hide completely after fade
-          setTimeout(() => {
-            $(hoverPrevText).css({ visibility: 'hidden' });
-          }, 800);
-        }, 3000);
-        
-        // Stop sparkles after 5 seconds
-        setTimeout(() => {
-          isHoveringButton = false;
-          stopMusicSparkles();
-        }, 5000);
-      });
-      
-      $(prevBtn).on('touchcancel', () => {
-        prevTimer = setTimeout(() => {
-          $(hoverPrevText).css({ 
-            opacity: '0',
-            transition: 'opacity 0.8s ease'
-          });
-          setTimeout(() => {
-            $(hoverPrevText).css({ visibility: 'hidden' });
-          }, 800);
-        }, 3000);
-        setTimeout(() => {
-          isHoveringButton = false;
-          stopMusicSparkles();
-        }, 5000);
-      });
-      
-      $(nextBtn).on('touchstart', () => {
-        isHoveringButton = true;
-        $(hoverNextText).css({ 
-          opacity: '1', 
-          visibility: 'visible',
-          transition: 'none' // Instant appear
-        });
-        createMusicSparkles(nextBtn);
-        if (nextTimer) clearTimeout(nextTimer);
-      });
-      
-      $(nextBtn).on('touchend', () => {
-        // Fade out text after 3 seconds
-        nextTimer = setTimeout(() => {
-          $(hoverNextText).css({ 
-            opacity: '0',
-            transition: 'opacity 0.8s ease' // Smooth fade out
-          });
-          // Hide completely after fade
-          setTimeout(() => {
-            $(hoverNextText).css({ visibility: 'hidden' });
-          }, 800);
-        }, 3000);
-        
-        // Stop sparkles after 5 seconds
-        setTimeout(() => {
-          isHoveringButton = false;
-          stopMusicSparkles();
-        }, 5000);
-      });
-      
-      $(nextBtn).on('touchcancel', () => {
-        nextTimer = setTimeout(() => {
-          $(hoverNextText).css({ 
-            opacity: '0',
-            transition: 'opacity 0.8s ease'
-          });
-          setTimeout(() => {
-            $(hoverNextText).css({ visibility: 'hidden' });
-          }, 800);
-        }, 3000);
-        setTimeout(() => {
-          isHoveringButton = false;
-          stopMusicSparkles();
-        }, 5000);
-      });
-    }
+    $(document).on('visibilitychange', () => {
+      if (document.hidden) {
+        allScrollers.forEach(s => s.stop());
+      } else {
+        allScrollers.forEach(s => s.resume());
+      }
+    });
   });
 </script>
 </body>
