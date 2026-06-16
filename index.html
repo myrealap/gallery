@@ -764,7 +764,6 @@
   .modal-text { font-size: 12px; }
   .love-track { font-size: 22px; letter-spacing: 4px; }
 }
-}
 
 @media (max-width: 480px) {
     .go-button {
@@ -790,7 +789,6 @@
   .modal-title { font-size: 18px; }
   .modal-text { font-size: 12px; }
   .love-track { font-size: 22px; letter-spacing: 4px; }
-}
 }
 /* Mobile styles (480px and below) */
 @media (max-width: 480px) {
@@ -1491,83 +1489,44 @@
     const hoverPrevText = $('#hoverPrevText')[0];
     const hoverNextText = $('#hoverNextText')[0];
     
-        // Desktop hover events
-    if (!isTouchDevice) {
-      $(prevBtn).on('mouseenter', () => {
-        isHoveringButton = true;
-        $(hoverPrevText).css({ opacity: '1', visibility: 'visible' });
-        createMusicSparkles(prevBtn);
-      });
-      
-      $(prevBtn).on('mouseleave', () => {
-        isHoveringButton = false;
-        $(hoverPrevText).css({ opacity: '0', visibility: 'hidden' });
-        stopMusicSparkles();
-      });
-      
-      $(nextBtn).on('mouseenter', () => {
-        isHoveringButton = true;
-        $(hoverNextText).css({ opacity: '1', visibility: 'visible' });
-        createMusicSparkles(nextBtn);
-      });
-      
-      $(nextBtn).on('mouseleave', () => {
-        isHoveringButton = false;
-        $(hoverNextText).css({ opacity: '0', visibility: 'hidden' });
-        stopMusicSparkles();
-      });
-    }
-    
-    // Touch device events - sparkles stay as long as finger is held
+         // Mobile: touchstart/touchend for press-and-hold sparkles + text (WITHOUT blocking click)
     if (isTouchDevice) {
-      $(prevBtn).on('touchstart', (e) => {
-        e.preventDefault();
+      $(prevBtn).on('touchstart', () => {
         isHoveringButton = true;
         $(hoverPrevText).css({ opacity: '1', visibility: 'visible' });
         createMusicSparkles(prevBtn);
       });
       
-      $(prevBtn).on('touchend', (e) => {
-        e.preventDefault();
+      $(prevBtn).on('touchend', () => {
         isHoveringButton = false;
         $(hoverPrevText).css({ opacity: '0', visibility: 'hidden' });
         stopMusicSparkles();
       });
       
-      $(prevBtn).on('touchcancel', (e) => {
+      $(prevBtn).on('touchcancel', () => {
         isHoveringButton = false;
         $(hoverPrevText).css({ opacity: '0', visibility: 'hidden' });
         stopMusicSparkles();
       });
       
-      $(nextBtn).on('touchstart', (e) => {
-        e.preventDefault();
+      $(nextBtn).on('touchstart', () => {
         isHoveringButton = true;
         $(hoverNextText).css({ opacity: '1', visibility: 'visible' });
         createMusicSparkles(nextBtn);
       });
       
-      $(nextBtn).on('touchend', (e) => {
-        e.preventDefault();
+      $(nextBtn).on('touchend', () => {
         isHoveringButton = false;
         $(hoverNextText).css({ opacity: '0', visibility: 'hidden' });
         stopMusicSparkles();
       });
       
-      $(nextBtn).on('touchcancel', (e) => {
+      $(nextBtn).on('touchcancel', () => {
         isHoveringButton = false;
         $(hoverNextText).css({ opacity: '0', visibility: 'hidden' });
         stopMusicSparkles();
       });
     }
-    
-    $(document).on('visibilitychange', () => {
-      if (document.hidden) {
-        allScrollers.forEach(s => s.stop());
-      } else {
-        allScrollers.forEach(s => s.resume());
-      }
-    });
   });
 </script>
 </body>
