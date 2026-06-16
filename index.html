@@ -1525,6 +1525,45 @@
   document.addEventListener('contextmenu', function(e) {
     e.preventDefault();
     return false;
+  });  
+ 
+ // Block long-press on mobile (but allow taps for modal)
+  let touchStartTime = 0;
+  let touchStartX = 0;
+  let touchStartY = 0;
+  
+  document.addEventListener('touchstart', function(e) {
+    if (e.target.tagName === 'IMG') {
+      touchStartTime = Date.now();
+      touchStartX = e.touches[0].clientX;
+      touchStartY = e.touches[0].clientY;
+    }
+  }, { passive: true });
+  
+  document.addEventListener('touchend', function(e) {
+    if (e.target.tagName === 'IMG') {
+      const touchDuration = Date.now() - touchStartTime;
+      const touchEndX = e.changedTouches[0].clientX;
+      const touchEndY = e.changedTouches[0].clientY;
+      const movedDistance = Math.sqrt(
+        Math.pow(touchEndX - touchStartX, 2) + 
+        Math.pow(touchEndY - touchStartY, 2)
+      );
+      
+      // Block if it was a long press (over 500ms) OR if finger moved very little (stationary long press)
+      if (touchDuration > 500 || (touchDuration > 300 && movedDistance < 5)) {
+        e.preventDefault();
+        return false;
+      }
+    }
+  }, { passive: false });
+  
+  // Prevent iOS long-press context menu on images
+  document.addEventListener('contextmenu', function(e) {
+    if (e.target.tagName === 'IMG') {
+      e.preventDefault();
+      return false;
+    }
   });
   
   // Block specific keyboard shortcuts
