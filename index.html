@@ -1787,6 +1787,14 @@
       });
     }
     
+        // Start sparkles IMMEDIATELY on loading screen
+    if (isTouchDevice) {
+      startTouchSparkles();
+    } else {
+      startMouseTrail();
+      setupCustomCursor();
+    }
+    
     preloadAllAssets(imageList, () => {
       allScrollers = createGallery();
       loadTrack(0);
@@ -1797,12 +1805,7 @@
         showGuideScreen();
         setupGoButton();
         createBackgroundSparkles();
-        setupCustomCursor();
-        if (isTouchDevice) {
-          startTouchSparkles();
-        } else {
-          startMouseTrail();
-        }
+        // Sparkles already started above, don't start again
       }, 10000);
     });
 
