@@ -1039,16 +1039,22 @@
   const clickSound = new Audio("sounds/click.mp3");
   clickSound.volume = 0.5;
   
-  // Guide screen audio
+    // Guide screen audio - load once, play when needed
   const guideAudio = new Audio();
   guideAudio.preload = "auto";
   guideAudio.volume = 0.8;
-// Try MP3 first, fallback to M4A
-guideAudio.src = "sounds/guid.mp3";
-guideAudio.onerror = function() {
-  guideAudio.src = "sounds/guid.m4a";
+  guideAudio.src = "sounds/guid.mp3";
+  
+  // Load audio immediately and keep it
   guideAudio.load();
-};
+  
+  // Flag to track if audio is loaded
+  let guideAudioLoaded = false;
+  
+  guideAudio.addEventListener('canplaythrough', function() {
+    guideAudioLoaded = true;
+    console.log('Guide audio loaded and ready');
+  }, { once: true });
   
   const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
   
@@ -1559,26 +1565,23 @@ guideAudio.onerror = function() {
         goBtn.classList.remove('show');
       }
       
-      // Ensure audio is loaded and play
+      // Play guide audio (no reload needed - it's already loaded)
       guideAudio.currentTime = 0;
-      guideAudio.load();
+      const playPromise = guideAudio.play();
       
-      // Small delay to ensure audio is ready
-      setTimeout(() => {
-        const playPromise = guideAudio.play();
-        if (playPromise !== undefined) {
-          playPromise.catch(() => {
-            // If autoplay blocked, play on first user interaction
-            const playOnInteract = () => {
-              guideAudio.play().catch(() => {});
-              document.removeEventListener('click', playOnInteract);
-              document.removeEventListener('touchstart', playOnInteract);
-            };
-            document.addEventListener('click', playOnInteract, { once: true });
-            document.addEventListener('touchstart', playOnInteract, { once: true });
-          });
-        }
-      }, 200);
+      if (playPromise !== undefined) {
+        playPromise.catch(() => {
+          // If autoplay blocked, play on first user interaction
+          const playOnInteract = () => {
+            guideAudio.currentTime = 0;
+            guideAudio.play().catch(() => {});
+            document.removeEventListener('click', playOnInteract);
+            document.removeEventListener('touchstart', playOnInteract);
+          };
+          document.addEventListener('click', playOnInteract, { once: true });
+          document.addEventListener('touchstart', playOnInteract, { once: true });
+        });
+      }
       
       // Show Go button at second 10
       setTimeout(() => {
@@ -1586,11 +1589,11 @@ guideAudio.onerror = function() {
           goBtn.style.display = 'block';
           goBtn.classList.add('show');
         }
-      }, 10000); // 10 seconds
+      }, 10000);
     }
   }
   
-      function hideGuideScreen() {
+        function hideGuideScreen() {
     const guideScreen = document.getElementById('guideScreen');
     if (guideScreen) {
       guideScreen.classList.add('fade-out');
@@ -1598,7 +1601,7 @@ guideAudio.onerror = function() {
       isGuideScreenOpen = false;
       stopGuideSparkles();
       
-      // Stop guide audio
+      // Pause guide audio but don't unload it
       guideAudio.pause();
       guideAudio.currentTime = 0;
       
