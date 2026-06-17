@@ -1809,7 +1809,7 @@
     }
   }
   
-      function setupGoButton() {
+        function setupGoButton() {
     const goBtn = document.getElementById('goButton');
     if (goBtn) {
       goBtn.addEventListener('click', function(e) {
@@ -1818,12 +1818,15 @@
         // Stop pulse animation
         goBtn.classList.add('clicked');
         
+        // Stop guide audio
         stopGuideAudio();
+        
         clickSound.currentTime = 0;
         clickSound.play().catch(() => {});
         
         if (!musicStartedByGuide) {
-          forcePlayMusic();
+          // Resume gallery music from where it was paused
+          audio.play().catch(() => {});
           musicStartedByGuide = true;
         }
         hideGuideScreen();
@@ -1957,35 +1960,40 @@
         });
       }
       
-      // Click/tap to show guide screen with audio (no delay)
+            // Click/tap to show guide screen with audio (no delay)
       helpBtn.addEventListener('click', function(e) {
         e.preventDefault();
         isHoveringHelp = false;
         stopHelpSparkles();
         
-        // Hide current guide if open, then show fresh
-        hideGuideScreen();
+        // Pause the gallery music
+        audio.pause();
+        
+        // Reset and show guide screen fresh
+        const guideScreen = document.getElementById('guideScreen');
+        const goBtn = document.getElementById('goButton');
+        
+        // Remove any previous state
+        guideScreen.classList.remove('fade-out');
+        stopGuideAudio();
+        
+        // Show guide screen immediately
+        guideScreen.classList.add('active');
+        guideScreen.style.display = 'flex';
+        isGuideScreenOpen = true;
+        createGuideSparkles();
+        
+        // Show Go button IMMEDIATELY (no delay)
+        if (goBtn) {
+          goBtn.style.display = 'block';
+          goBtn.classList.add('show');
+          goBtn.classList.remove('clicked');
+        }
+        
+        // Play guide audio
         setTimeout(() => {
-          // Show guide screen immediately
-          const guideScreen = document.getElementById('guideScreen');
-          const goBtn = document.getElementById('goButton');
-          
-          guideScreen.classList.add('active');
-          isGuideScreenOpen = true;
-          createGuideSparkles();
-          
-          // Show Go button IMMEDIATELY (no delay)
-          if (goBtn) {
-            goBtn.style.display = 'block';
-            goBtn.classList.add('show');
-          }
-          
-          // Play guide audio
-          setTimeout(() => {
-            playGuideAudio();
-          }, 200);
-          
-        }, 300);
+          playGuideAudio();
+        }, 200);
       });
     }
 
