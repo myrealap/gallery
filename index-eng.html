@@ -1815,9 +1815,10 @@
       goBtn.addEventListener('click', function(e) {
         e.preventDefault();
         
-        // Stop guide audio
-        stopGuideAudio();
+        // Stop pulse animation
+        goBtn.classList.add('clicked');
         
+        stopGuideAudio();
         clickSound.currentTime = 0;
         clickSound.play().catch(() => {});
         
@@ -1895,66 +1896,6 @@
   }
 
   $(document).ready(() => {
-       // Help button setup
-    const helpBtn = document.getElementById('helpButton');
-    if (helpBtn) {
-      // Desktop hover
-      if (!isTouchDevice) {
-        $(helpBtn).on('mouseenter', () => {
-          isHoveringHelp = true;
-          createHelpSparkles(helpBtn);
-        });
-        $(helpBtn).on('mouseleave', () => {
-          isHoveringHelp = false;
-          stopHelpSparkles();
-        });
-      }
-      
-      // Mobile touch
-      if (isTouchDevice) {
-        $(helpBtn).on('touchstart', () => {
-          isHoveringHelp = true;
-          createHelpSparkles(helpBtn);
-        });
-        $(helpBtn).on('touchend', () => {
-          setTimeout(() => {
-            isHoveringHelp = false;
-            stopHelpSparkles();
-          }, 2000);
-        });
-      }
-      
-      // Click/tap to show guide screen with audio (no delay)
-      helpBtn.addEventListener('click', function(e) {
-        e.preventDefault();
-        isHoveringHelp = false;
-        stopHelpSparkles();
-        
-        // Hide current guide if open, then show fresh
-        hideGuideScreen();
-        setTimeout(() => {
-          // Show guide screen immediately
-          const guideScreen = document.getElementById('guideScreen');
-          const goBtn = document.getElementById('goButton');
-          
-          guideScreen.classList.add('active');
-          isGuideScreenOpen = true;
-          createGuideSparkles();
-          
-          // Show Go button IMMEDIATELY (no delay)
-          if (goBtn) {
-            goBtn.style.display = 'block';
-            goBtn.classList.add('show');
-          }
-          
-          // Play guide audio
-          setTimeout(() => {
-            playGuideAudio();
-          }, 200);
-          
-        }, 300);
-      });
-    }
     // Setup click prompt to unlock audio + create sparkles
     const clickPrompt = document.getElementById('clickPrompt');
     let audioUnlocked = false;
