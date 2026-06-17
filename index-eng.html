@@ -790,6 +790,14 @@
   .go-button {
     bottom: 15%;
     right: 12%;
+  } 
+  .go-button.show {
+    animation: goFadeIn 0.8s ease forwards;
+  }
+
+  @keyframes goFadeIn {
+    from { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+    to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
   }
 
   @media (max-width: 768px) {
@@ -882,7 +890,7 @@
  <div class="guide-sparkle-container" id="guideSparkleContainer"></div>
   <div class="guide-container">
     <img class="guide-img" src="images-new/guide.png" alt="guide">
-    <button class="go-button" id="goButton"></button>
+    <button class="go-button" id="goButton" style="display: none;"></button>
   </div>
 </div>
 
@@ -1033,6 +1041,10 @@
   const clickSound = new Audio("sounds/click.mp3");
   clickSound.volume = 0.5;
   
+  // Guide screen audio
+  const guideAudio = new Audio("sounds/guid.m4a");
+  guideAudio.volume = 0.8;
+  
   const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
   
   class InfiniteScroller {
@@ -1158,7 +1170,7 @@
     const trackDiv = document.createElement('div');
     trackDiv.className = 'scroll-track';
     
-    const TOTAL_REPEATS = 1000;
+    const TOTAL_REPEATS = 200;
     for (let r = 0; r < TOTAL_REPEATS; r++) {
       for (let i = 0; i < customSequence.length; i++) {
         const imgItem = createImageElement(customSequence[i]);
@@ -1527,35 +1539,63 @@
   // GUIDE SCREEN LOGIC
   let musicStartedByGuide = false;
   
-    function showGuideScreen() {
+      function showGuideScreen() {
     const guideScreen = document.getElementById('guideScreen');
+    const goBtn = document.getElementById('goButton');
+    
     if (guideScreen) {
       guideScreen.classList.add('active');
       isGuideScreenOpen = true;
       createGuideSparkles();
+      
+      // Hide Go button initially
+      if (goBtn) {
+        goBtn.style.display = 'none';
+        goBtn.classList.remove('show');
+      }
+      
+      // Play guide audio
+      guideAudio.currentTime = 0;
+      guideAudio.play().catch(() => {});
+      
+      // Show Go button at second 10
+      setTimeout(() => {
+        if (goBtn) {
+          goBtn.style.display = 'block';
+          goBtn.classList.add('show');
+        }
+      }, 10000); // 10 seconds
     }
   }
   
-    function hideGuideScreen() {
+      function hideGuideScreen() {
     const guideScreen = document.getElementById('guideScreen');
     if (guideScreen) {
       guideScreen.classList.add('fade-out');
       guideScreen.classList.remove('active');
       isGuideScreenOpen = false;
       stopGuideSparkles();
+      
+      // Stop guide audio
+      guideAudio.pause();
+      guideAudio.currentTime = 0;
+      
       setTimeout(() => {
         guideScreen.style.display = 'none';
       }, 500);
     }
   }
   
-  function setupGoButton() {
+    function setupGoButton() {
     const goBtn = document.getElementById('goButton');
     if (goBtn) {
       goBtn.addEventListener('click', function(e) {
         e.preventDefault();
         
-        // PLAY CLICK SOUND when GO button is clicked
+        // Stop guide audio
+        guideAudio.pause();
+        guideAudio.currentTime = 0;
+        
         clickSound.currentTime = 0;
         clickSound.play().catch(() => {});
         
