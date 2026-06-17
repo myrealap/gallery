@@ -1725,7 +1725,16 @@
   
   // Load guide audio immediately
   loadGuideAudio();
-    
+
+   // Create AudioContext on user interaction
+  function initAudioContext() {
+    if (!audioContext) {
+      audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      console.log('AudioContext created by user gesture!');
+    } else if (audioContext.state === 'suspended') {
+      audioContext.resume();
+    }
+  }
     // Setup click prompt to unlock audio + create sparkles
     const clickPrompt = document.getElementById('clickPrompt');
     let audioUnlocked = false;
@@ -1771,7 +1780,6 @@
     
     // Keep loading screen for 10 seconds
     preloadAllAssets(imageList, () => {
-    preloadAllAssets(imageList, () => {
       allScrollers = createGallery();
       loadTrack(0);
 
@@ -1790,7 +1798,7 @@
         } else {
           startMouseTrail();
         }
-      }, 1000);
+      }, 10000);
     });
     // ... rest of your code
 
