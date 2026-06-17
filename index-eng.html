@@ -435,6 +435,94 @@
     100% { opacity: 0; transform: scale(0.1) rotate(540deg); }
   }
 
+  .help-btn-container {
+    position: relative;
+    width: 100%;
+    height: 40px;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    flex-shrink: 0;
+  }
+
+  .help-button {
+    width: 150px;  /* Half of 300px */
+    height: 75px;   /* Half of 150px */
+    background-image: url('images-new/help.png');
+    background-repeat: no-repeat;
+    background-position: 0 0;
+    background-size: 300px 150px;  /* Full sprite size */
+    cursor: pointer;
+    border: none;
+    background-color: transparent;
+    z-index: 101;
+    transition: opacity 0.3s ease;
+    -webkit-tap-highlight-color: transparent;
+    outline: none;
+  }
+
+  .help-button:hover {
+    background-position: -150px 0;  /* Shift to hover half */
+  }
+
+  .help-button:focus {
+    outline: none;
+  }
+
+  @media (max-width: 768px) {
+    .help-btn-container {
+      height: 35px;
+    }
+    .help-button {
+      width: 100px;
+      height: 50px;
+      background-size: 200px 100px;
+    }
+    .help-button:hover {
+      background-position: -100px 0;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .help-button {
+      width: 80px;
+      height: 40px;
+      background-size: 160px 80px;
+    }
+    .help-button:hover {
+      background-position: -80px 0;
+    }
+  }
+  .help-sparkle-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 9997;
+    overflow: hidden;
+  }
+
+  .help-sparkle {
+    position: absolute;
+    background-image: url('images-new/sparkle.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    opacity: 0;
+    animation: helpSparkleFade 1.2s ease-out forwards;
+    pointer-events: none;
+  }
+
+  @keyframes helpSparkleFade {
+    0% { opacity: 0; transform: scale(0.3) rotate(0deg); }
+    20% { opacity: 1; transform: scale(1) rotate(180deg); }
+    80% { opacity: 0.6; transform: scale(0.7) rotate(360deg); }
+    100% { opacity: 0; transform: scale(0.1) rotate(540deg); }
+  }
   .gallery-container {
     flex: 1;
     overflow-y: auto;
@@ -980,6 +1068,12 @@
 <div class="music-sparkle-container" id="musicSparkleContainer"></div>
 <div class="mouse-trail-container" id="mouseTrailContainer"></div>
 <div class="touch-sparkle-container" id="touchSparkleContainer"></div>
+<div class="help-sparkle-container" id="helpSparkleContainer"></div>
+
+<!-- Help button under music bar -->
+<div class="help-btn-container">
+  <button class="help-button" id="helpButton"></button>
+</div>
 
 <div class="gallery-container" id="galleryContainer"></div>
 
@@ -1493,6 +1587,39 @@
     $(modalOverlay).addClass('active');
     createSparkles();
   }
+
+  // Help button sparkles
+  let helpSparkleInterval = null;
+  let isHoveringHelp = false;
+
+  function createHelpSparkles(targetElement) {
+    if (helpSparkleInterval) clearInterval(helpSparkleInterval);
+    const container = document.getElementById('helpSparkleContainer');
+    
+    function addHelpSparkle() {
+      if (!isHoveringHelp) return;
+      const rect = targetElement.getBoundingClientRect();
+      const sparkle = document.createElement('div');
+      sparkle.className = 'help-sparkle';
+      // Many small sparkles around the button
+      const offsetX = (Math.random() - 0.5) * 250;
+      const offsetY = (Math.random() - 0.5) * 120;
+      sparkle.style.left = (rect.left + rect.width / 2 + offsetX) + 'px';
+      sparkle.style.top = (rect.top + rect.height / 2 + offsetY) + 'px';
+      const size = Math.random() * 12 + 5;  // Small sparkles
+      sparkle.style.width = size + 'px';
+      sparkle.style.height = size + 'px';
+      container.appendChild(sparkle);
+      setTimeout(() => sparkle.remove(), 1200);
+    }
+    
+    helpSparkleInterval = setInterval(() => { if (isHoveringHelp) addHelpSparkle(); }, 40);  // Frequent small sparkles
+  }
+
+  function stopHelpSparkles() {
+    if (helpSparkleInterval) clearInterval(helpSparkleInterval);
+    document.getElementById('helpSparkleContainer').innerHTML = '';
+  }
   
   function closeModal() {
     const modalOverlay = document.getElementById('modalOverlay');
@@ -1797,6 +1924,67 @@
       });
     }
     
+    // Help button setup
+    const helpBtn = document.getElementById('helpButton');
+    if (helpBtn) {
+      // Desktop hover
+      if (!isTouchDevice) {
+        $(helpBtn).on('mouseenter', () => {
+          isHoveringHelp = true;
+          createHelpSparkles(helpBtn);
+        });
+        $(helpBtn).on('mouseleave', () => {
+          isHoveringHelp = false;
+          stopHelpSparkles();
+        });
+      }
+      
+      // Mobile touch
+      if (isTouchDevice) {
+        $(helpBtn).on('touchstart', () => {
+          isHoveringHelp = true;
+          createHelpSparkles(helpBtn);
+        });
+        $(helpBtn).on('touchend', () => {
+          setTimeout(() => {
+            isHoveringHelp = false;
+            stopHelpSparkles();
+          }, 2000);
+        });
+      }
+      
+      // Click/tap to show guide screen with audio (no delay)
+      helpBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        isHoveringHelp = false;
+        stopHelpSparkles();
+        
+        // Hide current guide if open, then show fresh
+        hideGuideScreen();
+        setTimeout(() => {
+          // Show guide screen immediately
+          const guideScreen = document.getElementById('guideScreen');
+          const goBtn = document.getElementById('goButton');
+          
+          guideScreen.classList.add('active');
+          isGuideScreenOpen = true;
+          createGuideSparkles();
+          
+          // Show Go button IMMEDIATELY (no delay)
+          if (goBtn) {
+            goBtn.style.display = 'block';
+            goBtn.classList.add('show');
+          }
+          
+          // Play guide audio
+          setTimeout(() => {
+            playGuideAudio();
+          }, 200);
+          
+        }, 300);
+      });
+    }
+
         // Start sparkles IMMEDIATELY on loading screen
     if (isTouchDevice) {
       startTouchSparkles();
