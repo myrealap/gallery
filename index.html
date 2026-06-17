@@ -1040,8 +1040,13 @@
   clickSound.volume = 0.5;
   
   // Guide screen audio
-  const guideAudio = new Audio("sounds/guid.m4a");
-  guideAudio.volume = 0.8;
+  const guideAudio = new Audio();
+// Try MP3 first, fallback to M4A
+guideAudio.src = "sounds/guid.mp3";
+guideAudio.onerror = function() {
+  guideAudio.src = "sounds/guid.m4a";
+  guideAudio.load();
+};
   
   const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
   
