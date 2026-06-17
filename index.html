@@ -1708,30 +1708,6 @@
       });
   }
 
-  function playGuideAudio() {
-    if (!audioContext || !window._pendingAudioBuffer) return;
-    
-    if (audioContext.state === 'suspended') {
-      audioContext.resume();
-    }
-    
-    // Decode and play
-    audioContext.decodeAudioData(window._pendingAudioBuffer.slice(0))
-      .then(buffer => {
-        guideAudioBuffer = buffer;
-        if (guideAudioSource) {
-          try { guideAudioSource.stop(); } catch(e) {}
-        }
-        guideAudioSource = audioContext.createBufferSource();
-        guideAudioSource.buffer = guideAudioBuffer;
-        const gainNode = audioContext.createGain();
-        gainNode.gain.value = 0.8;
-        guideAudioSource.connect(gainNode);
-        gainNode.connect(audioContext.destination);
-        guideAudioSource.start(0);
-      })
-      .catch(err => console.log('Decode error:', err));
-  }
   
   // Load guide audio immediately
   loadGuideAudio();
