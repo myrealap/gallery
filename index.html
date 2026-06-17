@@ -893,10 +893,7 @@
     <button class="go-button" id="goButton" style="display: none;"></button>
   </div>
 </div>
-
-<!-- Hidden button for audio trigger -->
-<button id="hiddenAudioTrigger" style="position:fixed;top:-9999px;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none;"></button>
-
+ 
 <div class="music-bar">
   <div class="song-bg"></div>
   <button class="prev-btn" id="prevBtn">◄</button>
@@ -1041,23 +1038,6 @@
   
   const clickSound = new Audio("sounds/click.mp3");
   clickSound.volume = 0.5;
-  
-    // Guide screen audio - load once, play when needed
-  const guideAudio = new Audio();
-  guideAudio.preload = "auto";
-  guideAudio.volume = 0.8;
-  guideAudio.src = "sounds/guid.mp3";
-  
-  // Load audio immediately and keep it
-  guideAudio.load();
-  
-  // Flag to track if audio is loaded
-  let guideAudioLoaded = false;
-  
-  guideAudio.addEventListener('canplaythrough', function() {
-    guideAudioLoaded = true;
-    console.log('Guide audio loaded and ready');
-  }, { once: true });
   
   const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
   
@@ -1553,10 +1533,9 @@
   // GUIDE SCREEN LOGIC
   let musicStartedByGuide = false;
   
-       function showGuideScreen() {
+      function showGuideScreen() {
     const guideScreen = document.getElementById('guideScreen');
     const goBtn = document.getElementById('goButton');
-    const hiddenBtn = document.getElementById('hiddenAudioTrigger');
     
     if (guideScreen) {
       guideScreen.classList.add('active');
@@ -1569,25 +1548,10 @@
         goBtn.classList.remove('show');
       }
       
-      // Auto-click hidden button to trigger audio permission
-      if (hiddenBtn) {
-        hiddenBtn.click();
-      }
-      
-      // Play guide audio (now works because of the click!)
+      // Play guide audio using Web Audio API (works without user interaction!)
       setTimeout(() => {
-        guideAudio.currentTime = 0;
-        guideAudio.play().catch((err) => {
-          console.log('Still blocked, trying fallback:', err);
-          // Fallback: add a one-time click listener on the document
-          const playOnClick = () => {
-            guideAudio.currentTime = 0;
-            guideAudio.play().catch(() => {});
-            document.removeEventListener('click', playOnClick);
-          };
-          document.addEventListener('click', playOnClick, { once: true });
-        });
-      }, 100);
+        playGuideAudio();
+      }, 200);
       
       // Show Go button at second 10
       setTimeout(() => {
@@ -1599,7 +1563,7 @@
     }
   }
   
-        function hideGuideScreen() {
+         function hideGuideScreen() {
     const guideScreen = document.getElementById('guideScreen');
     if (guideScreen) {
       guideScreen.classList.add('fade-out');
@@ -1607,9 +1571,8 @@
       isGuideScreenOpen = false;
       stopGuideSparkles();
       
-      // Pause guide audio but don't unload it
-      guideAudio.pause();
-      guideAudio.currentTime = 0;
+      // Stop guide audio
+      stopGuideAudio();
       
       setTimeout(() => {
         guideScreen.style.display = 'none';
@@ -1617,15 +1580,14 @@
     }
   }
   
-    function setupGoButton() {
+      function setupGoButton() {
     const goBtn = document.getElementById('goButton');
     if (goBtn) {
       goBtn.addEventListener('click', function(e) {
         e.preventDefault();
         
         // Stop guide audio
-        guideAudio.pause();
-        guideAudio.currentTime = 0;
+        stopGuideAudio();
         
         clickSound.currentTime = 0;
         clickSound.play().catch(() => {});
@@ -1638,16 +1600,67 @@
       });
     }
   }
+      // Guide screen audio using Web Audio API - bypasses autoplay restrictions
+  let guideAudioBuffer = null;
+  let guideAudioSource = null;
+  let audioContext = null;
+  
+  // Load audio using fetch + AudioContext
+  function loadGuideAudio() {
+    audioContext = new (window.AudioContext || window.webkitAudioContext)();
     
+    fetch('sounds/guid.mp3')
+      .then(response => response.arrayBuffer())
+      .then(arrayBuffer => audioContext.decodeAudioData(arrayBuffer))
+      .then(audioBuffer => {
+        guideAudioBuffer = audioBuffer;
+        console.log('Guide audio loaded and ready!');
+      })
+      .catch(error => {
+        console.log('Error loading guide audio:', error);
+      });
+  }
+  
+  function playGuideAudio() {
+    if (!guideAudioBuffer || !audioContext) return;
+    
+    // Resume audio context if suspended (browsers require this)
+    if (audioContext.state === 'suspended') {
+      audioContext.resume();
+    }
+    
+    // Stop any previous playback
+    if (guideAudioSource) {
+      guideAudioSource.stop();
+    }
+    
+    // Create new source and play
+    guideAudioSource = audioContext.createBufferSource();
+    guideAudioSource.buffer = guideAudioBuffer;
+    
+    // Volume control
+    const gainNode = audioContext.createGain();
+    gainNode.gain.value = 0.8;
+    
+    guideAudioSource.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+    
+    guideAudioSource.start(0);
+  }
+  
+  function stopGuideAudio() {
+    if (guideAudioSource) {
+      try {
+        guideAudioSource.stop();
+      } catch(e) {
+        // Already stopped
+      }
+    }
+  }
+  
+  // Load guide audio immediately
+  loadGuideAudio();
       $(document).ready(() => {
-    // Preload guide audio FIRST before anything else
-    guideAudio.load();
-    
-    // Wait for guide audio to be ready, then load everything else
-    guideAudio.addEventListener('canplaythrough', function() {
-      console.log('Guide audio ready');
-    }, { once: true });
-    
     preloadAllAssets(imageList, () => {
       allScrollers = createGallery();
       loadTrack(0);
