@@ -1733,43 +1733,6 @@
       .catch(err => console.log('Decode error:', err));
   }
   
-  function playGuideAudio() {
-    if (!guideAudioBuffer || !audioContext) return;
-    
-    // Resume audio context if suspended (browsers require this)
-    if (audioContext.state === 'suspended') {
-      audioContext.resume();
-    }
-    
-    // Stop any previous playback
-    if (guideAudioSource) {
-      guideAudioSource.stop();
-    }
-    
-    // Create new source and play
-    guideAudioSource = audioContext.createBufferSource();
-    guideAudioSource.buffer = guideAudioBuffer;
-    
-    // Volume control
-    const gainNode = audioContext.createGain();
-    gainNode.gain.value = 0.8;
-    
-    guideAudioSource.connect(gainNode);
-    gainNode.connect(audioContext.destination);
-    
-    guideAudioSource.start(0);
-  }
-  
-  function stopGuideAudio() {
-    if (guideAudioSource) {
-      try {
-        guideAudioSource.stop();
-      } catch(e) {
-        // Already stopped
-      }
-    }
-  }
-  
   // Load guide audio immediately
   loadGuideAudio();
 
