@@ -174,7 +174,7 @@
   }
 
   @keyframes promptFadeOut {
-    to { opacity: 0; transform: scale(1.5); }
+    to { opacity: 0; }
   }
 
   .loading-screen.hide {
@@ -848,13 +848,22 @@
     bottom: 15%;
     right: 12%;
   } 
-  .go-button.show {
-    animation: goFadeIn 0.8s ease forwards;
+    .go-button.show {
+    animation: goFadeIn 0.8s ease forwards, goPulse 1.5s ease-in-out 0.8s infinite;  /* 👈 Pulse after fade in */
+  }
+  
+  .go-button.clicked {
+    animation: none;  /* 👈 Stop pulse when clicked */
   }
 
   @keyframes goFadeIn {
     from { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
     to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  }
+  
+  @keyframes goPulse {
+    0%, 100% { transform: translate(-50%, -50%) scale(1); }
+    50% { transform: translate(-50%, -50%) scale(1.08); }  /* 👈 Small pulse */
   }
 
   @media (max-width: 768px) {
@@ -1365,28 +1374,27 @@
  // Sparkle burst on click prompt
     function promptSparkleBurst(x, y) {
     const container = document.getElementById('sparkleContainer');
-    // Make sure sparkle container is on top during prompt
     container.style.zIndex = '100000';
-    for (let i = 0; i < 15; i++) {
+    for (let i = 0; i < 30; i++) {  // 👈 More sparkles
       setTimeout(() => {
         const sparkle = document.createElement('div');
         sparkle.className = 'sparkle';
-        sparkle.style.left = (x + (Math.random() - 0.5) * 100) + 'px';
-        sparkle.style.top = (y + (Math.random() - 0.5) * 100) + 'px';
-        sparkle.style.animationDelay = Math.random() * 0.3 + 's';
-        sparkle.style.animationDuration = '1s';
-        const size = Math.random() * 30 + 15;
+        // 👇 Random position across ENTIRE page
+        sparkle.style.left = Math.random() * window.innerWidth + 'px';
+        sparkle.style.top = Math.random() * window.innerHeight + 'px';
+        sparkle.style.animationDelay = Math.random() * 0.5 + 's';
+        sparkle.style.animationDuration = '1.5s';
+        const size = Math.random() * 25 + 10;
         sparkle.style.width = size + 'px';
         sparkle.style.height = size + 'px';
         container.appendChild(sparkle);
         setTimeout(() => {
           sparkle.remove();
-          // Reset z-index after all sparkles are done
           if (container.children.length === 0) {
             container.style.zIndex = '9999';
           }
-        }, 1000);
-      }, i * 30);
+        }, 1500);
+      }, i * 40);
     }
   }
 
@@ -1797,18 +1805,24 @@
       setupCustomCursor();
     }
     
-    preloadAllAssets(imageList, () => {
+        preloadAllAssets(imageList, () => {
       allScrollers = createGallery();
       loadTrack(0);
       const loadingScreen = document.getElementById('loadingScreen');
-      $(loadingScreen).addClass('hide');
+      
+      // Keep loading for 10 seconds, THEN show guide
       setTimeout(() => {
-        $(loadingScreen).hide();
-        showGuideScreen();
-        setupGoButton();
-        createBackgroundSparkles();
-        // Sparkles already started above, don't start again
-      }, 1000);
+        $(loadingScreen).addClass('hide');
+        
+        // Wait for fade out, then show guide and hide loading
+        setTimeout(() => {
+          $(loadingScreen).hide();
+          showGuideScreen();
+          setupGoButton();
+          createBackgroundSparkles();
+        }, 1000); // 1 second for fade out
+        
+      }, 10000); // 10 seconds loading
     });
 
     $('#prevBtn').on('click', prevTrack);
