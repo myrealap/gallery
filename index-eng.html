@@ -1809,7 +1809,7 @@
     }
   }
   
-        function setupGoButton() {
+          function setupGoButton() {
     const goBtn = document.getElementById('goButton');
     if (goBtn) {
       goBtn.addEventListener('click', function(e) {
@@ -1824,11 +1824,10 @@
         clickSound.currentTime = 0;
         clickSound.play().catch(() => {});
         
-        if (!musicStartedByGuide) {
-          // Resume gallery music from where it was paused
-          audio.play().catch(() => {});
-          musicStartedByGuide = true;
-        }
+        // Always resume gallery music (remove the if check)
+        audio.play().catch(() => {});
+        musicStartedByGuide = true;
+        
         hideGuideScreen();
       });
     }
@@ -1968,6 +1967,7 @@
         
         // Pause the gallery music
         audio.pause();
+        musicStartedByGuide = false;  // 👈 Reset this so Go button resumes music
         
         // Reset and show guide screen fresh
         const guideScreen = document.getElementById('guideScreen');
