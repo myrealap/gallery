@@ -1041,6 +1041,8 @@
   
   // Guide screen audio
   const guideAudio = new Audio();
+  guideAudio.preload = "auto";
+  guideAudio.volume = 0.8;
 // Try MP3 first, fallback to M4A
 guideAudio.src = "sounds/guid.mp3";
 guideAudio.onerror = function() {
@@ -1557,9 +1559,26 @@ guideAudio.onerror = function() {
         goBtn.classList.remove('show');
       }
       
-      // Play guide audio
+      // Ensure audio is loaded and play
       guideAudio.currentTime = 0;
-      guideAudio.play().catch(() => {});
+      guideAudio.load();
+      
+      // Small delay to ensure audio is ready
+      setTimeout(() => {
+        const playPromise = guideAudio.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(() => {
+            // If autoplay blocked, play on first user interaction
+            const playOnInteract = () => {
+              guideAudio.play().catch(() => {});
+              document.removeEventListener('click', playOnInteract);
+              document.removeEventListener('touchstart', playOnInteract);
+            };
+            document.addEventListener('click', playOnInteract, { once: true });
+            document.addEventListener('touchstart', playOnInteract, { once: true });
+          });
+        }
+      }, 200);
       
       // Show Go button at second 10
       setTimeout(() => {
@@ -1611,7 +1630,15 @@ guideAudio.onerror = function() {
     }
   }
     
-    $(document).ready(() => {
+      $(document).ready(() => {
+    // Preload guide audio FIRST before anything else
+    guideAudio.load();
+    
+    // Wait for guide audio to be ready, then load everything else
+    guideAudio.addEventListener('canplaythrough', function() {
+      console.log('Guide audio ready');
+    }, { once: true });
+    
     preloadAllAssets(imageList, () => {
       allScrollers = createGallery();
       loadTrack(0);
@@ -1621,10 +1648,8 @@ guideAudio.onerror = function() {
 
       setTimeout(() => {
         $(loadingScreen).hide();
-        // Show GUIDE SCREEN instead of starting music automatically
         showGuideScreen();
         setupGoButton();
-
         createBackgroundSparkles();
         setupCustomCursor();
 
@@ -1635,6 +1660,7 @@ guideAudio.onerror = function() {
         }
       }, 1000);
     });
+    // ... rest of your code
 
     $('#prevBtn').on('click', prevTrack);
     $('#nextBtn').on('click', nextTrack);
