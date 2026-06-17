@@ -1799,14 +1799,19 @@
       allScrollers = createGallery();
       loadTrack(0);
       const loadingScreen = document.getElementById('loadingScreen');
-      $(loadingScreen).addClass('hide');
+      
+      // Show guide screen FIRST
+      showGuideScreen();
+      setupGoButton();
+      
+      // Then hide loading screen after 10 seconds
       setTimeout(() => {
-        $(loadingScreen).hide();
-        showGuideScreen();
-        setupGoButton();
+        $(loadingScreen).addClass('hide');
+        setTimeout(() => {
+          $(loadingScreen).style.display = 'none';
+        }, 1000);
         createBackgroundSparkles();
-        // Sparkles already started above, don't start again
-      }, 1000);
+      }, 10000);
     });
 
     $('#prevBtn').on('click', prevTrack);
