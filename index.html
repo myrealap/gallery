@@ -1003,7 +1003,8 @@
     "images-new/13.jpg": { title: "Theater Star", desc: "Red velvet curtains drape behind me like I'm the main event — because I am. I grab the rope with both hands, pull myself up, and feel every eye in the room on my thighs. My pretty puffy hair bounces around my shoulders — soft, messy, looking like I just rolled out of a dream. A white lily sits behind my ear, sweet and wild, like a promise I might not keep. My sexy dress hugs every curve, riding up just enough to make the silence feel loud. The spotlight finds *me* — burning gold on my skin, my lips, the way I smile down at everyone below. I'm on a rope in a bar, and somehow I've never felt more like a queen." },
     "images-new/14.jpg": { title: "Overthink Diva", desc: "I'm standing on a wall, high enough to see everything — but all I see is him. Lines of poetry spin around me like a tornado of every word I never said to his face. Behind me, a big lion rests — strong, silent, like he's holding space for all my messy feelings. Two boys. One love. That's us. That's the whole story and also a thousand stories I'll never finish writing. I keep thinking about his hands, his laugh, the way he said my name like it was a secret. The poetry spins faster. The lion doesn't move. And neither do I — caught in the beautiful disaster of loving him. I'm an overthinking diva, yes. But at least I'm thinking about someone worth every single line of poetry." },
     "images-new/16.jpg": { title: "California Tweet", desc: "Capturing the carefree allure of the California sun, this moment reflects the sweet essence of youthful dreams. With the iconic coastline in the backdrop, I lose myself in the vibrant hues—pinks, yellows, and aquas swirl together like a painter's palette. This photo encapsulates a whimsical journey into nostalgia, where sunshine kisses skin and laughter dances on the air. A celebration of life, it beckons you to join in, to revel in the sweetness of daydreams amidst the vibrant charm of this golden state." },
-    "images-new/15.jpg": { title: "Spring 2013", desc: "In the blossoming embrace of spring 2013, I found myself dancing amidst the wildflowers, their colors alive and vibrant beneath a sunny sky. With my hair flowing like petals in the warm breeze, each moment became a spontaneous celebration of life and renewal. The joy of this season ignited a fire within me—every laugh resonating like a melody—a gentle reminder of youth’s fleeting beauty and the promise of new beginnings." }
+    "images-new/15.jpg": { title: "Spring 2013", desc: "In the blossoming embrace of spring 2013, I found myself dancing amidst the wildflowers, their colors alive and vibrant beneath a sunny sky. With my hair flowing like petals in the warm breeze, each moment became a spontaneous celebration of life and renewal. The joy of this season ignited a fire within me—every laugh resonating like a melody—a gentle reminder of youth’s fleeting beauty and the promise of new beginnings." },
+    "images/17.jpg": { title: "Hang On Love", desc: "I'm touching the wall like it's the only thing keeping me standing — my palm flat against the surface, fingers spread like I'm feeling for a heartbeat that isn't there. My body is turned toward the camera, my eyes holding yours through the lens, and the whole world around me is black and white with warm brown tones bleeding through like old photographs and faded memories. Pieces of newspaper are scattered around me — words I can't fully read, headlines that don't matter, stories that aren't mine. But one thing is clear: the text that hangs in the air, 'hang on love.' It's a plea. A prayer. A reminder. And I'm holding onto it with everything I have. My face says it all — I'm tired, but I'm still here. I'm broken, but I'm still touching the wall, still looking at you, still hanging on." }
   };
   
   const playlist = [
@@ -1398,21 +1399,21 @@
     container.innerHTML = '';
     const scrollers = [];
     
-    const customOrderRow1 = ["images-new/1.jpg", "images-new/3.jpg", "images-new/5.jpg", "images-new/9.jpg", "images-new/7.jpg", "images-new/11.jpg", "images-new/13.jpg", "images-new/15.jpg"];
+    const customOrderRow1 = ["images/1.jpg", "images/3.jpg", "images/5.jpg", "images/9.jpg", "images/7.jpg", "images/11.jpg", "images/13.jpg", "images/15.jpg", "images/17.jpg"];
     const row1 = buildImageRowCustom(customOrderRow1);
     container.appendChild(row1);
     const s1 = new InfiniteScroller(row1, row1.querySelector('.scroll-track'), 'right', 0.8, rightOffset);
     s1.init();
     scrollers.push(s1);
     
-    const customOrderRow2 = ["images-new/2.jpg", "images-new/1.jpg", "images-new/3.jpg", "images-new/4.jpg", "images-new/5.jpg", "images-new/6.jpg", "images-new/7.jpg", "images-new/8.jpg", "images-new/12.jpg", "images-new/10.jpg", "images-new/9.jpg", "images-new/11.jpg", "images-new/13.jpg", "images-new/14.jpg", "images-new/15.jpg", "images-new/16.jpg"];
+    const customOrderRow2 = ["images/2.jpg", "images/1.jpg", "images/3.jpg", "images/4.jpg", "images/5.jpg", "images/6.jpg", "images/7.jpg", "images/8.jpg", "images/12.jpg", "images/10.jpg", "images/9.jpg", "images/11.jpg", "images/13.jpg", "images/14.jpg", "images/15.jpg", "images/16.jpg", "images/17.jpg"];
     const row2 = buildImageRowCustom(customOrderRow2);
     container.appendChild(row2);
     const s2 = new InfiniteScroller(row2, row2.querySelector('.scroll-track'), 'left', 0.7, 0);
     s2.init();
     scrollers.push(s2);
     
-    const customOrderRow3 = ["images-new/2.jpg", "images-new/4.jpg", "images-new/8.jpg", "images-new/6.jpg", "images-new/10.jpg", "images-new/12.jpg", "images-new/14.jpg", "images-new/16.jpg"];
+    const customOrderRow3 = ["images/2.jpg", "images/4.jpg", "images/8.jpg", "images/6.jpg", "images/10.jpg", "images/12.jpg", "images/14.jpg", "images/16.jpg"];
     const row3 = buildImageRowCustom(customOrderRow3);
     container.appendChild(row3);
     const s3 = new InfiniteScroller(row3, row3.querySelector('.scroll-track'), 'right', 0.6, rightOffset);
