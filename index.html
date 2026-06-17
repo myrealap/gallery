@@ -1795,23 +1795,24 @@
       setupCustomCursor();
     }
     
-    preloadAllAssets(imageList, () => {
+        preloadAllAssets(imageList, () => {
       allScrollers = createGallery();
       loadTrack(0);
       const loadingScreen = document.getElementById('loadingScreen');
       
-      // Show guide screen FIRST
-      showGuideScreen();
-      setupGoButton();
-      
-      // Then hide loading screen after 10 seconds
+      // Keep loading for 10 seconds, THEN show guide
       setTimeout(() => {
         $(loadingScreen).addClass('hide');
+        
+        // Wait for fade out, then show guide and hide loading
         setTimeout(() => {
-          $(loadingScreen).style.display = 'none';
-        }, 5000);
-        createBackgroundSparkles();
-      }, 10000);
+          $(loadingScreen).hide();
+          showGuideScreen();
+          setupGoButton();
+          createBackgroundSparkles();
+        }, 1000); // 1 second for fade out
+        
+      }, 5000); // 10 seconds loading
     });
 
     $('#prevBtn').on('click', prevTrack);
