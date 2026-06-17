@@ -119,7 +119,7 @@
     letter-spacing: 1px;
     z-index: 1;
   }
-   .click-prompt {
+     .click-prompt {
     position: absolute;
     bottom: -50px;
     left: 50%;
@@ -128,6 +128,21 @@
     text-align: center;
     cursor: pointer;
     animation: promptPulse 2s ease-in-out infinite;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+    outline: none;
+  }
+
+  .click-prompt:focus {
+    outline: none;
+  }
+
+  .click-prompt img {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    pointer-events: none;
   }
 
   .prompt-sparkle {
@@ -1347,8 +1362,10 @@
   }
    
  // Sparkle burst on click prompt
-  function promptSparkleBurst(x, y) {
+    function promptSparkleBurst(x, y) {
     const container = document.getElementById('sparkleContainer');
+    // Make sure sparkle container is on top during prompt
+    container.style.zIndex = '100000';
     for (let i = 0; i < 15; i++) {
       setTimeout(() => {
         const sparkle = document.createElement('div');
@@ -1361,7 +1378,13 @@
         sparkle.style.width = size + 'px';
         sparkle.style.height = size + 'px';
         container.appendChild(sparkle);
-        setTimeout(() => sparkle.remove(), 1000);
+        setTimeout(() => {
+          sparkle.remove();
+          // Reset z-index after all sparkles are done
+          if (container.children.length === 0) {
+            container.style.zIndex = '9999';
+          }
+        }, 1000);
       }, i * 30);
     }
   }
