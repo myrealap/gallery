@@ -1733,16 +1733,19 @@
       .catch(err => console.log('Decode error:', err));
   }
 
-  function stopGuideAudio() {
+    function stopGuideAudio() {
     if (guideAudioSource) {
-      try { guideAudioSource.stop(); } catch(e) {}
+      try { 
+        guideAudioSource.stop(); 
+        guideAudioSource = null;
+      } catch(e) {}
     }
   }
   
   // Load guide audio immediately
   loadGuideAudio();
 
-   // Create AudioContext on user interaction
+  // Create AudioContext on user interaction
   function initAudioContext() {
     if (!audioContext) {
       audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -1751,6 +1754,8 @@
       audioContext.resume();
     }
   }
+
+  $(document).ready(() => {
     // Setup click prompt to unlock audio + create sparkles
     const clickPrompt = document.getElementById('clickPrompt');
     let audioUnlocked = false;
@@ -1759,34 +1764,23 @@
       clickPrompt.addEventListener('click', function(e) {
         if (!audioUnlocked) {
           audioUnlocked = true;
-          
-          // Init audio context (user gesture!)
           initAudioContext();
-          
-          // Sparkle burst at click position
           promptSparkleBurst(e.clientX, e.clientY);
-          
-          // Animate prompt out
           clickPrompt.classList.add('clicked');
-          
-          // Hide prompt after animation
           setTimeout(() => {
             clickPrompt.style.display = 'none';
           }, 500);
         }
       });
       
-      // Also work on touch
       clickPrompt.addEventListener('touchstart', function(e) {
         if (!audioUnlocked) {
           e.preventDefault();
           audioUnlocked = true;
-          
           const touch = e.touches[0];
           initAudioContext();
           promptSparkleBurst(touch.clientX, touch.clientY);
           clickPrompt.classList.add('clicked');
-          
           setTimeout(() => {
             clickPrompt.style.display = 'none';
           }, 500);
@@ -1794,21 +1788,17 @@
       });
     }
     
-    // Keep loading screen for 10 seconds
     preloadAllAssets(imageList, () => {
       allScrollers = createGallery();
       loadTrack(0);
-
       const loadingScreen = document.getElementById('loadingScreen');
       $(loadingScreen).addClass('hide');
-
       setTimeout(() => {
         $(loadingScreen).hide();
         showGuideScreen();
         setupGoButton();
         createBackgroundSparkles();
         setupCustomCursor();
-
         if (isTouchDevice) {
           startTouchSparkles();
         } else {
@@ -1816,7 +1806,6 @@
         }
       }, 10000);
     });
-    // ... rest of your code
 
     $('#prevBtn').on('click', prevTrack);
     $('#nextBtn').on('click', nextTrack);
@@ -1834,19 +1823,16 @@
         $(hoverPrevText).css({ opacity: '1', visibility: 'visible' });
         createMusicSparkles(prevBtn);
       });
-      
       $(prevBtn).on('mouseleave', () => {
         isHoveringButton = false;
         $(hoverPrevText).css({ opacity: '0', visibility: 'hidden' });
         stopMusicSparkles();
       });
-      
       $(nextBtn).on('mouseenter', () => {
         isHoveringButton = true;
         $(hoverNextText).css({ opacity: '1', visibility: 'visible' });
         createMusicSparkles(nextBtn);
       });
-      
       $(nextBtn).on('mouseleave', () => {
         isHoveringButton = false;
         $(hoverNextText).css({ opacity: '0', visibility: 'hidden' });
@@ -1854,95 +1840,48 @@
       });
     }    
    
-   // Mobile: touchstart/touchend for press-and-hold sparkles + text with fade out
     if (isTouchDevice) {
       let prevTimer = null;
       let nextTimer = null;
-      
       $(prevBtn).on('touchstart', () => {
         isHoveringButton = true;
-        $(hoverPrevText).css({ 
-          opacity: '1', 
-          visibility: 'visible',
-          transition: 'none'
-        });
+        $(hoverPrevText).css({ opacity: '1', visibility: 'visible', transition: 'none' });
         createMusicSparkles(prevBtn);
         if (prevTimer) clearTimeout(prevTimer);
       });
-      
       $(prevBtn).on('touchend', () => {
         prevTimer = setTimeout(() => {
-          $(hoverPrevText).css({ 
-            opacity: '0',
-            transition: 'opacity 0.8s ease'
-          });
-          setTimeout(() => {
-            $(hoverPrevText).css({ visibility: 'hidden' });
-          }, 800);
+          $(hoverPrevText).css({ opacity: '0', transition: 'opacity 0.8s ease' });
+          setTimeout(() => { $(hoverPrevText).css({ visibility: 'hidden' }); }, 800);
         }, 3000);
-        setTimeout(() => {
-          isHoveringButton = false;
-          stopMusicSparkles();
-        }, 5000);
+        setTimeout(() => { isHoveringButton = false; stopMusicSparkles(); }, 5000);
       });
-      
       $(prevBtn).on('touchcancel', () => {
         prevTimer = setTimeout(() => {
-          $(hoverPrevText).css({ 
-            opacity: '0',
-            transition: 'opacity 0.8s ease'
-          });
-          setTimeout(() => {
-            $(hoverPrevText).css({ visibility: 'hidden' });
-          }, 800);
+          $(hoverPrevText).css({ opacity: '0', transition: 'opacity 0.8s ease' });
+          setTimeout(() => { $(hoverPrevText).css({ visibility: 'hidden' }); }, 800);
         }, 3000);
-        setTimeout(() => {
-          isHoveringButton = false;
-          stopMusicSparkles();
-        }, 5000);
+        setTimeout(() => { isHoveringButton = false; stopMusicSparkles(); }, 5000);
       });
-      
       $(nextBtn).on('touchstart', () => {
         isHoveringButton = true;
-        $(hoverNextText).css({ 
-          opacity: '1', 
-          visibility: 'visible',
-          transition: 'none'
-        });
+        $(hoverNextText).css({ opacity: '1', visibility: 'visible', transition: 'none' });
         createMusicSparkles(nextBtn);
         if (nextTimer) clearTimeout(nextTimer);
       });
-      
       $(nextBtn).on('touchend', () => {
         nextTimer = setTimeout(() => {
-          $(hoverNextText).css({ 
-            opacity: '0',
-            transition: 'opacity 0.8s ease'
-          });
-          setTimeout(() => {
-            $(hoverNextText).css({ visibility: 'hidden' });
-          }, 800);
+          $(hoverNextText).css({ opacity: '0', transition: 'opacity 0.8s ease' });
+          setTimeout(() => { $(hoverNextText).css({ visibility: 'hidden' }); }, 800);
         }, 3000);
-        setTimeout(() => {
-          isHoveringButton = false;
-          stopMusicSparkles();
-        }, 5000);
+        setTimeout(() => { isHoveringButton = false; stopMusicSparkles(); }, 5000);
       });
-      
       $(nextBtn).on('touchcancel', () => {
         nextTimer = setTimeout(() => {
-          $(hoverNextText).css({ 
-            opacity: '0',
-            transition: 'opacity 0.8s ease'
-          });
-          setTimeout(() => {
-            $(hoverNextText).css({ visibility: 'hidden' });
-          }, 800);
+          $(hoverNextText).css({ opacity: '0', transition: 'opacity 0.8s ease' });
+          setTimeout(() => { $(hoverNextText).css({ visibility: 'hidden' }); }, 800);
         }, 3000);
-        setTimeout(() => {
-          isHoveringButton = false;
-          stopMusicSparkles();
-        }, 5000);
+        setTimeout(() => { isHoveringButton = false; stopMusicSparkles(); }, 5000);
       });
     }
     
