@@ -1398,21 +1398,21 @@
     container.innerHTML = '';
     const scrollers = [];
     
-    const customOrderRow1 = ["images/1.jpg", "images/3.jpg", "images/5.jpg", "images/7.jpg", "images/9.jpg", "images/11.jpg", "images/13.jpg", "images/15.jpg"];
+    const customOrderRow1 = ["images/1.jpg", "images/3.jpg", "images/5.jpg", "images/9.jpg", "images/7.jpg", "images/11.jpg", "images/13.jpg", "images/15.jpg"];
     const row1 = buildImageRowCustom(customOrderRow1);
     container.appendChild(row1);
     const s1 = new InfiniteScroller(row1, row1.querySelector('.scroll-track'), 'right', 0.8, rightOffset);
     s1.init();
     scrollers.push(s1);
     
-    const customOrderRow2 = ["images/1.jpg", "images/2.jpg", "images/3.jpg", "images/4.jpg", "images/5.jpg", "images/6.jpg", "images/7.jpg", "images/8.jpg", "images/9.jpg", "images/10.jpg", "images/11.jpg", "images/12.jpg", "images/13.jpg", "images/14.jpg", "images/15.jpg", "images/16.jpg"];
+    const customOrderRow2 = ["images/2.jpg", "images/1.jpg", "images/3.jpg", "images/4.jpg", "images/5.jpg", "images/6.jpg", "images/7.jpg", "images/8.jpg", "images/12.jpg", "images/10.jpg", "images/9.jpg", "images/11.jpg", "images/13.jpg", "images/14.jpg", "images/15.jpg", "images/16.jpg"];
     const row2 = buildImageRowCustom(customOrderRow2);
     container.appendChild(row2);
     const s2 = new InfiniteScroller(row2, row2.querySelector('.scroll-track'), 'left', 0.7, 0);
     s2.init();
     scrollers.push(s2);
     
-    const customOrderRow3 = ["images/2.jpg", "images/4.jpg", "images/6.jpg", "images/8.jpg", "images/10.jpg", "images/12.jpg", "images/14.jpg", "images/16.jpg"];
+    const customOrderRow3 = ["images/2.jpg", "images/4.jpg", "images/8.jpg", "images/6.jpg", "images/10.jpg", "images/12.jpg", "images/14.jpg", "images/16.jpg"];
     const row3 = buildImageRowCustom(customOrderRow3);
     container.appendChild(row3);
     const s3 = new InfiniteScroller(row3, row3.querySelector('.scroll-track'), 'right', 0.6, rightOffset);
