@@ -119,6 +119,63 @@
     letter-spacing: 1px;
     z-index: 1;
   }
+     .click-prompt {
+    position: absolute;
+    bottom: -50px;
+    transform: translateX(-50%);
+    z-index: 2;
+    text-align: center;
+    cursor: pointer;
+    animation: promptPulse 2s ease-in-out infinite;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+    outline: none;
+  }
+
+  .click-prompt:focus {
+    outline: none;
+  }
+
+  .click-prompt img {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    pointer-events: none;
+  }
+
+  .prompt-sparkle {
+    width: 50px;
+    height: 50px;
+    animation: promptSpin 3s linear infinite;
+  }
+
+  .prompt-text {
+    display: block;
+    color: #888;
+    font-size: 12px;
+    letter-spacing: 2px;
+    margin-top: 10px;
+    font-style: italic;
+  }
+
+  @keyframes promptPulse {
+    0%, 100% { transform: scale(1); opacity: 0.8; }
+    50% { transform: scale(1.1); opacity: 1; }
+  }
+
+  @keyframes promptSpin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  .click-prompt.clicked {
+    animation: promptFadeOut 0.5s ease forwards;
+  }
+
+  @keyframes promptFadeOut {
+    to { opacity: 0; transform: scale(1.5); }
+  }
 
   .loading-screen.hide {
     opacity: 0;
@@ -882,6 +939,10 @@
     <div class="quote-bg"></div>
     <div class="quote-text" id="quoteText">" loading... "</div>
     <div class="quote-author" id="quoteAuthor">— myrealap</div>
+    <div class="click-prompt" id="clickPrompt">
+      <img src="images-new/sparkle.png" class="prompt-sparkle" alt="Click for magic">
+      <span class="prompt-text">tap the sparkle...</span>
+    </div>
   </div>
 </div>
 
@@ -893,7 +954,7 @@
     <button class="go-button" id="goButton" style="display: none;"></button>
   </div>
 </div>
-
+ 
 <div class="music-bar">
   <div class="song-bg"></div>
   <button class="prev-btn" id="prevBtn">◄</button>
@@ -1040,10 +1101,6 @@
   
   const clickSound = new Audio("sounds/click.mp3");
   clickSound.volume = 0.5;
-  
-  // Guide screen audio
-  const guideAudio = new Audio("sounds/guid.m4a");
-  guideAudio.volume = 0.8;
   
   const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
   
@@ -1304,6 +1361,34 @@
     // Continuous sparkles
     guideSparkleInterval = setInterval(() => { if (isGuideScreenOpen) addGuideSparkle(); }, 150);
   }
+   
+ // Sparkle burst on click prompt
+    function promptSparkleBurst(x, y) {
+    const container = document.getElementById('sparkleContainer');
+    // Make sure sparkle container is on top during prompt
+    container.style.zIndex = '100000';
+    for (let i = 0; i < 15; i++) {
+      setTimeout(() => {
+        const sparkle = document.createElement('div');
+        sparkle.className = 'sparkle';
+        sparkle.style.left = (x + (Math.random() - 0.5) * 100) + 'px';
+        sparkle.style.top = (y + (Math.random() - 0.5) * 100) + 'px';
+        sparkle.style.animationDelay = Math.random() * 0.3 + 's';
+        sparkle.style.animationDuration = '1s';
+        const size = Math.random() * 30 + 15;
+        sparkle.style.width = size + 'px';
+        sparkle.style.height = size + 'px';
+        container.appendChild(sparkle);
+        setTimeout(() => {
+          sparkle.remove();
+          // Reset z-index after all sparkles are done
+          if (container.children.length === 0) {
+            container.style.zIndex = '9999';
+          }
+        }, 1000);
+      }, i * 30);
+    }
+  }
 
   function stopGuideSparkles() {
     if (guideSparkleInterval) clearInterval(guideSparkleInterval);
@@ -1554,9 +1639,10 @@
         goBtn.classList.remove('show');
       }
       
-      // Play guide audio
-      guideAudio.currentTime = 0;
-      guideAudio.play().catch(() => {});
+      // Play guide audio using Web Audio API (works without user interaction!)
+      setTimeout(() => {
+        playGuideAudio();
+      }, 200);
       
       // Show Go button at second 10
       setTimeout(() => {
@@ -1564,11 +1650,11 @@
           goBtn.style.display = 'block';
           goBtn.classList.add('show');
         }
-      }, 10000); // 10 seconds
+      }, 10000);
     }
   }
   
-      function hideGuideScreen() {
+         function hideGuideScreen() {
     const guideScreen = document.getElementById('guideScreen');
     if (guideScreen) {
       guideScreen.classList.add('fade-out');
@@ -1577,8 +1663,7 @@
       stopGuideSparkles();
       
       // Stop guide audio
-      guideAudio.pause();
-      guideAudio.currentTime = 0;
+      stopGuideAudio();
       
       setTimeout(() => {
         guideScreen.style.display = 'none';
@@ -1586,15 +1671,14 @@
     }
   }
   
-    function setupGoButton() {
+      function setupGoButton() {
     const goBtn = document.getElementById('goButton');
     if (goBtn) {
       goBtn.addEventListener('click', function(e) {
         e.preventDefault();
         
         // Stop guide audio
-        guideAudio.pause();
-        guideAudio.currentTime = 0;
+        stopGuideAudio();
         
         clickSound.currentTime = 0;
         clickSound.play().catch(() => {});
@@ -1607,30 +1691,124 @@
       });
     }
   }
+      // Guide screen audio using Web Audio API - bypasses autoplay restrictions
+  let guideAudioBuffer = null;
+  let guideAudioSource = null;
+  let audioContext = null;
+  
+    // Just fetch the audio file, don't create AudioContext yet
+  function loadGuideAudio() {
+    fetch('sounds/guid.mp3')
+      .then(response => response.arrayBuffer())
+      .then(arrayBuffer => {
+        window._pendingAudioBuffer = arrayBuffer;
+        console.log('Guide audio file downloaded, waiting for user gesture...');
+      })
+      .catch(error => {
+        console.log('Error loading guide audio:', error);
+      });
+  }
+
+   function playGuideAudio() {
+    if (!audioContext || !window._pendingAudioBuffer) return;
     
-    $(document).ready(() => {
+    if (audioContext.state === 'suspended') {
+      audioContext.resume();
+    }
+    
+    // Decode and play
+    audioContext.decodeAudioData(window._pendingAudioBuffer.slice(0))
+      .then(buffer => {
+        guideAudioBuffer = buffer;
+        if (guideAudioSource) {
+          try { guideAudioSource.stop(); } catch(e) {}
+        }
+        guideAudioSource = audioContext.createBufferSource();
+        guideAudioSource.buffer = guideAudioBuffer;
+        const gainNode = audioContext.createGain();
+        gainNode.gain.value = 0.8;
+        guideAudioSource.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        guideAudioSource.start(0);
+      })
+      .catch(err => console.log('Decode error:', err));
+  }
+
+    function stopGuideAudio() {
+    if (guideAudioSource) {
+      try { 
+        guideAudioSource.stop(); 
+        guideAudioSource = null;
+      } catch(e) {}
+    }
+  }
+  
+  // Load guide audio immediately
+  loadGuideAudio();
+
+  // Create AudioContext on user interaction
+  function initAudioContext() {
+    if (!audioContext) {
+      audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      console.log('AudioContext created by user gesture!');
+    } else if (audioContext.state === 'suspended') {
+      audioContext.resume();
+    }
+  }
+
+  $(document).ready(() => {
+    // Setup click prompt to unlock audio + create sparkles
+    const clickPrompt = document.getElementById('clickPrompt');
+    let audioUnlocked = false;
+    
+    if (clickPrompt) {
+      clickPrompt.addEventListener('click', function(e) {
+        if (!audioUnlocked) {
+          audioUnlocked = true;
+          initAudioContext();
+          promptSparkleBurst(e.clientX, e.clientY);
+          clickPrompt.classList.add('clicked');
+          setTimeout(() => {
+            clickPrompt.style.display = 'none';
+          }, 500);
+        }
+      });
+      
+      clickPrompt.addEventListener('touchstart', function(e) {
+        if (!audioUnlocked) {
+          e.preventDefault();
+          audioUnlocked = true;
+          const touch = e.touches[0];
+          initAudioContext();
+          promptSparkleBurst(touch.clientX, touch.clientY);
+          clickPrompt.classList.add('clicked');
+          setTimeout(() => {
+            clickPrompt.style.display = 'none';
+          }, 500);
+        }
+      });
+    }
+    
+        // Start sparkles IMMEDIATELY on loading screen
+    if (isTouchDevice) {
+      startTouchSparkles();
+    } else {
+      startMouseTrail();
+      setupCustomCursor();
+    }
+    
     preloadAllAssets(imageList, () => {
       allScrollers = createGallery();
       loadTrack(0);
-
       const loadingScreen = document.getElementById('loadingScreen');
       $(loadingScreen).addClass('hide');
-
       setTimeout(() => {
         $(loadingScreen).hide();
-        // Show GUIDE SCREEN instead of starting music automatically
         showGuideScreen();
         setupGoButton();
-
         createBackgroundSparkles();
-        setupCustomCursor();
-
-        if (isTouchDevice) {
-          startTouchSparkles();
-        } else {
-          startMouseTrail();
-        }
-      }, 1000);
+        // Sparkles already started above, don't start again
+      }, 10000);
     });
 
     $('#prevBtn').on('click', prevTrack);
@@ -1649,19 +1827,16 @@
         $(hoverPrevText).css({ opacity: '1', visibility: 'visible' });
         createMusicSparkles(prevBtn);
       });
-      
       $(prevBtn).on('mouseleave', () => {
         isHoveringButton = false;
         $(hoverPrevText).css({ opacity: '0', visibility: 'hidden' });
         stopMusicSparkles();
       });
-      
       $(nextBtn).on('mouseenter', () => {
         isHoveringButton = true;
         $(hoverNextText).css({ opacity: '1', visibility: 'visible' });
         createMusicSparkles(nextBtn);
       });
-      
       $(nextBtn).on('mouseleave', () => {
         isHoveringButton = false;
         $(hoverNextText).css({ opacity: '0', visibility: 'hidden' });
@@ -1669,95 +1844,48 @@
       });
     }    
    
-   // Mobile: touchstart/touchend for press-and-hold sparkles + text with fade out
     if (isTouchDevice) {
       let prevTimer = null;
       let nextTimer = null;
-      
       $(prevBtn).on('touchstart', () => {
         isHoveringButton = true;
-        $(hoverPrevText).css({ 
-          opacity: '1', 
-          visibility: 'visible',
-          transition: 'none'
-        });
+        $(hoverPrevText).css({ opacity: '1', visibility: 'visible', transition: 'none' });
         createMusicSparkles(prevBtn);
         if (prevTimer) clearTimeout(prevTimer);
       });
-      
       $(prevBtn).on('touchend', () => {
         prevTimer = setTimeout(() => {
-          $(hoverPrevText).css({ 
-            opacity: '0',
-            transition: 'opacity 0.8s ease'
-          });
-          setTimeout(() => {
-            $(hoverPrevText).css({ visibility: 'hidden' });
-          }, 800);
+          $(hoverPrevText).css({ opacity: '0', transition: 'opacity 0.8s ease' });
+          setTimeout(() => { $(hoverPrevText).css({ visibility: 'hidden' }); }, 800);
         }, 3000);
-        setTimeout(() => {
-          isHoveringButton = false;
-          stopMusicSparkles();
-        }, 5000);
+        setTimeout(() => { isHoveringButton = false; stopMusicSparkles(); }, 5000);
       });
-      
       $(prevBtn).on('touchcancel', () => {
         prevTimer = setTimeout(() => {
-          $(hoverPrevText).css({ 
-            opacity: '0',
-            transition: 'opacity 0.8s ease'
-          });
-          setTimeout(() => {
-            $(hoverPrevText).css({ visibility: 'hidden' });
-          }, 800);
+          $(hoverPrevText).css({ opacity: '0', transition: 'opacity 0.8s ease' });
+          setTimeout(() => { $(hoverPrevText).css({ visibility: 'hidden' }); }, 800);
         }, 3000);
-        setTimeout(() => {
-          isHoveringButton = false;
-          stopMusicSparkles();
-        }, 5000);
+        setTimeout(() => { isHoveringButton = false; stopMusicSparkles(); }, 5000);
       });
-      
       $(nextBtn).on('touchstart', () => {
         isHoveringButton = true;
-        $(hoverNextText).css({ 
-          opacity: '1', 
-          visibility: 'visible',
-          transition: 'none'
-        });
+        $(hoverNextText).css({ opacity: '1', visibility: 'visible', transition: 'none' });
         createMusicSparkles(nextBtn);
         if (nextTimer) clearTimeout(nextTimer);
       });
-      
       $(nextBtn).on('touchend', () => {
         nextTimer = setTimeout(() => {
-          $(hoverNextText).css({ 
-            opacity: '0',
-            transition: 'opacity 0.8s ease'
-          });
-          setTimeout(() => {
-            $(hoverNextText).css({ visibility: 'hidden' });
-          }, 800);
+          $(hoverNextText).css({ opacity: '0', transition: 'opacity 0.8s ease' });
+          setTimeout(() => { $(hoverNextText).css({ visibility: 'hidden' }); }, 800);
         }, 3000);
-        setTimeout(() => {
-          isHoveringButton = false;
-          stopMusicSparkles();
-        }, 5000);
+        setTimeout(() => { isHoveringButton = false; stopMusicSparkles(); }, 5000);
       });
-      
       $(nextBtn).on('touchcancel', () => {
         nextTimer = setTimeout(() => {
-          $(hoverNextText).css({ 
-            opacity: '0',
-            transition: 'opacity 0.8s ease'
-          });
-          setTimeout(() => {
-            $(hoverNextText).css({ visibility: 'hidden' });
-          }, 800);
+          $(hoverNextText).css({ opacity: '0', transition: 'opacity 0.8s ease' });
+          setTimeout(() => { $(hoverNextText).css({ visibility: 'hidden' }); }, 800);
         }, 3000);
-        setTimeout(() => {
-          isHoveringButton = false;
-          stopMusicSparkles();
-        }, 5000);
+        setTimeout(() => { isHoveringButton = false; stopMusicSparkles(); }, 5000);
       });
     }
     
