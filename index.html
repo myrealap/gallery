@@ -1695,20 +1695,42 @@
   let guideAudioSource = null;
   let audioContext = null;
   
-  // Load audio using fetch + AudioContext
+    // Just fetch the audio file, don't create AudioContext yet
   function loadGuideAudio() {
-    audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    
     fetch('sounds/guid.mp3')
       .then(response => response.arrayBuffer())
-      .then(arrayBuffer => audioContext.decodeAudioData(arrayBuffer))
-      .then(audioBuffer => {
-        guideAudioBuffer = audioBuffer;
-        console.log('Guide audio loaded and ready!');
+      .then(arrayBuffer => {
+        window._pendingAudioBuffer = arrayBuffer;
+        console.log('Guide audio file downloaded, waiting for user gesture...');
       })
       .catch(error => {
         console.log('Error loading guide audio:', error);
       });
+  }
+
+  function playGuideAudio() {
+    if (!audioContext || !window._pendingAudioBuffer) return;
+    
+    if (audioContext.state === 'suspended') {
+      audioContext.resume();
+    }
+    
+    // Decode and play
+    audioContext.decodeAudioData(window._pendingAudioBuffer.slice(0))
+      .then(buffer => {
+        guideAudioBuffer = buffer;
+        if (guideAudioSource) {
+          try { guideAudioSource.stop(); } catch(e) {}
+        }
+        guideAudioSource = audioContext.createBufferSource();
+        guideAudioSource.buffer = guideAudioBuffer;
+        const gainNode = audioContext.createGain();
+        gainNode.gain.value = 0.8;
+        guideAudioSource.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        guideAudioSource.start(0);
+      })
+      .catch(err => console.log('Decode error:', err));
   }
   
   function playGuideAudio() {
@@ -1823,7 +1845,7 @@
         } else {
           startMouseTrail();
         }
-      }, 1000);
+      }, 10000);
     });
     // ... rest of your code
 
