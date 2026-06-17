@@ -119,6 +119,47 @@
     letter-spacing: 1px;
     z-index: 1;
   }
+  .click-prompt {
+    position: relative;
+    z-index: 1;
+    margin-top: 30px;
+    text-align: center;
+    cursor: pointer;
+    animation: promptPulse 2s ease-in-out infinite;
+  }
+
+  .prompt-sparkle {
+    width: 50px;
+    height: 50px;
+    animation: promptSpin 3s linear infinite;
+  }
+
+  .prompt-text {
+    display: block;
+    color: #888;
+    font-size: 12px;
+    letter-spacing: 2px;
+    margin-top: 10px;
+    font-style: italic;
+  }
+
+  @keyframes promptPulse {
+    0%, 100% { transform: scale(1); opacity: 0.8; }
+    50% { transform: scale(1.1); opacity: 1; }
+  }
+
+  @keyframes promptSpin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  .click-prompt.clicked {
+    animation: promptFadeOut 0.5s ease forwards;
+  }
+
+  @keyframes promptFadeOut {
+    to { opacity: 0; transform: scale(1.5); }
+  }
 
   .loading-screen.hide {
     opacity: 0;
@@ -882,6 +923,10 @@
     <div class="quote-bg"></div>
     <div class="quote-text" id="quoteText">" loading... "</div>
     <div class="quote-author" id="quoteAuthor">— myrealap</div>
+    <div class="click-prompt" id="clickPrompt">
+      <img src="images-new/sparkle.png" class="prompt-sparkle" alt="Click for magic">
+      <span class="prompt-text">tap the sparkle...</span>
+    </div>
   </div>
 </div>
 
@@ -1298,6 +1343,26 @@
     // Continuous sparkles
     guideSparkleInterval = setInterval(() => { if (isGuideScreenOpen) addGuideSparkle(); }, 150);
   }
+   
+ // Sparkle burst on click prompt
+  function promptSparkleBurst(x, y) {
+    const container = document.getElementById('sparkleContainer');
+    for (let i = 0; i < 15; i++) {
+      setTimeout(() => {
+        const sparkle = document.createElement('div');
+        sparkle.className = 'sparkle';
+        sparkle.style.left = (x + (Math.random() - 0.5) * 100) + 'px';
+        sparkle.style.top = (y + (Math.random() - 0.5) * 100) + 'px';
+        sparkle.style.animationDelay = Math.random() * 0.3 + 's';
+        sparkle.style.animationDuration = '1s';
+        const size = Math.random() * 30 + 15;
+        sparkle.style.width = size + 'px';
+        sparkle.style.height = size + 'px';
+        container.appendChild(sparkle);
+        setTimeout(() => sparkle.remove(), 1000);
+      }, i * 30);
+    }
+  }
 
   function stopGuideSparkles() {
     if (guideSparkleInterval) clearInterval(guideSparkleInterval);
@@ -1660,7 +1725,52 @@
   
   // Load guide audio immediately
   loadGuideAudio();
-      $(document).ready(() => {
+    
+    // Setup click prompt to unlock audio + create sparkles
+    const clickPrompt = document.getElementById('clickPrompt');
+    let audioUnlocked = false;
+    
+    if (clickPrompt) {
+      clickPrompt.addEventListener('click', function(e) {
+        if (!audioUnlocked) {
+          audioUnlocked = true;
+          
+          // Init audio context (user gesture!)
+          initAudioContext();
+          
+          // Sparkle burst at click position
+          promptSparkleBurst(e.clientX, e.clientY);
+          
+          // Animate prompt out
+          clickPrompt.classList.add('clicked');
+          
+          // Hide prompt after animation
+          setTimeout(() => {
+            clickPrompt.style.display = 'none';
+          }, 500);
+        }
+      });
+      
+      // Also work on touch
+      clickPrompt.addEventListener('touchstart', function(e) {
+        if (!audioUnlocked) {
+          e.preventDefault();
+          audioUnlocked = true;
+          
+          const touch = e.touches[0];
+          initAudioContext();
+          promptSparkleBurst(touch.clientX, touch.clientY);
+          clickPrompt.classList.add('clicked');
+          
+          setTimeout(() => {
+            clickPrompt.style.display = 'none';
+          }, 500);
+        }
+      });
+    }
+    
+    // Keep loading screen for 10 seconds
+    preloadAllAssets(imageList, () => {
     preloadAllAssets(imageList, () => {
       allScrollers = createGallery();
       loadTrack(0);
