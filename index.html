@@ -119,10 +119,12 @@
     letter-spacing: 1px;
     z-index: 1;
   }
-  .click-prompt {
-    position: relative;
-    z-index: 1;
-    margin-top: 30px;
+   .click-prompt {
+    position: absolute;
+    bottom: -50px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
     text-align: center;
     cursor: pointer;
     animation: promptPulse 2s ease-in-out infinite;
@@ -1798,7 +1800,7 @@
         } else {
           startMouseTrail();
         }
-      }, 10000);
+      }, 1000);
     });
     // ... rest of your code
 
