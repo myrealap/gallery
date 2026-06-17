@@ -894,6 +894,9 @@
   </div>
 </div>
 
+<!-- Hidden button for audio trigger -->
+<button id="hiddenAudioTrigger" style="position:fixed;top:-9999px;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none;"></button>
+
 <div class="music-bar">
   <div class="song-bg"></div>
   <button class="prev-btn" id="prevBtn">◄</button>
@@ -1550,9 +1553,10 @@
   // GUIDE SCREEN LOGIC
   let musicStartedByGuide = false;
   
-      function showGuideScreen() {
+       function showGuideScreen() {
     const guideScreen = document.getElementById('guideScreen');
     const goBtn = document.getElementById('goButton');
+    const hiddenBtn = document.getElementById('hiddenAudioTrigger');
     
     if (guideScreen) {
       guideScreen.classList.add('active');
@@ -1565,23 +1569,25 @@
         goBtn.classList.remove('show');
       }
       
-      // Play guide audio (no reload needed - it's already loaded)
-      guideAudio.currentTime = 0;
-      const playPromise = guideAudio.play();
+      // Auto-click hidden button to trigger audio permission
+      if (hiddenBtn) {
+        hiddenBtn.click();
+      }
       
-      if (playPromise !== undefined) {
-        playPromise.catch(() => {
-          // If autoplay blocked, play on first user interaction
-          const playOnInteract = () => {
+      // Play guide audio (now works because of the click!)
+      setTimeout(() => {
+        guideAudio.currentTime = 0;
+        guideAudio.play().catch((err) => {
+          console.log('Still blocked, trying fallback:', err);
+          // Fallback: add a one-time click listener on the document
+          const playOnClick = () => {
             guideAudio.currentTime = 0;
             guideAudio.play().catch(() => {});
-            document.removeEventListener('click', playOnInteract);
-            document.removeEventListener('touchstart', playOnInteract);
+            document.removeEventListener('click', playOnClick);
           };
-          document.addEventListener('click', playOnInteract, { once: true });
-          document.addEventListener('touchstart', playOnInteract, { once: true });
+          document.addEventListener('click', playOnClick, { once: true });
         });
-      }
+      }, 100);
       
       // Show Go button at second 10
       setTimeout(() => {
