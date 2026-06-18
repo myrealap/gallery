@@ -437,8 +437,8 @@
 
     .help-btn-container {
     position: fixed;
-    top: 0;
-    right: 0;
+    bottom: 25px;  /* Above footer */
+    right: 15px;
     width: 100%;
     height: 0;
     z-index: 1000;
@@ -472,6 +472,10 @@
   }
 
   @media (max-width: 768px) {
+    .help-btn-container {
+      bottom: 20px;
+      right: 10px;
+    }
     .help-button {
       width: 100px;
       height: 100px;
