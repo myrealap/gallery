@@ -1970,6 +1970,9 @@
         isHoveringHelp = false;
         stopHelpSparkles();
         
+        // 👇 ADD THIS - Create AudioContext if not already created
+        initAudioContext();
+        
         // Pause the gallery music
         audio.pause();
         musicStartedByGuide = false;  // 👈 Reset this so Go button resumes music
