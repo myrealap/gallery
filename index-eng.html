@@ -449,7 +449,7 @@
     position: absolute;
     width: 150px;     /* Half of 300px */
     height: 150px;     /* Half of 150px */
-    top: 40px;        /* Below music bar */
+    top: 810px;        /* Below music bar */
     right: 2%;
     background-image: url('images-new/help.png');
     background-repeat: no-repeat;
@@ -475,8 +475,8 @@
     .help-button {
       width: 100px;
       height: 100px;
-      top: 38px;
-      right: 3%;
+      top: 500px;
+      right: 30%;
       background-size: 200px 100px;
     }
     .help-button:hover {
@@ -488,11 +488,15 @@
     .help-button {
       width: 75px;
       height: 75px;
-      top: 36px;
+      top: 500px;
       right: 4%;
       background-size: 150px 75px;
     }
     .help-button:hover {
+      background-position: -75px 0;
+    }
+  }
+  .help-button:hover {
       background-position: -75px 0;
     }
   }
@@ -1131,8 +1135,8 @@
   // ============================================
   
   const isMobile = window.innerWidth <= 768;
-  const rightOffset = isMobile ? -8000 : -80000;
-  const loveRightOffset = isMobile ? -8000 : -50000;
+  const rightOffset = isMobile ? -80000 : -80000;
+  const loveRightOffset = isMobile ? -80000 : -80000;
   
   const quotes = [
     { text: "Love & Imagination can change the world!", author: "Myrealap" },
