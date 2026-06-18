@@ -1958,6 +1958,13 @@
             // Click/tap to show guide screen with audio (no delay)
       helpBtn.addEventListener('click', function(e) {
         e.preventDefault();
+        
+        // Play click sound at low volume
+        clickSound.volume = 0.2;  // Lower the volume temporarily
+        clickSound.currentTime = 0;
+        clickSound.play().catch(() => {});
+        clickSound.volume = 0.5;  // Reset back to normal
+        
         isHoveringHelp = false;
         stopHelpSparkles();
         
