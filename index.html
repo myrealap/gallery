@@ -437,8 +437,8 @@
 
     .help-btn-container {
     position: fixed;
-    bottom: 25px;  /* Above footer */
-    right: 15px;
+    top: 0;
+    right: 0;
     width: 100%;
     height: 0;
     z-index: 1000;
@@ -449,7 +449,7 @@
     position: absolute;
     width: 150px;     /* Half of 300px */
     height: 150px;     /* Half of 150px */
-    top: 40px;        /* Below music bar */
+    top: 810px;        /* Below music bar */
     right: 2%;
     background-image: url('images-new/help.png');
     background-repeat: no-repeat;
@@ -472,14 +472,10 @@
   }
 
   @media (max-width: 768px) {
-    .help-btn-container {
-      bottom: 20px;
-      right: 10px;
-    }
     .help-button {
       width: 100px;
       height: 100px;
-      top: 38px;
+      top: 200px;
       right: 3%;
       background-size: 200px 100px;
     }
@@ -497,6 +493,10 @@
       background-size: 150px 75px;
     }
     .help-button:hover {
+      background-position: -75px 0;
+    }
+  }
+  .help-button:hover {
       background-position: -75px 0;
     }
   }
