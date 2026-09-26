@@ -119,13 +119,21 @@
     letter-spacing: 1px;
     z-index: 1;
   }
-     .click-prompt {
+     .loading-go-btn {
     position: absolute;
-    bottom: -50px;
-    transform: translateX(-50%);
-    z-index: 2;
-    text-align: center;
+    left: 50%;
+    bottom: -70px;
+    transform: translate(-50%, 0);
+    width: 110.5px;
+    height: 90px;
+    background-image: url('images-new/Go.png');
+    background-repeat: no-repeat;
+    background-position: 0 0;
+    background-size: 221px 66px;
+    border: none;
+    background-color: transparent;
     cursor: pointer;
+    z-index: 2;
     animation: promptPulse 2s ease-in-out infinite;
     -webkit-tap-highlight-color: transparent;
     -webkit-touch-callout: none;
@@ -134,47 +142,37 @@
     outline: none;
   }
 
-  .click-prompt:focus {
+  .loading-go-btn:hover {
+    background-position: -110.5px 0;
+  }
+
+  .loading-go-btn:focus {
     outline: none;
   }
 
-  .click-prompt img {
-    -webkit-tap-highlight-color: transparent;
-    -webkit-touch-callout: none;
-    pointer-events: none;
-  }
-
-  .prompt-sparkle {
-    width: 50px;
-    height: 50px;
-    animation: promptSpin 3s linear infinite;
-  }
-
-  .prompt-text {
-    display: block;
-    color: #888;
-    font-size: 12px;
-    letter-spacing: 2px;
-    margin-top: 10px;
-    font-style: italic;
-  }
-
   @keyframes promptPulse {
-    0%, 100% { transform: scale(1); opacity: 0.8; }
-    50% { transform: scale(1.1); opacity: 1; }
+    0%, 100% { transform: translate(-50%, 0) scale(1); opacity: 0.9; }
+    50% { transform: translate(-50%, 0) scale(1.08); opacity: 1; }
   }
 
-  @keyframes promptSpin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-  }
-
-  .click-prompt.clicked {
+  .loading-go-btn.clicked {
     animation: promptFadeOut 0.5s ease forwards;
   }
 
   @keyframes promptFadeOut {
     to { opacity: 0; }
+  }
+
+  @media (max-width: 480px) {
+    .loading-go-btn {
+      width: 80px;
+      height: 65px;
+      background-size: 160px 65px;
+      bottom: -55px;
+    }
+    .loading-go-btn:hover {
+      background-position: -80px 0;
+    }
   }
 
   .loading-screen.hide {
@@ -1038,10 +1036,7 @@
     <div class="quote-bg"></div>
     <div class="quote-text" id="quoteText">" loading... "</div>
     <div class="quote-author" id="quoteAuthor">— myrealap</div>
-    <div class="click-prompt" id="clickPrompt">
-      <img src="images-new/sparkle.png" class="prompt-sparkle" alt="Click for magic">
-      <span class="prompt-text">tap the sparkle...</span>
-    </div>
+    <button class="loading-go-btn" id="clickPrompt" type="button" aria-label="Enter gallery"></button>
   </div>
 </div>
 
@@ -1226,9 +1221,27 @@
       this.calcWidth();
       this.makeEndless();
       this.calcWidth();
+      // rightOffset/loveRightOffset are large legacy pixel values tuned for
+      // a much wider track. Wrap them into this row's real trackWidth so
+      // the same starting "frame" of the repeating pattern is picked
+      // without translating the row completely out of view.
+      this.position = this.wrapPosition(this.position);
       this.applyTransform();
       this.start();
       $(window).on('resize', () => this.resize());
+    }
+    
+    wrapPosition(pos) {
+      if (!this.trackWidth) return 0;
+      const half = this.trackWidth / 2;
+      if (!half) return 0;
+      // Content repeats every `half` pixels (that's what makes the
+      // half-width reset in start() seamless), so folding the legacy
+      // offset into that period keeps the same visual starting frame
+      // while landing safely inside (-half, 0].
+      let p = pos % half;
+      if (p > 0) p -= half;
+      return p;
     }
     
     calcWidth() {
@@ -1236,9 +1249,11 @@
     }
     
     makeEndless() {
-      const target = window.innerWidth * 8;
+      // Only needs enough width for the seamless modulo-reset trick in
+      // start() to work — no need to pre-render 8 screens of duplicates.
+      const target = window.innerWidth * 2.4;
       let safety = 0;
-      while (this.track.scrollWidth < target && safety < 15) {
+      while (this.track.scrollWidth < target && safety < 6) {
         const children = Array.from(this.track.children);
         for (let i = 0; i < children.length; i++) {
           this.track.appendChild(children[i].cloneNode(true));
@@ -1259,18 +1274,17 @@
     start() {
       const step = () => {
         if (!this.isRunning) return;
+        const half = this.trackWidth / 2;
         
         if (this.direction === 'left') {
           this.position -= this.speed;
+          if (this.position <= -half) {
+            this.position += half;
+          }
         } else {
           this.position += this.speed;
-        }
-        
-        if (Math.abs(this.position) >= this.trackWidth / 2) {
-          if (this.direction === 'left') {
-            this.position += this.trackWidth / 2;
-          } else {
-            this.position -= this.trackWidth / 2;
+          if (this.position > 0) {
+            this.position -= half;
           }
         }
         
@@ -1333,7 +1347,17 @@
     const trackDiv = document.createElement('div');
     trackDiv.className = 'scroll-track';
     
-    const TOTAL_REPEATS = 200;
+    // Build just enough copies of the sequence to comfortably cover the
+    // widest viewport we expect (with headroom for resizing/ultrawide
+    // screens), instead of pre-rendering 200 repeats every time. This is
+    // the same technique, just sized to what's actually needed on screen.
+    const approxItemWidth = 180; // matches the largest .image-item img width
+    const targetWidth = Math.max(window.innerWidth, 1920) * 2.4;
+    const itemsNeeded = Math.ceil(targetWidth / approxItemWidth);
+    let TOTAL_REPEATS = Math.max(2, Math.ceil(itemsNeeded / customSequence.length));
+    // Keep the total item count even so the seamless loop reset in
+    // InfiniteScroller.start() always lands on an exact item boundary.
+    if ((TOTAL_REPEATS * customSequence.length) % 2 !== 0) TOTAL_REPEATS++;
     for (let r = 0; r < TOTAL_REPEATS; r++) {
       for (let i = 0; i < customSequence.length; i++) {
         const imgItem = createImageElement(customSequence[i]);
