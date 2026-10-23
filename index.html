@@ -937,7 +937,7 @@
     right: 12%;
   } 
     .go-button.show {
-    animation: goFadeIn 0.8s ease forwards, goPulse 1.5s ease-in-out 0.8s infinite;  /* 👈 Pulse after fade in */
+    animation: goFadeIn 0.5s ease forwards, goPulse 1.5s ease-in-out 0.5s infinite;  /* 👈 Pulse after fade in */
   }
   
   .go-button.clicked {
@@ -1699,7 +1699,7 @@
   
   function preloadAllAssets(images, callback) {
     let loaded = 0;
-    const assetsToLoad = [...images, "images-new/sparkle.png", "images-new/hover-bg.png", "images-new/quote-bg.png", "images-new/song-bg.png", "images-new/modal-bg.png"];
+    const assetsToLoad = [...images, "images-new/sparkle.png", "images-new/hover-bg.png", "images-new/quote-bg.png", "images-new/song-bg.png", "images-new/modal-bg.png", "images-new/guide.png", "images-new/Go.png", "images-new/help.png"];
     const total = assetsToLoad.length;
     if (total === 0) { callback(); return; }
     assetsToLoad.forEach((src) => {
@@ -1795,10 +1795,11 @@
       isGuideScreenOpen = true;
       createGuideSparkles();
       
-      // Hide Go button initially
+      // Show Go button together with the guide screen (no delay)
       if (goBtn) {
-        goBtn.style.display = 'none';
-        goBtn.classList.remove('show');
+        goBtn.style.display = 'block';
+        goBtn.classList.remove('clicked');
+        goBtn.classList.add('show');
       }
       
       // Play guide audio using Web Audio API (works without user interaction!)
@@ -1806,13 +1807,6 @@
         playGuideAudio();
       }, 200);
       
-      // Show Go button at second 10
-      setTimeout(() => {
-        if (goBtn) {
-          goBtn.style.display = 'block';
-          goBtn.classList.add('show');
-        }
-      }, 10000);
     }
   }
   
@@ -1868,9 +1862,13 @@
       .then(arrayBuffer => {
         window._pendingAudioBuffer = arrayBuffer;
         console.log('Guide audio file downloaded, waiting for user gesture...');
+        audioFetched = true;
+        tryProceed();
       })
       .catch(error => {
         console.log('Error loading guide audio:', error);
+        audioFetched = true;
+        tryProceed();
       });
   }
 
@@ -1908,6 +1906,26 @@
     }
   }
   
+  // The loading screen only moves on once everything is loaded
+  // (images + guide audio) AND the user has clicked Go.
+  let assetsReady = false;
+  let audioFetched = false;
+  let goClicked = false;
+  let proceeded = false;
+
+  function tryProceed() {
+    if (proceeded || !assetsReady || !audioFetched || !goClicked) return;
+    proceeded = true;
+    const loadingScreen = document.getElementById('loadingScreen');
+    $(loadingScreen).addClass('hide');
+    setTimeout(() => {
+      $(loadingScreen).hide();
+      showGuideScreen();
+      setupGoButton();
+      createBackgroundSparkles();
+    }, 1000); // loading screen fade-out
+  }
+
   // Load guide audio immediately
   loadGuideAudio();
 
@@ -1933,6 +1951,8 @@
           initAudioContext();
           promptSparkleBurst(e.clientX, e.clientY);
           clickPrompt.classList.add('clicked');
+          goClicked = true;
+          tryProceed();
           setTimeout(() => {
             clickPrompt.style.display = 'none';
           }, 500);
@@ -1947,6 +1967,8 @@
           initAudioContext();
           promptSparkleBurst(touch.clientX, touch.clientY);
           clickPrompt.classList.add('clicked');
+          goClicked = true;
+          tryProceed();
           setTimeout(() => {
             clickPrompt.style.display = 'none';
           }, 500);
@@ -2042,21 +2064,8 @@
         preloadAllAssets(imageList, () => {
       allScrollers = createGallery();
       loadTrack(0);
-      const loadingScreen = document.getElementById('loadingScreen');
-      
-      // Keep loading for 10 seconds, THEN show guide
-      setTimeout(() => {
-        $(loadingScreen).addClass('hide');
-        
-        // Wait for fade out, then show guide and hide loading
-        setTimeout(() => {
-          $(loadingScreen).hide();
-          showGuideScreen();
-          setupGoButton();
-          createBackgroundSparkles();
-        }, 1000); // 1 second for fade out
-        
-      }, 10000); // 10 seconds loading
+      assetsReady = true;
+      tryProceed();
     });
 
     $('#prevBtn').on('click', prevTrack);
