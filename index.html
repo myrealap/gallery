@@ -175,6 +175,36 @@
     }
   }
 
+  .loading-hint {
+    position: absolute;
+    left: 50%;
+    bottom: -45px;
+    transform: translateX(-50%);
+    color: #ffffff;
+    font-family: 'ChaletRegular', Arial, sans-serif;
+    font-size: 14px;
+    letter-spacing: 3px;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  .loading-hint.show {
+    visibility: visible;
+    animation: hintFadeIn 0.5s ease 0.3s forwards, hintPulse 1.6s ease-in-out 0.8s infinite;
+  }
+
+  @keyframes hintFadeIn {
+    to { opacity: 0.9; }
+  }
+
+  @keyframes hintPulse {
+    0%, 100% { opacity: 0.9; }
+    50% { opacity: 0.35; }
+  }
+
   .loading-screen.hide {
     opacity: 0;
     pointer-events: none;
@@ -1037,6 +1067,7 @@
     <div class="quote-text" id="quoteText">" loading... "</div>
     <div class="quote-author" id="quoteAuthor">— myrealap</div>
     <button class="loading-go-btn" id="clickPrompt" type="button" aria-label="Enter gallery"></button>
+    <div class="loading-hint" id="loadingHint">loading...</div>
   </div>
 </div>
 
@@ -1913,6 +1944,14 @@
   let goClicked = false;
   let proceeded = false;
 
+  // If Go was clicked before everything finished loading, tell the user
+  // the site is still loading so they don't think nothing happened.
+  function showLoadingHint() {
+    if (proceeded || (assetsReady && audioFetched)) return;
+    const hint = document.getElementById('loadingHint');
+    if (hint) hint.classList.add('show');
+  }
+
   function tryProceed() {
     if (proceeded || !assetsReady || !audioFetched || !goClicked) return;
     proceeded = true;
@@ -1953,6 +1992,7 @@
           clickPrompt.classList.add('clicked');
           goClicked = true;
           tryProceed();
+          showLoadingHint();
           setTimeout(() => {
             clickPrompt.style.display = 'none';
           }, 500);
@@ -1969,6 +2009,7 @@
           clickPrompt.classList.add('clicked');
           goClicked = true;
           tryProceed();
+          showLoadingHint();
           setTimeout(() => {
             clickPrompt.style.display = 'none';
           }, 500);
